@@ -1,0 +1,188 @@
+<style>
+  :host {
+    display: block;
+    width: 100%;
+    container-type: inline-size;
+  }
+
+  .jar-container {
+    background: white;
+    border-radius: 1.2cqw;
+    box-shadow: 0 2cqw 6cqw rgba(0, 0, 0, 0.3);
+    padding: 2cqw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5cqw;
+    box-sizing: border-box;
+    aspect-ratio: 0.75;
+  }
+
+  .jar-and-colors {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5cqw;
+    flex: 1;
+    width: 100%;
+    padding: 0 2cqw;
+    box-sizing: border-box;
+  }
+
+  .fill-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* centers horizontally */
+    justify-content: center;
+    /* centers vertically */
+    gap: 0.6cqw;
+    flex-shrink: 0;
+    height: 100%;
+  }
+
+  canvas {
+    display: block;
+    width: 80cqw;
+    height: 100cqw;
+    flex-shrink: 0;
+  }
+
+  .color-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1cqw;
+    flex-shrink: 0;
+  }
+
+  .fill-slider-vertical {
+    -webkit-appearance: slider-vertical;
+    width: 1.5cqw;
+    /* fills the flex container width */
+    max-width: 0.6cqw;
+    /* optional max width */
+    height: 100%;
+    /* scale with container height */
+    background: linear-gradient(to top, #667eea 0%, #e0e0e0 100%);
+    border-radius: 0.4cqw;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .color-splotch {
+    width: 8cqw;
+    height: 8cqw;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 0.3cqw 1cqw rgba(0, 0, 0, 0.2);
+    border: 0.3cqw solid transparent;
+  }
+
+  .color-splotch.active {
+    border-color: #667eea;
+    box-shadow: 0 0.5cqw 1.8cqw rgba(0, 0, 0, 0.4);
+  }
+
+  .label-control {
+    width: 100%;
+  }
+
+  .label-control textarea {
+    width: 100%;
+    padding: 0.8cqw 1cqw;
+    border: 0.2cqw solid #e0e0e0;
+    border-radius: 0.6cqw;
+    font-size: 1rem;
+    /* avoid cqw font size */
+    box-sizing: border-box;
+    font-family: inherit;
+    text-align: center;
+    font-weight: 500;
+    color: #222;
+    /* force visible text color */
+    background: #f8f8f8;
+    /* solid background, not transparent */
+    resize: none;
+    overflow-wrap: break-word;
+    min-height: clamp(2rem, 5cqw, 4rem);
+  }
+
+  .label-control textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    background: white;
+  }
+
+  .remove-btn {
+    position: absolute;
+    top: 0.2rem;
+    right: 0.2rem;
+    font-size: 0.5rem;
+    color: red;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .remove-btn:hover {
+    transform: scale(1.2);
+  }
+
+  .jar-container {
+    position: relative;
+    /* needed for absolute positioning of remove-btn */
+  }
+
+  .jar-checkboxes {
+    margin: 0.5em 0;
+    display: flex;
+    gap: 1em;
+    justify-content: center;
+  }
+</style>
+
+<div class="jar-container">
+  <div class="remove-btn">×</div>
+  <div class="jar-and-colors">
+    <div class="fill-controls">
+      <input
+        type="range"
+        class="fill-slider-vertical"
+        orient="vertical"
+        min="0"
+        max="100"
+      />
+    </div>
+
+    <canvas></canvas>
+
+    <div class="color-controls">
+      <div
+        class="color-splotch"
+        style="background: #44ff44"
+        data-color="#44ff44"
+      ></div>
+      <div
+        class="color-splotch"
+        style="background: #ffdd44"
+        data-color="#ffdd44"
+      ></div>
+      <div
+        class="color-splotch"
+        style="background: #ff4444"
+        data-color="#ff4444"
+      ></div>
+    </div>
+  </div>
+
+  <div class="jar-checkboxes">
+    <label title="Giving"><input type="checkbox" class="jar-giving" /> G</label>
+    <label title="Receiving"
+      ><input type="checkbox" class="jar-receiving" /> R</label
+    >
+  </div>
+
+  <div class="label-control">
+    <textarea class="label-input"></textarea>
+  </div>
+</div>
