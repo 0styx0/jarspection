@@ -1,5 +1,4 @@
 import { createFillableJar } from "../utils";
-import { FillableJar } from "./fillable-jar/fillable-jar";
 import templateHtml from "bundle-text:./add-jar.html";
 
 class AddJar extends HTMLElement {

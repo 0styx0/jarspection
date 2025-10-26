@@ -1,12 +1,20 @@
 import templateHtml from "bundle-text:./fillable-jar.html";
+import {
+  ColorChangeEvent,
+  ColorControls,
+  colorControlsEmitted,
+} from "../color-controls/color-controls";
 
 const colors = {
   yellow: "#ffdd44",
 };
 export class FillableJar extends HTMLElement {
-  #fill = 50;
-  #color = colors.yellow;
+  #givePercent = 50;
+  #receivePercent = 50;
   #label = "New Jar";
+
+  #giveColor = colors.yellow;
+  #receiveColor = colors.yellow;
 
   constructor() {
     super();
@@ -24,20 +32,19 @@ export class FillableJar extends HTMLElement {
     this.setupLabel();
   }
 
+  set givePercent(value: number) {
+    this.#givePercent = value;
+  }
+  set receivePercent(value: number) {
+    this.#receivePercent = value;
+  }
   get fill() {
-    return this.#fill;
+    return this.#givePercent;
   }
   set fill(value) {
-
-    this.#fill = Math.max(0, Math.min(100, value)) ?? this.#fill;
+    this.#givePercent = Math.max(0, Math.min(100, value)) ?? this.#givePercent;
   }
 
-  get color() {
-    return this.#color;
-  }
-  set color(value) {
-    this.#color = value ?? this.#color;
-  }
   get label() {
     return this.#label;
   }
@@ -47,32 +54,30 @@ export class FillableJar extends HTMLElement {
     this.setupLabel();
   }
 
-  set giving(value: boolean) {
-    this.shadowRoot.querySelector<HTMLInputElement>(".jar-giving").checked =
-      value;
-  }
-
-  get giving() {
-    return (
-      this.shadowRoot?.querySelector<HTMLInputElement>(".jar-giving")
-        ?.checked || false
-    );
-  }
-
-  set receiving(value: boolean) {
-    this.shadowRoot.querySelector<HTMLInputElement>(".jar-receiving").checked =
-      value;
-  }
-  get receiving() {
-    return (
-      this.shadowRoot?.querySelector<HTMLInputElement>(".jar-receiving")
-        ?.checked || false
-    );
-  }
-
   render() {
     this.shadowRoot.innerHTML = templateHtml;
   }
+
+  handleColorChanges = () => {
+    const addColorChangeEvent = (
+      eltId: string,
+      handler: (color: string) => void,
+    ) =>
+      this.shadowRoot!.querySelector(eltId)!.addEventListener(
+        colorControlsEmitted.colorchange,
+        (e: ColorChangeEvent) => {
+          handler(e.detail.color);
+          this.drawJar();
+        },
+      );
+
+    addColorChangeEvent("#colors-giving", (color) => (this.#giveColor = color));
+
+    addColorChangeEvent(
+      "#colors-receiving",
+      (color) => (this.#receiveColor = color),
+    );
+  };
 
   setupResizeObserver() {
     // Adjust on resize if needed
@@ -89,28 +94,24 @@ export class FillableJar extends HTMLElement {
     label.value = this.label;
   }
 
-  setupEventListeners() {
-    const removeBtn = this.shadowRoot.querySelector(".remove-btn");
-    if (removeBtn) {
-      removeBtn.addEventListener("click", () => this.remove());
-    }
+  setSlider(name: string) {
+    const fillSlider = this.shadowRoot!.querySelector(
+      `[name="${name}"]`,
+    ) as HTMLInputElement;
 
-    const fillSlider = this.shadowRoot.querySelector(".fill-slider-vertical");
-    if (fillSlider) {
-      fillSlider.addEventListener("input", (e) => {
-        this.fill = e.target.value;
-        this.drawJar();
-      });
-    }
-
-    const colorSplotches = this.shadowRoot.querySelectorAll(".color-splotch");
-    colorSplotches.forEach((s) => {
-      s.addEventListener("click", (e) => {
-        this.color = e.currentTarget.getAttribute("data-color");
-
-        this.drawJar();
-      });
+    fillSlider.addEventListener("input", (e) => {
+      this[name] = e.target.value;
+      this.drawJar();
     });
+  }
+  setupEventListeners() {
+    const removeBtn = this.shadowRoot.querySelector(".remove-btn")!;
+    removeBtn.addEventListener("click", () => this.remove());
+
+    this.setSlider("receivePercent");
+    this.setSlider("givePercent");
+
+    this.handleColorChanges();
 
     const label = this.shadowRoot.querySelector(".label-input");
     label.addEventListener("input", (e) => {
@@ -122,11 +123,6 @@ export class FillableJar extends HTMLElement {
     const fillSlider = this.shadowRoot.querySelector<HTMLInputElement>(
       ".fill-slider-vertical",
     );
-    const container =
-      this.shadowRoot.querySelector<HTMLDivElement>(".fill-controls");
-    if (fillSlider && container) {
-      fillSlider.style.height = `${container.offsetHeight * 0.5}px`;
-    }
   }
   drawJar() {
     const canvas = this.shadowRoot.querySelector("canvas");
@@ -138,7 +134,8 @@ export class FillableJar extends HTMLElement {
     const ctx = canvas.getContext("2d");
     const w = canvas.width;
     const h = canvas.height;
-    const fillPercent = this.#fill;
+    const giveFillPercent = this.#givePercent;
+    const receiveFillPercent = this.#receivePercent;
     ctx.clearRect(0, 0, w, h);
 
     const centerX = w / 2;
@@ -149,37 +146,40 @@ export class FillableJar extends HTMLElement {
     const bodyWidth = w * 0.4;
     const neckHeight = jarHeight * 0.147;
 
-    const fillHeight = (fillPercent / 100) * jarHeight;
-    const fillTop = jarBottom - fillHeight;
+    const giveFillHeight = (giveFillPercent / 100) * jarHeight;
+    const giveFillTop = jarBottom - giveFillHeight;
 
-    if (fillPercent > 0) {
-      const baseColor = this.hexToRgb(this.#color);
-      const gradient = ctx.createLinearGradient(0, fillTop, 0, jarBottom);
-      gradient.addColorStop(
+    const receiveFillHeight = (receiveFillPercent / 100) * jarHeight;
+    const receiveFillTop = jarBottom - receiveFillHeight;
+
+    const bodyStartY = jarTop + neckHeight;
+
+    // Draw left half (give)
+    if (giveFillPercent > 0) {
+      const giveColor = this.hexToRgb(this.#giveColor);
+      const giveGradient = ctx.createLinearGradient(
         0,
-        `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, 0.6)`,
+        giveFillTop,
+        0,
+        jarBottom,
       );
-      gradient.addColorStop(
+      giveGradient.addColorStop(
+        0,
+        `rgba(${giveColor.r}, ${giveColor.g}, ${giveColor.b}, 0.6)`,
+      );
+      giveGradient.addColorStop(
         1,
-        `rgba(${Math.max(0, baseColor.r - 50)}, ${Math.max(0, baseColor.g - 50)}, ${Math.max(0, baseColor.b - 50)}, 0.8)`,
+        `rgba(${Math.max(0, giveColor.r - 50)}, ${Math.max(0, giveColor.g - 50)}, ${Math.max(0, giveColor.b - 50)}, 0.8)`,
       );
 
-      ctx.fillStyle = gradient;
+      ctx.fillStyle = giveGradient;
       ctx.beginPath();
 
-      const bodyStartY = jarTop + neckHeight;
-      let fillWidth = fillTop < bodyStartY ? neckWidth : bodyWidth;
-
-      if (fillTop >= bodyStartY) {
-        ctx.moveTo(centerX - bodyWidth / 2, fillTop);
-        ctx.lineTo(centerX + bodyWidth / 2, fillTop);
-        ctx.lineTo(centerX + bodyWidth / 2, jarBottom - 20);
-        ctx.quadraticCurveTo(
-          centerX + bodyWidth / 2,
-          jarBottom,
-          centerX,
-          jarBottom,
-        );
+      if (giveFillTop >= bodyStartY) {
+        // Left half - body only
+        ctx.moveTo(centerX - bodyWidth / 2, giveFillTop);
+        ctx.lineTo(centerX, giveFillTop);
+        ctx.lineTo(centerX, jarBottom);
         ctx.quadraticCurveTo(
           centerX - bodyWidth / 2,
           jarBottom,
@@ -188,17 +188,12 @@ export class FillableJar extends HTMLElement {
         );
         ctx.closePath();
       } else {
-        ctx.moveTo(centerX - neckWidth / 2, fillTop);
-        ctx.lineTo(centerX + neckWidth / 2, fillTop);
-        ctx.lineTo(centerX + neckWidth / 2, bodyStartY);
-        ctx.lineTo(centerX + bodyWidth / 2, bodyStartY + 20);
-        ctx.lineTo(centerX + bodyWidth / 2, jarBottom - 20);
-        ctx.quadraticCurveTo(
-          centerX + bodyWidth / 2,
-          jarBottom,
-          centerX,
-          jarBottom,
-        );
+        // Left half - neck and body
+        ctx.moveTo(centerX - neckWidth / 2, giveFillTop);
+        ctx.lineTo(centerX, giveFillTop);
+        ctx.lineTo(centerX, bodyStartY);
+        ctx.lineTo(centerX, bodyStartY + 20);
+        ctx.lineTo(centerX, jarBottom);
         ctx.quadraticCurveTo(
           centerX - bodyWidth / 2,
           jarBottom,
@@ -212,14 +207,83 @@ export class FillableJar extends HTMLElement {
 
       ctx.fill();
 
-      ctx.strokeStyle = `rgba(${Math.min(255, baseColor.r + 100)}, ${Math.min(
+      // Draw give fill level line
+      let giveFillWidth = giveFillTop < bodyStartY ? neckWidth : bodyWidth;
+      ctx.strokeStyle = `rgba(${Math.min(255, giveColor.r + 100)}, ${Math.min(
         255,
-        baseColor.g + 100,
-      )}, ${Math.min(255, baseColor.b + 100)}, 0.5)`;
+        giveColor.g + 100,
+      )}, ${Math.min(255, giveColor.b + 100)}, 0.5)`;
       ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.moveTo(centerX - fillWidth / 2, fillTop);
-      ctx.lineTo(centerX + fillWidth / 2, fillTop);
+      ctx.moveTo(centerX - giveFillWidth / 2, giveFillTop);
+      ctx.lineTo(centerX, giveFillTop);
+      ctx.stroke();
+    }
+
+    // Draw right half (receive)
+    if (receiveFillPercent > 0) {
+      const receiveColor = this.hexToRgb(this.#receiveColor);
+      const receiveGradient = ctx.createLinearGradient(
+        0,
+        receiveFillTop,
+        0,
+        jarBottom,
+      );
+      receiveGradient.addColorStop(
+        0,
+        `rgba(${receiveColor.r}, ${receiveColor.g}, ${receiveColor.b}, 0.6)`,
+      );
+      receiveGradient.addColorStop(
+        1,
+        `rgba(${Math.max(0, receiveColor.r - 50)}, ${Math.max(0, receiveColor.g - 50)}, ${Math.max(0, receiveColor.b - 50)}, 0.8)`,
+      );
+
+      ctx.fillStyle = receiveGradient;
+      ctx.beginPath();
+
+      if (receiveFillTop >= bodyStartY) {
+        // Right half - body only
+        ctx.moveTo(centerX, receiveFillTop);
+        ctx.lineTo(centerX + bodyWidth / 2, receiveFillTop);
+        ctx.lineTo(centerX + bodyWidth / 2, jarBottom - 20);
+        ctx.quadraticCurveTo(
+          centerX + bodyWidth / 2,
+          jarBottom,
+          centerX,
+          jarBottom,
+        );
+        ctx.closePath();
+      } else {
+        // Right half - neck and body
+        ctx.moveTo(centerX, receiveFillTop);
+        ctx.lineTo(centerX + neckWidth / 2, receiveFillTop);
+        ctx.lineTo(centerX + neckWidth / 2, bodyStartY);
+        ctx.lineTo(centerX + bodyWidth / 2, bodyStartY + 20);
+        ctx.lineTo(centerX + bodyWidth / 2, jarBottom - 20);
+        ctx.quadraticCurveTo(
+          centerX + bodyWidth / 2,
+          jarBottom,
+          centerX,
+          jarBottom,
+        );
+        ctx.lineTo(centerX, bodyStartY + 20);
+        ctx.lineTo(centerX, bodyStartY);
+        ctx.closePath();
+      }
+
+      ctx.fill();
+
+      // Draw receive fill level line
+      let receiveFillWidth =
+        receiveFillTop < bodyStartY ? neckWidth : bodyWidth;
+      ctx.strokeStyle = `rgba(${Math.min(255, receiveColor.r + 100)}, ${Math.min(
+        255,
+        receiveColor.g + 100,
+      )}, ${Math.min(255, receiveColor.b + 100)}, 0.5)`;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(centerX, receiveFillTop);
+      ctx.lineTo(centerX + receiveFillWidth / 2, receiveFillTop);
       ctx.stroke();
     }
 
@@ -261,7 +325,6 @@ export class FillableJar extends HTMLElement {
     ctx.closePath();
     ctx.stroke();
   }
-
   hexToRgb(hex: string) {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result
