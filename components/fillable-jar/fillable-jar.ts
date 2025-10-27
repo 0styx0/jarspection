@@ -12,6 +12,17 @@ const colors = {
   yellow: "#ffdd44",
 };
 
+const selectors = {
+  labelInput: ".label-input",
+
+  colorLeft: "#colors-giving",
+  colorRight: "#colors-receiving",
+  rangeLeft: "#range-left",
+  rangeRight: "#range-right",
+  removeBtn: ".remove-btn",
+  jarCanvas: "canvas",
+};
+
 export class FillableJar extends CustomElement {
   #shadow: ShadowRoot;
 
@@ -42,8 +53,22 @@ export class FillableJar extends CustomElement {
     this.drawJar();
   }
 
+  attributeChangedCallback(attr: string, was: string, value: string) {
+    switch (attr) {
+      case "label":
+        this.label = value;
+        break;
+      case "fillleft":
+      case "fillright":
+      case "colorleft":
+      case "colorright":
+        if (was === value) return;
+        this.drawJar();
+    }
+  }
+
   getLabelElt = () =>
-    queryElt<HTMLTextAreaElement>(this.#shadow, ".label-input");
+    queryElt<HTMLTextAreaElement>(this.#shadow, selectors.labelInput);
 
   get label() {
     return this.getLabelElt()?.value;
@@ -59,75 +84,70 @@ export class FillableJar extends CustomElement {
     labelElt.value = value || "";
   }
 
-  attributeChangedCallback(attr: string, was: string, value: string) {
-    switch (attr) {
-      case "label":
-        this.label = value;
-        break;
-      case "fillleft":
-      case "fillright":
-      case "colorleft":
-      case "colorright":
-        if (was === value) return;
-        this.drawJar();
-    }
-  }
-
   handleColorChanges = () => {
     const addColorChangeEvent = (
-      eltId: string,
+      selector: string,
       handler: (color: string) => void,
     ) =>
-      queryElt(this.#shadow, eltId)!.addEventListener(
+      queryElt(this.#shadow, selector)!.addEventListener(
         colorControlsEmitted.colorchange,
         ((e) => {
           handler(e.detail.color);
         }) as ColorChangeEventHandler,
       );
 
-    addColorChangeEvent("#colors-giving", (color) => (this.colorleft = color));
+    addColorChangeEvent(
+      selectors.colorLeft,
+      (color) => (this.colorleft = color),
+    );
 
     addColorChangeEvent(
-      "#colors-receiving",
+      selectors.colorRight,
       (color) => (this.colorright = color),
     );
   };
 
   handleFillChanges = () => {
     const addFillChangeEvent = (
-      eltId: string,
+      selector: string,
       handler: (rangeValue: number) => void,
     ) =>
-      this.#shadow
-        .querySelector(eltId)!
-        .addEventListener("input", (e: Event) => {
+      queryElt(this.#shadow, selector)!.addEventListener(
+        "input",
+        (e: Event) => {
           handler(e.originalTarget?.value);
-        });
+        },
+      );
 
     addFillChangeEvent(
-      "#range-left",
+      selectors.rangeLeft,
       (rangeValue) => (this.fillleft = rangeValue),
     );
 
     addFillChangeEvent(
-      "#range-right",
+      selectors.rangeRight,
       (rangeValue) => (this.fillright = rangeValue),
     );
   };
 
-  setupEventListeners() {
-    const removeBtn = this.#shadow.querySelector(".remove-btn")!;
+  handleRemove() {
+    const removeBtn = queryElt(this.#shadow, selectors.removeBtn)!;
     removeBtn.addEventListener("click", () => this.remove());
+  }
 
+  setupEventListeners() {
+    this.handleRemove();
     this.handleColorChanges();
     this.handleFillChanges();
   }
 
   drawJar() {
-    const canvas = this.#shadow.querySelector("canvas");
+    const canvas = queryElt<HTMLCanvasElement>(
+      this.#shadow,
+      selectors.jarCanvas,
+    );
 
     if (!canvas) {
-      console.log("Canvas not found");
       return;
     }
     paintJar(
