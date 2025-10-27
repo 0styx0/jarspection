@@ -23,11 +23,11 @@ export function createFillableJar(prefs: JarPrefs) {
   const jar = document.createElement("fillable-jar") as FillableJar;
 
   requestAnimationFrame(() => {
-    jar.fill = prefs.fill || jar.fill;
-    jar.color = prefs.color || jar.color;
-    jar.label = prefs.label || jar.label;
-    jar.giving = prefs.giving || jar.giving;
-    jar.receiving = prefs.receiving || jar.receiving;
+    // jar.fill = prefs.fill || jar.fill;
+    // jar.color = prefs.color || jar.color;
+    jar.setAttribute("label", prefs.label || jar.label);
+    // jar.giving = prefs.giving || jar.giving;
+    // jar.receiving = prefs.receiving || jar.receiving;
   });
   return jar;
 }

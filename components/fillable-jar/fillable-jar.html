@@ -36,9 +36,9 @@
     /* centers horizontally */
     justify-content: center;
     /* centers vertically */
-    gap: 0.6cqw;
     flex-shrink: 0;
     height: 100%;
+    width: 100%;
   }
 
   canvas {
@@ -51,35 +51,6 @@
   .color-controls {
     display: flex;
     gap: 2cqw;
-  }
-
-  .fill-slider-vertical {
-    -webkit-appearance: slider-vertical;
-    width: 1.5cqw;
-    /* fills the flex container width */
-    max-width: 0.6cqw;
-    /* optional max width */
-    height: 70cqw;
-    /* scale with container height */
-    background: linear-gradient(to top, #667eea 0%, #e0e0e0 100%);
-    border-radius: 0.4cqw;
-    outline: none;
-    cursor: pointer;
-  }
-
-  .color-splotch {
-    width: 8cqw;
-    height: 8cqw;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 0.3cqw 1cqw rgba(0, 0, 0, 0.2);
-    border: 0.3cqw solid transparent;
-  }
-
-  .color-splotch.active {
-    border-color: #667eea;
-    box-shadow: 0 0.5cqw 1.8cqw rgba(0, 0, 0, 0.4);
   }
 
   .label-control {
@@ -158,26 +129,9 @@
 
   <div class="jar-and-colors">
     <div class="fill-controls">
-      <input
-        title="giving"
-        name="givePercent"
-        type="range"
-        class="fill-slider-vertical"
-        orient="vertical"
-        min="0"
-        max="100"
-      />
-
+      <vertical-range id="range-left"></vertical-range>
       <canvas></canvas>
-
-      <input
-        name="receivePercent"
-        type="range"
-        class="fill-slider-vertical"
-        orient="vertical"
-        min="0"
-        max="100"
-      />
+      <vertical-range id="range-right"></vertical-range>
     </div>
   </div>
   <div class="colors-container">

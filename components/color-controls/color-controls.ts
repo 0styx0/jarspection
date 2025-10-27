@@ -14,14 +14,13 @@ const colors = {
 };
 
 export class ColorControls extends HTMLElement {
-  static readonly defaultColor = colors.yellow;
   #colorSplotches = [] as unknown as NodeListOf<HTMLDivElement>;
+  #shadow: ShadowRoot;
 
   constructor() {
     super();
-    this.attachShadow({ mode: "open" });
-
-    this.shadowRoot!.innerHTML = templateHtml;
+    this.#shadow = this.attachShadow({ mode: "open" });
+    this.#shadow.innerHTML = templateHtml;
   }
 
   connectedCallback() {
@@ -51,7 +50,6 @@ export class ColorControls extends HTMLElement {
       new CustomEvent(colorControlsEmitted.colorchange, {
         detail: { color: selectedColor },
         bubbles: true,
-        composed: true,
       }) as ColorChangeEvent,
     );
   }
