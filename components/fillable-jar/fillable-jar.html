@@ -1,11 +1,10 @@
 <style>
   :host {
-    display: block;
-    width: 100%;
     container-type: inline-size;
   }
 
   .jar-container {
+    position: relative;
     background: white;
     border-radius: 1.2cqw;
     box-shadow: 0 2cqw 6cqw rgba(0, 0, 0, 0.3);
@@ -18,75 +17,13 @@
     aspect-ratio: 0.75;
   }
 
-  .jar-and-colors {
+  .top-controls {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 1.5cqw;
-    flex: 1;
     width: 100%;
-    padding: 0 2cqw;
-    box-sizing: border-box;
-  }
-
-  .fill-controls {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    /* centers horizontally */
-    justify-content: center;
-    /* centers vertically */
-    flex-shrink: 0;
-    height: 100%;
-    width: 100%;
-  }
-
-  canvas {
-    display: block;
-    width: 80cqw;
-    height: 100cqw;
-    flex-shrink: 0;
-  }
-
-  .color-controls {
-    display: flex;
-    gap: 2cqw;
-  }
-
-  .label-control {
-    width: 100%;
-  }
-
-  .label-control textarea {
-    width: 100%;
-    padding: 0.8cqw 1cqw;
-    border: 0.2cqw solid #e0e0e0;
-    border-radius: 0.6cqw;
-    font-size: 1rem;
-    /* avoid cqw font size */
-    box-sizing: border-box;
-    font-family: inherit;
-    text-align: center;
-    font-weight: 500;
-    color: #222;
-    /* force visible text color */
-    background: #f8f8f8;
-    /* solid background, not transparent */
-    resize: none;
-    overflow-wrap: break-word;
-    min-height: clamp(2rem, 5cqw, 4rem);
-  }
-
-  .label-control textarea:focus {
-    outline: none;
-    border-color: #667eea;
-    background: white;
   }
 
   .remove-btn {
-    /* position: absolute; */
-    /* top: 0.2rem; */
-    /* right: 0.2rem; */
     font-size: 0.5rem;
     color: red;
     cursor: pointer;
@@ -97,28 +34,54 @@
     transform: scale(1.2);
   }
 
-  .jar-container {
-    position: relative;
-    /* needed for absolute positioning of remove-btn */
-  }
-
-  .jar-checkboxes {
-    margin: 0.5em 0;
-    display: flex;
-    gap: 1em;
-    justify-content: center;
-  }
-
-  .top-controls {
+  .middle-controls {
     display: flex;
     align-items: center;
-    width: 100%;
+    justify-content: space-between;
+    gap: 1.5cqw;
+    flex: 1;
+    padding: 0 2cqw;
+    box-sizing: border-box;
+  }
+
+  .jar {
+    display: block;
+    width: 80cqw;
+    height: 100cqw;
+    flex-shrink: 0;
   }
 
   .colors-container {
     width: 95%;
     display: flex;
     justify-content: space-between;
+  }
+
+  .label-container {
+    width: 100%;
+  }
+
+  .label-input {
+    width: 100%;
+    padding: 0.8cqw 1cqw;
+    border: 0.2cqw solid #e0e0e0;
+    border-radius: 0.6cqw;
+    font-size: 1rem;
+    box-sizing: border-box;
+    font-family: inherit;
+    text-align: center;
+    font-weight: 500;
+    color: #222;
+    background: #f8f8f8;
+    resize: none;
+    overflow-wrap: break-word;
+    min-height: clamp(2rem, 5cqw, 4rem);
+  }
+
+  .label-input:focus {
+    outline: none;
+    border-color: #667eea;
+    background: white;
   }
 </style>
 
@@ -127,18 +90,18 @@
     <div class="remove-btn">×</div>
   </div>
 
-  <div class="jar-and-colors">
-    <div class="fill-controls">
-      <vertical-range id="range-left"></vertical-range>
-      <canvas></canvas>
-      <vertical-range id="range-right"></vertical-range>
-    </div>
+  <div class="middle-controls">
+    <vertical-range class="range-left"></vertical-range>
+    <canvas class="jar"></canvas>
+    <vertical-range class="range-right"></vertical-range>
   </div>
+
   <div class="colors-container">
-    <color-controls id="colors-giving"></color-controls>
-    <color-controls id="colors-receiving"></color-controls>
+    <color-controls class="colors-left"></color-controls>
+    <color-controls class="colors-right"></color-controls>
   </div>
-  <div class="label-control">
+
+  <div class="label-container">
     <textarea class="label-input"></textarea>
   </div>
 </div>

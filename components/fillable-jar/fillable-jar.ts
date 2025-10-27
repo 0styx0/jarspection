@@ -14,13 +14,12 @@ const colors = {
 
 const selectors = {
   labelInput: ".label-input",
-
-  colorLeft: "#colors-giving",
-  colorRight: "#colors-receiving",
-  rangeLeft: "#range-left",
-  rangeRight: "#range-right",
+  colorLeft: ".colors-left",
+  colorRight: ".colors-right",
+  rangeLeft: ".range-left",
+  rangeRight: ".range-right",
   removeBtn: ".remove-btn",
-  jarCanvas: "canvas",
+  jarCanvas: ".jar",
 };
 
 export class FillableJar extends CustomElement {
@@ -150,6 +149,7 @@ export class FillableJar extends CustomElement {
     if (!canvas) {
       return;
     }
+
     paintJar(
       canvas,
       this.fillleft,
