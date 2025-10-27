@@ -15,7 +15,7 @@ interface RGBColor {
   b: number;
 }
 
-export function drawJar(
+export function paintJar(
   canvas: HTMLCanvasElement,
   fillLeft: number,
   colorLeft: string,

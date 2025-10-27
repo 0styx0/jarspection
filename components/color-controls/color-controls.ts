@@ -1,7 +1,7 @@
 import templateHtml from "bundle-text:./color-controls.html";
 
 export type ColorChangeEventHandler = (event: ColorChangeEvent) => void;
-type ColorChangeEvent = CustomEvent<{
+export type ColorChangeEvent = CustomEvent<{
   color: string;
 }>;
 

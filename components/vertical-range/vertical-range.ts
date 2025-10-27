@@ -1,4 +1,5 @@
 import templateHtml from "bundle-text:./vertical-range.html";
+import { queryElt } from "../../utils";
 
 export class VerticalRange extends HTMLElement {
   #shadow: ShadowRoot;
@@ -9,8 +10,16 @@ export class VerticalRange extends HTMLElement {
     this.#shadow.innerHTML = templateHtml;
   }
 
-  get verticalRangeElt() {
-    return this.#shadow.querySelector(".vertical-range");
+  getVerticalRangeElt() {
+    return queryElt<HTMLInputElement>(this.#shadow, ".vertical-range");
+  }
+
+  set value(val: string) {
+    const rangeElt = this.getVerticalRangeElt();
+    if (!rangeElt) {
+      return;
+    }
+    rangeElt.value = val;
   }
 }
 

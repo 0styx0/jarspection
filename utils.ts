@@ -31,3 +31,14 @@ export function createFillableJar(prefs: JarPrefs) {
   });
   return jar;
 }
+
+export function queryElt<Elt extends Element>(
+  container: ShadowRoot,
+  selector: string,
+) {
+  const elt = container.querySelector<Elt>(selector);
+  if (!elt) {
+    console.log("Unable to find element ", selector);
+  }
+  return elt;
+}

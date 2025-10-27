@@ -1,24 +1,35 @@
 import templateHtml from "bundle-text:./fillable-jar.html";
 import {
   ColorChangeEvent,
-  ColorControls,
+  ColorChangeEventHandler,
   colorControlsEmitted,
 } from "../color-controls/color-controls";
-import { drawJar as paintJar } from "./jar-canvas-utils";
+import { paintJar } from "./jar-canvas-utils";
+import { queryElt } from "../../utils";
+import { CustomElement } from "../base-component/base-component";
 
 const colors = {
   yellow: "#ffdd44",
 };
-export class FillableJar extends HTMLElement {
+
+export class FillableJar extends CustomElement {
   #shadow: ShadowRoot;
 
-  #fillLeft = 50;
-  #fillRight = 50;
+  fillleft = 50;
+  fillright = 50;
 
-  #colorLeft = colors.yellow;
-  #colorRight = colors.yellow;
+  colorleft = colors.yellow;
+  colorright = colors.yellow;
 
-  static observedAttributes = ["label"];
+  static observedAttributes = [
+    "label",
+    "fillleft",
+    "fillright",
+    "colorleft",
+    "colorright",
+  ];
+
+  static mirroredProps = ["fillleft", "fillright", "colorleft", "colorright"];
 
   constructor() {
     super();
@@ -32,7 +43,7 @@ export class FillableJar extends HTMLElement {
   }
 
   getLabelElt = () =>
-    this.#shadow.querySelector<HTMLTextAreaElement>(".label-input");
+    queryElt<HTMLTextAreaElement>(this.#shadow, ".label-input");
 
   get label() {
     return this.getLabelElt()?.value;
@@ -42,7 +53,6 @@ export class FillableJar extends HTMLElement {
     const labelElt = this.getLabelElt();
 
     if (!labelElt) {
-      console.log("Unable to find label", labelElt);
       return;
     }
 
@@ -54,6 +64,12 @@ export class FillableJar extends HTMLElement {
       case "label":
         this.label = value;
         break;
+      case "fillleft":
+      case "fillright":
+      case "colorleft":
+      case "colorright":
+        if (was === value) return;
+        this.drawJar();
     }
   }
 
@@ -62,19 +78,18 @@ export class FillableJar extends HTMLElement {
       eltId: string,
       handler: (color: string) => void,
     ) =>
-      this.#shadow!.querySelector(eltId)!.addEventListener(
+      queryElt(this.#shadow, eltId)!.addEventListener(
         colorControlsEmitted.colorchange,
-        (e: ColorChangeEvent) => {
+        ((e) => {
           handler(e.detail.color);
-          this.drawJar();
-        },
+        }) as ColorChangeEventHandler,
       );
 
-    addColorChangeEvent("#colors-giving", (color) => (this.#colorLeft = color));
+    addColorChangeEvent("#colors-giving", (color) => (this.colorleft = color));
 
     addColorChangeEvent(
       "#colors-receiving",
-      (color) => (this.#colorRight = color),
+      (color) => (this.colorright = color),
     );
   };
 
@@ -87,17 +102,16 @@ export class FillableJar extends HTMLElement {
         .querySelector(eltId)!
         .addEventListener("input", (e: Event) => {
           handler(e.originalTarget?.value);
-          this.drawJar();
         });
 
     addFillChangeEvent(
       "#range-left",
-      (rangeValue) => (this.#fillLeft = rangeValue),
+      (rangeValue) => (this.fillleft = rangeValue),
     );
 
     addFillChangeEvent(
       "#range-right",
-      (rangeValue) => (this.#fillRight = rangeValue),
+      (rangeValue) => (this.fillright = rangeValue),
     );
   };
 
@@ -118,10 +132,10 @@ export class FillableJar extends HTMLElement {
     }
     paintJar(
       canvas,
-      this.#fillLeft,
-      this.#colorLeft,
-      this.#fillRight,
-      this.#colorRight,
+      this.fillleft,
+      this.colorleft,
+      this.fillright,
+      this.colorright,
     );
   }
 }
