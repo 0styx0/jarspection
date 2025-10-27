@@ -46,11 +46,13 @@ export function paintJar(
 
 function calculateJarDimensions(w: number, h: number): JarDimensions {
   const centerX = w / 2;
-  const jarTop = h * 0.16;
-  const jarBottom = h * 0.84;
+
+  const jarTop = h * 0.1;
+  const jarBottom = h * 0.9;
   const jarHeight = jarBottom - jarTop;
-  const neckWidth = w * 0.15;
-  const bodyWidth = w * 0.4;
+
+  const neckWidth = w * 0.2;
+  const bodyWidth = w * 0.6;
   const neckHeight = jarHeight * 0.147;
   const bodyStartY = jarTop + neckHeight;
 

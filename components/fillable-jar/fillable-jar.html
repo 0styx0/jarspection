@@ -15,6 +15,7 @@
     gap: 1.5cqw;
     box-sizing: border-box;
     aspect-ratio: 0.75;
+    width: 100%;
   }
 
   .top-controls {
@@ -36,23 +37,25 @@
 
   .middle-controls {
     display: flex;
-    align-items: center;
+    align-items: stretch;
     justify-content: space-between;
     gap: 1.5cqw;
     flex: 1;
-    padding: 0 2cqw;
+    padding: 2cqw;
     box-sizing: border-box;
+    width: 100%;
   }
 
   .jar {
     display: block;
-    width: 80cqw;
-    height: 100cqw;
+    width: 55%;
+    height: 100%;
+    max-height: 100cqw;
     flex-shrink: 0;
   }
 
   .colors-container {
-    width: 95%;
+    width: 85%;
     display: flex;
     justify-content: space-between;
   }
