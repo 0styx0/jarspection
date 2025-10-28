@@ -3,8 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kink Jars</title>
+    <title>Comparer</title>
     <style>
+      :root {
+        /* setting colors here for single source of truth shared across components */
+        --color-positive: #44ff44;
+        --color-negotiable: #ffdd44;
+        --color-negative: #ff4444;
+      }
       body {
         margin: 0;
         padding: 20px;
@@ -73,6 +79,8 @@
       type="module"
       src="./components/vertical-range/vertical-range.ts"
     ></script>
+
+    <script type="module" src="./components/side-label/side-label.ts"></script>
 
     <script
       type="module"

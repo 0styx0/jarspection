@@ -17,25 +17,22 @@
     border-color: #667eea;
     box-shadow: 0 0.5cqw 1.8cqw rgba(0, 0, 0, 0.4);
   }
+
+  .positive {
+    background-color: var(--color-positive);
+  }
+
+  .negotiable {
+    background-color: var(--color-negotiable);
+  }
+
+  .negative {
+    background-color: var(--color-negative);
+  }
 </style>
 
 <div class="color-controls">
-  <div
-    class="color-splotch"
-    role="button"
-    style="background: #44ff44"
-    data-color="#44ff44"
-  ></div>
-  <div
-    class="color-splotch"
-    role="button"
-    style="background: #ffdd44"
-    data-color="#ffdd44"
-  ></div>
-  <div
-    class="color-splotch"
-    role="button"
-    style="background: #ff4444"
-    data-color="#ff4444"
-  ></div>
+  <div class="color-splotch positive" role="button"></div>
+  <div class="color-splotch negotiable" data-default role="button"></div>
+  <div class="color-splotch negative" role="button"></div>
 </div>

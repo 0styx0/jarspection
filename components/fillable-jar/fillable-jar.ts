@@ -8,10 +8,6 @@ import { paintJar } from "./jar-canvas-utils";
 import { queryElt } from "../../utils";
 import { CustomElement } from "../base-component/base-component";
 
-const colors = {
-  yellow: "#ffdd44",
-};
-
 const selectors = {
   labelInput: ".label-input",
   colorLeft: ".colors-left",
@@ -28,8 +24,9 @@ export class FillableJar extends CustomElement {
   fillleft = 50;
   fillright = 50;
 
-  colorleft = colors.yellow;
-  colorright = colors.yellow;
+  // set when colorControls mounts
+  colorleft = "";
+  colorright = "";
 
   static observedAttributes = [
     "label",
@@ -49,6 +46,7 @@ export class FillableJar extends CustomElement {
 
   connectedCallback() {
     this.setupEventListeners();
+
     this.drawJar();
   }
 
