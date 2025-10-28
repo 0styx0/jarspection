@@ -1,15 +1,19 @@
 import { FillableJar } from "./components/fillable-jar/fillable-jar.js";
 import { defaultKinks } from "./kinks.js";
-import { JarPrefs } from "./types.js";
+import {
+  defaultJarAttrs,
+  JarAttrs,
+} from "./components/fillable-jar/jarAttrs.js";
 
 export function createDefaultJars() {
-  const jarGrid = document.getElementById("jarGrid");
-  const addJar = document.querySelector("add-jar");
+  const jarGrid = queryElt(document, "#jarGrid");
+  const addJar = queryElt(document, "add-jar");
 
   const fragment = document.createDocumentFragment();
 
-  defaultKinks.forEach((item: JarPrefs) => {
+  defaultKinks.forEach((item: JarAttrs) => {
     const newJar = createFillableJar({
+      ...defaultJarAttrs,
       label: item.label,
     });
 
@@ -19,26 +23,32 @@ export function createDefaultJars() {
   jarGrid.insertBefore(fragment, addJar);
 }
 
-export function createFillableJar(prefs: JarPrefs) {
+export function createFillableJar(prefs: JarAttrs) {
   const jar = document.createElement("fillable-jar") as FillableJar;
 
   requestAnimationFrame(() => {
-    // jar.fill = prefs.fill || jar.fill;
-    // jar.color = prefs.color || jar.color;
-    jar.setAttribute("label", prefs.label || jar.label);
-    // jar.giving = prefs.giving || jar.giving;
-    // jar.receiving = prefs.receiving || jar.receiving;
+    for (const [prefName, pref] of Object.entries(prefs)) {
+      jar.setAttribute(prefName, pref);
+    }
   });
   return jar;
 }
 
 export function queryElt<Elt extends Element>(
-  container: ShadowRoot,
+  container: ShadowRoot | Document | null,
   selector: string,
 ) {
-  const elt = container.querySelector<Elt>(selector);
-  if (!elt) {
-    console.log("Unable to find element ", selector);
+  if (!container) {
+    console.warn("Unable to find container ", { container, selector });
+    return;
   }
+
+  const elt = container.querySelector<Elt>(selector);
+
+  if (!elt) {
+    console.warn("Unable to find element ", selector);
+    return;
+  }
+
   return elt;
 }

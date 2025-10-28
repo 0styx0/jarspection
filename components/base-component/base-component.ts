@@ -1,4 +1,4 @@
-export class CustomElement extends HTMLElement {
+export class BaseComponent extends HTMLElement {
   static mirroredProps: string[] = [];
 
   constructor() {

@@ -1,5 +1,5 @@
 import { FillableJar } from "./components/fillable-jar/fillable-jar";
-import { JarPrefs } from "./types";
+import { JarAttrs } from "./components/fillable-jar/jarAttrs";
 import { createFillableJar } from "./utils";
 
 function importJarsFromJson(file: File): void {
@@ -15,7 +15,7 @@ function importJarsFromJson(file: File): void {
     }
 
     try {
-      const data = JSON.parse(result) as JarPrefs[];
+      const data = JSON.parse(result) as JarAttrs[];
       const jarGrid = document.getElementById("jarGrid");
       const addJar = document.getElementById("addJar");
 
@@ -27,11 +27,8 @@ function importJarsFromJson(file: File): void {
       // Remove existing jars if desired
       jarGrid.querySelectorAll("fillable-jar").forEach((j) => j.remove());
 
-      data.forEach((item: JarPrefs) => {
-
-        const jar = createFillableJar(
-          item
-        )
+      data.forEach((item: JarAttrs) => {
+        const jar = createFillableJar(item);
 
         jarGrid.insertBefore(jar, addJar);
       });

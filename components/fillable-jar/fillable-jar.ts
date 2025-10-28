@@ -6,8 +6,9 @@ import {
 } from "../color-controls/color-controls";
 import { paintJar } from "./jar-canvas-utils";
 import { queryElt } from "../../utils";
-import { CustomElement } from "../base-component/base-component";
+import { BaseComponent } from "../base-component/base-component";
 import { SideLabel } from "../side-label/side-label";
+import { defaultJarAttrs, JarAttrs } from "./jarAttrs";
 
 const selectors = {
   labelInput: ".label-input",
@@ -21,15 +22,13 @@ const selectors = {
   jarCanvas: ".jar",
 };
 
-export class FillableJar extends CustomElement {
-  #shadow: ShadowRoot;
-
-  fillleft = 50;
-  fillright = 50;
+export class FillableJar extends BaseComponent implements JarAttrs {
+  fillleft = defaultJarAttrs.fillleft;
+  fillright = defaultJarAttrs.fillright;
 
   // set when colorControls mounts
-  colorleft = "";
-  colorright = "";
+  colorleft = defaultJarAttrs.colorleft;
+  colorright = defaultJarAttrs.colorright;
 
   static observedAttributes = [
     "label",
@@ -43,8 +42,7 @@ export class FillableJar extends CustomElement {
 
   constructor() {
     super();
-    this.#shadow = this.attachShadow({ mode: "open" });
-    this.#shadow.innerHTML = templateHtml;
+    this.attachShadow({ mode: "open" }).innerHTML = templateHtml;
   }
 
   connectedCallback() {
@@ -60,22 +58,25 @@ export class FillableJar extends CustomElement {
         break;
       case "colorleft":
         this.setSideLabelColor(selectors.labelLeft, this.colorleft);
+        break;
       case "colorright":
         this.setSideLabelColor(selectors.labelRight, this.colorright);
+        break;
     }
 
     if (was === value) return;
+
     this.drawJar();
   }
 
   getLabelElt = () =>
-    queryElt<HTMLTextAreaElement>(this.#shadow, selectors.labelInput);
+    queryElt<HTMLTextAreaElement>(this.shadowRoot, selectors.labelInput);
 
   get label() {
-    return this.getLabelElt()?.value;
+    return this.getLabelElt()?.value || "";
   }
 
-  set label(value) {
+  set label(value: string) {
     const labelElt = this.getLabelElt();
 
     if (!labelElt) {
@@ -86,7 +87,7 @@ export class FillableJar extends CustomElement {
   }
 
   setSideLabelColor(selector: string, color: string) {
-    const sideLabel = queryElt<SideLabel>(this.#shadow, selector);
+    const sideLabel = queryElt<SideLabel>(this.shadowRoot, selector);
 
     if (!sideLabel) {
       return;
@@ -99,7 +100,7 @@ export class FillableJar extends CustomElement {
       selector: string,
       handler: (color: string) => void,
     ) =>
-      queryElt(this.#shadow, selector)!.addEventListener(
+      queryElt(this.shadowRoot, selector)!.addEventListener(
         colorControlsEmitted.colorchange,
         ((e) => {
           handler(e.detail.color);
@@ -122,7 +123,7 @@ export class FillableJar extends CustomElement {
       selector: string,
       handler: (rangeValue: number) => void,
     ) =>
-      queryElt(this.#shadow, selector)!.addEventListener(
+      queryElt(this.shadowRoot, selector)!.addEventListener(
         "input",
         (e: Event) => {
           handler(e.originalTarget?.value);
@@ -141,7 +142,7 @@ export class FillableJar extends CustomElement {
   };
 
   handleRemove() {
-    const removeBtn = queryElt(this.#shadow, selectors.removeBtn)!;
+    const removeBtn = queryElt(this.shadowRoot, selectors.removeBtn)!;
     removeBtn.addEventListener("click", () => this.remove());
   }
 
@@ -153,7 +154,7 @@ export class FillableJar extends CustomElement {
 
   drawJar() {
     const canvas = queryElt<HTMLCanvasElement>(
-      this.#shadow,
+      this.shadowRoot,
       selectors.jarCanvas,
     );
 

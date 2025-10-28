@@ -1,12 +1,12 @@
 import { FillableJar } from "./components/fillable-jar/fillable-jar";
-import { JarPrefs } from "./types";
+import { JarAttrs } from "./components/fillable-jar/jarAttrs";
 
 function exportJarsToJson() {
   const jarPrefs = getJarPrefsFromPage();
   downloadJars(jarPrefs);
 }
 
-function getJarPrefsFromPage(): JarPrefs[] {
+function getJarPrefsFromPage(): JarAttrs[] {
   const jars = document.querySelectorAll(
     "fillable-jar",
   ) as NodeListOf<FillableJar>;
@@ -21,7 +21,7 @@ function getJarPrefsFromPage(): JarPrefs[] {
   });
 }
 
-function downloadJars(jarPrefs: JarPrefs[]) {
+function downloadJars(jarPrefs: JarAttrs[]) {
   const blob = new Blob([JSON.stringify(jarPrefs, null, 2)], {
     type: "application/json",
   });
