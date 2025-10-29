@@ -13,14 +13,26 @@ export class SideLabel extends HTMLElement {
     this.#shadow.innerHTML = templateHtml;
   }
 
-  set color(value: string) {
-    const label = queryElt<HTMLDivElement>(this.#shadow, selectors.label);
+  getLabel() {
+    return queryElt<HTMLDivElement>(this.#shadow, selectors.label);
+  }
 
+  set color(value: string) {
+    const label = this.getLabel();
     if (!label) {
       return;
     }
 
     label.style.color = value;
+  }
+
+  set label(value: string) {
+    const label = this.getLabel();
+    if (!label) {
+      return;
+    }
+
+    label.innerText = value;
   }
 }
 

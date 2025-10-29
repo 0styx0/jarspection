@@ -1,4 +1,5 @@
-import { JarAttrs } from "./components/fillable-jar/jarAttrs";
+import { JarAttrs } from "./components/jar/jarAttrs";
+import { jarTileTag } from "./components/jarTile/jarTile";
 import { queryElt } from "./components/utils";
 import { createJars } from "./utils";
 
@@ -64,7 +65,7 @@ function parseFile(fileStr: string) {
 }
 
 function removeJars() {
-  document.querySelectorAll("fillable-jar").forEach((j) => j.remove());
+  document.querySelectorAll(jarTileTag).forEach((j) => j.remove());
 }
 
 function startLoad(input: HTMLInputElement): void {

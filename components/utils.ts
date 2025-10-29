@@ -37,7 +37,7 @@ export function queryElt<Elt extends Element>(
   const elt = container.querySelector<Elt>(selector);
 
   if (!elt) {
-    console.warn("Unable to find element ", selector);
+    console.trace("Unable to find element ", selector);
     return null;
   }
 

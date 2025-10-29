@@ -52,6 +52,7 @@
     width: 100%;
   }
 
+  /* todo: see if need */
   .jar {
     display: block;
     width: 55%;
@@ -106,7 +107,14 @@
 
   <div class="middle-controls">
     <vertical-range class="range-left"></vertical-range>
-    <canvas class="jar"></canvas>
+    <jar-illustration
+      fillleft="{{fillleft}}"
+      fillright="{{fillright}}"
+      colorleft="{{colorleft}}"
+      colorright="{{colorright}}"
+      class="jar-illustration"
+    ></jar-illustration>
+    <!-- <canvas class="jar"></canvas> -->
     <vertical-range class="range-right"></vertical-range>
   </div>
 

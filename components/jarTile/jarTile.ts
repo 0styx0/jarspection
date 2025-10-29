@@ -1,13 +1,8 @@
-import templateHtml from "bundle-text:./fillable-jar.html";
-import {
-  ColorChangeEvent,
-  ColorChangeEventHandler,
-  colorControlsEmitted,
-} from "../color-controls/color-controls";
-import { paintJar } from "./jar-canvas-utils";
+import templateHtml from "bundle-text:./jarTile.html";
 import { defineCustomElt, mapPropertiesToAttribute, queryElt } from "../utils";
 import { SideLabel } from "../side-label/side-label";
-import { defaultJarAttrs, JarAttrs } from "./jarAttrs";
+import { defaultJarAttrs, JarAttrs } from "../jarIllustration/jarAttrs";
+import { JarIllustration } from "../jarIllustration/jarIllustration";
 
 const selectors = {
   labelInput: ".label-input",
@@ -18,16 +13,17 @@ const selectors = {
   labelLeft: ".label-left",
   labelRight: ".label-right",
   removeBtn: ".remove-btn",
-  jarCanvas: ".jar",
+  jarIllustration: ".jar-illustration",
 };
 
-export class FillableJar extends HTMLElement implements JarAttrs {
+export class JarTile extends HTMLElement implements JarAttrs {
   fillleft = defaultJarAttrs.fillleft;
   fillright = defaultJarAttrs.fillright;
 
-  // set when colorControls mounts
   colorleft = defaultJarAttrs.colorleft;
   colorright = defaultJarAttrs.colorright;
+
+  #jarIllustration: JarIllustration | null = null;
 
   static observedAttributes = [
     "label",
@@ -41,11 +37,20 @@ export class FillableJar extends HTMLElement implements JarAttrs {
 
   constructor() {
     super();
-    this.attachShadow({ mode: "open" }).innerHTML = templateHtml;
+    this.attachShadow({ mode: "open" }).innerHTML = templateHtml
+      .replaceAll("{{fillleft}}", this.fillleft)
+      .replaceAll("{{fillright}}", this.fillright)
+      .replaceAll("{{colorleft}}", this.colorleft)
+      .replaceAll("{{colorright}}", this.colorright);
   }
 
   connectedCallback() {
-    mapPropertiesToAttribute(this, FillableJar.mirroredProps);
+    mapPropertiesToAttribute(this, JarTile.mirroredProps);
+
+    this.#jarIllustration = queryElt(
+      this.shadowRoot,
+      selectors.jarIllustration,
+    );
 
     this.setupEventListeners();
 
@@ -65,9 +70,13 @@ export class FillableJar extends HTMLElement implements JarAttrs {
         break;
     }
 
-    if (was === value) return;
-
     this.drawJar();
+  }
+
+  setupEventListeners() {
+    this.handleRemove();
+    this.handleColorChanges();
+    this.handleFillChanges();
   }
 
   getLabelElt = () =>
@@ -102,10 +111,10 @@ export class FillableJar extends HTMLElement implements JarAttrs {
       handler: (color: string) => void,
     ) =>
       queryElt(this.shadowRoot, selector)!.addEventListener(
-        colorControlsEmitted.colorchange,
-        ((e) => {
-          handler(e.detail.color);
-        }) as ColorChangeEventHandler,
+        "input",
+        (e: InputEvent) => {
+          handler(e.originalTarget?.value || "");
+        },
       );
 
     addColorChangeEvent(
@@ -142,35 +151,23 @@ export class FillableJar extends HTMLElement implements JarAttrs {
     );
   };
 
+  drawJar() {
+    if (!this.#jarIllustration) {
+      console.warn("No jar illustration yet");
+      return;
+    }
+
+    this.#jarIllustration.colorleft = this.colorleft;
+    this.#jarIllustration.colorright = this.colorright;
+    this.#jarIllustration.fillleft = this.fillleft;
+    this.#jarIllustration.fillright = this.fillright;
+  }
+
   handleRemove() {
     const removeBtn = queryElt(this.shadowRoot, selectors.removeBtn)!;
     removeBtn.addEventListener("click", () => this.remove());
   }
-
-  setupEventListeners() {
-    this.handleRemove();
-    this.handleColorChanges();
-    this.handleFillChanges();
-  }
-
-  drawJar() {
-    const canvas = queryElt<HTMLCanvasElement>(
-      this.shadowRoot,
-      selectors.jarCanvas,
-    );
-
-    if (!canvas) {
-      return;
-    }
-
-    paintJar(
-      canvas,
-      this.fillleft,
-      this.colorleft,
-      this.fillright,
-      this.colorright,
-    );
-  }
 }
 
-defineCustomElt("fillable-jar", FillableJar);
+export const jarTileTag = "jar-tile";
+defineCustomElt(jarTileTag, JarTile);

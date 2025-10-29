@@ -68,17 +68,21 @@ function calculateJarDimensions(w: number, h: number): JarDimensions {
   };
 }
 
-function parseRgbStr(rgbString: string): RGBColor {
-  // Match the pattern for RGB or RGBA
-  const result = /^rgba?\((\d+),\s*(\d+),\s*(\d+)/.exec(rgbString);
+function hexToRgb(hex: string): RGBColor {
+  const defaultRgb = { r: 0, g: 0, b: 0 };
 
-  return result
-    ? {
-        r: parseInt(result[1], 10),
-        g: parseInt(result[2], 10),
-        b: parseInt(result[3], 10),
-      }
-    : { r: 0, g: 0, b: 0 }; // Default to black if parsing fails
+  const normalizedHex = hex.replace(/^#/, "");
+
+  const r = parseInt(normalizedHex.slice(0, 2), 16);
+  const g = parseInt(normalizedHex.slice(2, 4), 16);
+  const b = parseInt(normalizedHex.slice(4, 6), 16);
+
+  // Validate parsed values
+  if ([r, g, b].some((val) => isNaN(val) || val < 0 || val > 255)) {
+    return defaultRgb;
+  }
+
+  return { r, g, b };
 }
 
 function drawLeftHalf(
@@ -94,7 +98,7 @@ function drawLeftHalf(
 
   const fillHeight = (fillPercent / 100) * jarHeight;
   const fillTop = jarBottom - fillHeight;
-  const color = parseRgbStr(colorHex);
+  const color = hexToRgb(colorHex);
   const gradient = createFillGradient(ctx, fillTop, jarBottom, color);
 
   ctx.fillStyle = gradient;
@@ -141,7 +145,7 @@ function drawRightHalf(
 
   const fillHeight = (fillPercent / 100) * jarHeight;
   const fillTop = jarBottom - fillHeight;
-  const color = parseRgbStr(colorHex);
+  const color = hexToRgb(colorHex);
   const gradient = createFillGradient(ctx, fillTop, jarBottom, color);
 
   ctx.fillStyle = gradient;

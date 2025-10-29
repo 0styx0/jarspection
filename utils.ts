@@ -1,18 +1,18 @@
-import { FillableJar } from "./components/fillable-jar/fillable-jar.js";
+import { JarTile, jarTileTag } from "./components/jarTile/jarTile.js";
 import {
   defaultJarAttrs,
   JarAttrs,
-} from "./components/fillable-jar/jarAttrs.js";
+} from "./components/jarIllustration/jarAttrs";
 import { queryElt } from "./components/utils.js";
 
-export const documentLevelSelectors = {
+const selectors = {
   jarGrid: "#jarGrid",
-  addJar: "add-jar",
+  addJar: "#addJar",
 };
 
 export function createJars(jars: JarAttrs[]) {
-  const jarGrid = queryElt(document, documentLevelSelectors.jarGrid);
-  const addJar = queryElt(document, documentLevelSelectors.addJar);
+  const jarGrid = queryElt(document, selectors.jarGrid);
+  const addJar = queryElt(document, selectors.addJar);
 
   const jarElts = createJarElts(jars);
 
@@ -34,7 +34,7 @@ function createJarElts(jarAttrsList: Partial<JarAttrs>[]) {
 }
 
 export function createFillableJar(prefs: JarAttrs) {
-  const jar = document.createElement("fillable-jar") as FillableJar;
+  const jar = document.createElement(jarTileTag) as JarTile;
 
   requestAnimationFrame(() => {
     for (const [prefName, pref] of Object.entries(prefs)) {

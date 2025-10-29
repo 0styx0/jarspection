@@ -1,38 +1,47 @@
 <style>
   .color-controls {
     display: flex;
-    gap: 2cqw;
   }
 
   .color-splotch {
-    width: 8cqw;
+    appearance: none;
     height: 8cqw;
+    aspect-ratio: 1;
+    margin-left: 3%;
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.2s ease;
     box-shadow: 0 0.3cqw 1cqw rgba(0, 0, 0, 0.2);
     border: 0.3cqw solid transparent;
   }
+
   .color-splotch.active {
     border-color: #667eea;
     box-shadow: 0 0.5cqw 1.8cqw rgba(0, 0, 0, 0.4);
   }
-
-  .positive {
-    background-color: var(--color-positive);
-  }
-
-  .negotiable {
-    background-color: var(--color-negotiable);
-  }
-
-  .negative {
-    background-color: var(--color-negative);
-  }
 </style>
 
 <div class="color-controls">
-  <input type="button" class="color-splotch positive" />
-  <input type="button" class="color-splotch negotiable" data-default />
-  <input type="button" class="color-splotch negative" />
+  <!-- parcel doesn't support using variable replacement in css so using inline style -->
+  <input
+    type="radio"
+    name="selected-color"
+    class="color-splotch"
+    value="{{coloryes}}"
+  />
+
+  <input
+    type="radio"
+    name="selected-color"
+    value="{{colormaybe}}"
+    class="color-splotch"
+    checked
+  />
+
+  <input
+    type="radio"
+    name="selected-color"
+    class="color-splotch"
+    value="{{colorno}}"
+  />
 </div>

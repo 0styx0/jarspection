@@ -1,5 +1,5 @@
-import { FillableJar } from "./components/fillable-jar/fillable-jar";
-import { JarAttrs } from "./components/fillable-jar/jarAttrs";
+import { JarTile, jarTileTag } from "./components/jarTile/jarTile";
+import { JarAttrs } from "./components/jar/jarAttrs";
 
 function exportJarsToJson() {
   const jarPrefs = getJarPrefsFromPage();
@@ -7,9 +7,7 @@ function exportJarsToJson() {
 }
 
 function getJarPrefsFromPage(): JarAttrs[] {
-  const jars = document.querySelectorAll(
-    "fillable-jar",
-  ) as NodeListOf<FillableJar>;
+  const jars = document.querySelectorAll(jarTileTag) as NodeListOf<JarTile>;
   return Array.from(jars).map((jar) => {
     return {
       label: jar.label,
