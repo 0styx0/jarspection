@@ -34,8 +34,6 @@ export class JarTile extends HTMLElement implements JarAttrs {
   labelleft = defaultJarAttrs.labelleft;
   labelright = defaultJarAttrs.labelright;
 
-  #jarIllustration: JarIllustration | null = null;
-
   static observedAttributes = [
     "label",
     "labelleft",
@@ -69,11 +67,6 @@ export class JarTile extends HTMLElement implements JarAttrs {
   connectedCallback() {
     mapPropertiesToAttribute(this, JarTile.mirroredProps);
 
-    this.#jarIllustration = queryElt(
-      this.shadowRoot,
-      selectors.jarIllustration,
-    );
-
     this.setupEventListeners();
 
     this.drawJar();
@@ -95,13 +88,13 @@ export class JarTile extends HTMLElement implements JarAttrs {
     this.drawJar();
   }
 
-  setupEventListeners() {
+  private setupEventListeners() {
     this.handleRemove();
     this.handleColorChanges();
     this.handleFillChanges();
   }
 
-  getLabelElt = () =>
+  private getLabelElt = () =>
     queryElt<HTMLTextAreaElement>(this.shadowRoot, selectors.labelInput);
 
   get label() {
@@ -118,7 +111,7 @@ export class JarTile extends HTMLElement implements JarAttrs {
     labelElt.value = value || "";
   }
 
-  setSideLabelColor(selector: string, color: string) {
+  private setSideLabelColor(selector: string, color: string) {
     const sideLabel = queryElt<SideLabel>(this.shadowRoot, selector);
 
     if (!sideLabel) {
@@ -127,7 +120,7 @@ export class JarTile extends HTMLElement implements JarAttrs {
     sideLabel.color = color;
   }
 
-  handleColorChanges = () => {
+  private handleColorChanges = () => {
     const addColorChangeEvent = (
       selector: string,
       handler: (color: string) => void,
@@ -150,7 +143,7 @@ export class JarTile extends HTMLElement implements JarAttrs {
     );
   };
 
-  handleFillChanges = () => {
+  private handleFillChanges = () => {
     const rangeLeft = queryElt(this.shadowRoot, selectors.rangeLeft);
 
     const rangeRight = queryElt(this.shadowRoot, selectors.rangeRight);
@@ -172,19 +165,24 @@ export class JarTile extends HTMLElement implements JarAttrs {
     );
   };
 
-  drawJar() {
-    if (!this.#jarIllustration) {
+  private drawJar() {
+    const jarIllustrationElt = queryElt<JarIllustration>(
+      this.shadowRoot,
+      selectors.jarIllustration,
+    );
+
+    if (!jarIllustrationElt) {
       console.warn("No jar illustration yet");
       return;
     }
 
-    this.#jarIllustration.colorleft = this.colorleft;
-    this.#jarIllustration.colorright = this.colorright;
-    this.#jarIllustration.fillleft = this.fillleft;
-    this.#jarIllustration.fillright = this.fillright;
+    jarIllustrationElt.colorleft = this.colorleft;
+    jarIllustrationElt.colorright = this.colorright;
+    jarIllustrationElt.fillleft = this.fillleft;
+    jarIllustrationElt.fillright = this.fillright;
   }
 
-  handleRemove() {
+  private handleRemove() {
     const removeBtn = queryElt(this.shadowRoot, selectors.removeBtn)!;
     removeBtn.addEventListener("click", () => this.remove());
   }

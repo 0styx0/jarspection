@@ -1,5 +1,5 @@
 import templateHtml from "bundle-text:./side-label.html";
-import { defineCustomElt, queryElt } from "../utils";
+import { defineCustomElt, mapPropertiesToAttribute, queryElt } from "../utils";
 
 const selectors = {
   label: ".label",
@@ -15,6 +15,10 @@ export class SideLabel extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: "open" }).innerHTML = templateHtml;
+  }
+
+  connectedCallback() {
+    mapPropertiesToAttribute(this, SideLabel.mirroredProps);
   }
 
   attributeChangedCallback(attr: string, was: string, value: string) {
