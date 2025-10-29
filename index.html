@@ -3,14 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Comparer</title>
+    <title>JarSpection</title>
     <style>
-      :root {
-        /* setting colors here for single source of truth shared across components */
-        --color-positive: #44ff44;
-        --color-negotiable: #ffdd44;
-        --color-negative: #ff4444;
-      }
       body {
         margin: 0;
         padding: 20px;
@@ -26,25 +20,19 @@
       #jarGrid {
         display: flex;
         flex-wrap: wrap;
-        /* wrap to multiple lines */
         gap: 20px;
-        /* space between items */
         width: 100%;
         max-width: 100%;
         padding: 0 20px;
         box-sizing: border-box;
         justify-content: center;
-        /* center items horizontally */
         align-items: flex-start;
-        /* align items at top */
       }
 
       #jarGrid > * {
         flex: 0 0 8rem;
-        /* fixed width per item */
         aspect-ratio: 2 / 1;
         height: auto;
-        /* allow aspect ratio to set height */
         box-sizing: border-box;
       }
 

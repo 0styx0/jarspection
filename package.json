@@ -1,9 +1,8 @@
 {
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "scripts": {
-    "start": "rm -rf .parcel-cache && yarn parcel kink-jars.html",
-    "build": "parcel build kink-jars.html --public-url .",
-    "deploy": "rsync -avz dist/* styx@0styx0.xyz:/var/www/html/0styx0.xyz/kink-jar"
+    "start": "yarn parcel index.html",
+    "build": "parcel build index.html --public-url ."
   },
   "devDependencies": {
     "@parcel/transformer-inline-string": "2.16.0",
