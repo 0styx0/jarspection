@@ -19,7 +19,6 @@ const selectors = {
 };
 
 export class VerticalRange extends HTMLElement {
-  #rangeElt: HTMLInputElement | null = null;
   rangevalue = 0;
 
   static observedAttributes = ["rangevalue"];
@@ -32,11 +31,6 @@ export class VerticalRange extends HTMLElement {
 
   connectedCallback() {
     mapPropertiesToAttribute(this, VerticalRange.mirroredProps);
-
-    this.#rangeElt = queryElt<HTMLInputElement>(
-      this.shadowRoot,
-      selectors.range,
-    );
 
     this.addRangeChangeEvent();
   }
@@ -51,26 +45,31 @@ export class VerticalRange extends HTMLElement {
     }
   }
 
-  setRangeEltValue(value: number) {
-    if (!this.#rangeElt) return;
-
-    this.#rangeElt.value = "" + value;
+  private getRangeElt() {
+    return queryElt<HTMLInputElement>(this.shadowRoot, selectors.range);
   }
 
-  addRangeChangeEvent() {
+  private setRangeEltValue(value: number) {
+    const rangeElt = this.getRangeElt();
+    if (!rangeElt) return;
+
+    rangeElt.value = "" + value;
+  }
+
+  private addRangeChangeEvent() {
     queryElt(this.shadowRoot, selectors.range)?.addEventListener(
       "input",
       this.onRangeChange,
     );
   }
 
-  onRangeChange = (e: Event) => {
+  private onRangeChange = (e: Event) => {
     const value = +(e.target as HTMLInputElement).value;
     this.rangevalue = value;
     this.updateRange(value);
   };
 
-  updateRange(value: number) {
+  private updateRange(value: number) {
     this.setRangeEltValue(value);
 
     triggerCustomEvent(this, rangeEvents.rangechange, {

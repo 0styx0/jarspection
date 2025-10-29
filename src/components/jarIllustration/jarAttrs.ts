@@ -6,6 +6,8 @@ export const colors = {
 
 export interface JarAttrs {
   label: string;
+  labelleft: string;
+  labelright: string;
   fillleft: number;
   fillright: number;
   colorleft: string;
@@ -14,6 +16,8 @@ export interface JarAttrs {
 
 export const defaultJarAttrs: JarAttrs = {
   label: "New Jar",
+  labelleft: "P1",
+  labelright: "P2",
   fillleft: 50,
   fillright: 50,
   colorleft: colors.maybe,

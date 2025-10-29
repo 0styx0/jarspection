@@ -16,8 +16,6 @@ const selectors = {
 };
 
 export class ColorControls extends HTMLElement {
-  #colorSplotches = [] as unknown as NodeListOf<HTMLInputElement>;
-
   constructor() {
     super();
     this.attachShadow({ mode: "open" }).innerHTML = templateHtml
@@ -27,32 +25,31 @@ export class ColorControls extends HTMLElement {
   }
 
   connectedCallback() {
-    this.getSplotches();
     this.setColors();
     this.addSplotchChangeEvent();
   }
 
-  getSplotches() {
-    this.#colorSplotches = this.shadowRoot!.querySelectorAll(
+  private getSplotches() {
+    return this.shadowRoot!.querySelectorAll<HTMLInputElement>(
       selectors.colorSplotches,
     );
   }
 
-  setColors() {
-    this.#colorSplotches.forEach((splotch) => {
+  private setColors() {
+    this.getSplotches().forEach((splotch) => {
       // allows consistent use of hex-formatted colors
       splotch.style.backgroundColor = splotch.value;
     });
   }
 
-  addSplotchChangeEvent() {
+  private addSplotchChangeEvent() {
     queryElt(this.shadowRoot, selectors.colorControls)?.addEventListener(
       "change",
       this.onSplotchChange,
     );
   }
 
-  onSplotchChange = (e: Event) => {
+  private onSplotchChange = (e: Event) => {
     const selectedColor = (e.target as HTMLInputElement).value;
 
     triggerCustomEvent(this, colorControlEvents.colorchange, {

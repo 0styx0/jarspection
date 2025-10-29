@@ -31,17 +31,29 @@ export class JarTile extends HTMLElement implements JarAttrs {
   colorleft = defaultJarAttrs.colorleft;
   colorright = defaultJarAttrs.colorright;
 
+  labelleft = defaultJarAttrs.labelleft;
+  labelright = defaultJarAttrs.labelright;
+
   #jarIllustration: JarIllustration | null = null;
 
   static observedAttributes = [
     "label",
+    "labelleft",
+    "labelright",
     "fillleft",
     "fillright",
     "colorleft",
     "colorright",
   ];
 
-  static mirroredProps = ["fillleft", "fillright", "colorleft", "colorright"];
+  static mirroredProps = [
+    "labelleft",
+    "labelright",
+    "fillleft",
+    "fillright",
+    "colorleft",
+    "colorright",
+  ];
 
   constructor() {
     super();
@@ -49,7 +61,9 @@ export class JarTile extends HTMLElement implements JarAttrs {
       .replaceAll("{{fillleft}}", this.fillleft)
       .replaceAll("{{fillright}}", this.fillright)
       .replaceAll("{{colorleft}}", this.colorleft)
-      .replaceAll("{{colorright}}", this.colorright);
+      .replaceAll("{{colorright}}", this.colorright)
+      .replaceAll("{{labelleft}}", this.labelleft)
+      .replaceAll("{{labelright}}", this.labelright);
   }
 
   connectedCallback() {

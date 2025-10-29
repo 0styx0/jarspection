@@ -4,35 +4,46 @@ import { defineCustomElt, queryElt } from "../utils";
 const selectors = {
   label: ".label",
 };
+
 export class SideLabel extends HTMLElement {
-  #shadow: ShadowRoot;
+  label = "";
+  color = "";
+
+  static observedAttributes = ["label", "color"];
+  static mirroredProps = ["label", "color"];
 
   constructor() {
     super();
-    this.#shadow = this.attachShadow({ mode: "open" });
-    this.#shadow.innerHTML = templateHtml;
+    this.attachShadow({ mode: "open" }).innerHTML = templateHtml;
   }
 
-  getLabel() {
-    return queryElt<HTMLDivElement>(this.#shadow, selectors.label);
-  }
-
-  set color(value: string) {
-    const label = this.getLabel();
-    if (!label) {
-      return;
+  attributeChangedCallback(attr: string, was: string, value: string) {
+    switch (attr) {
+      case "label":
+        this.setLabelEltValue(value);
+        break;
+      case "color":
+        this.setLabelEltColor(value);
+        break;
     }
-
-    label.style.color = value;
   }
 
-  set label(value: string) {
-    const label = this.getLabel();
-    if (!label) {
-      return;
-    }
+  private getLabelElt() {
+    return queryElt<HTMLDivElement>(this.shadowRoot, selectors.label);
+  }
 
-    label.innerText = value;
+  private setLabelEltValue(value: string) {
+    const labelElt = this.getLabelElt();
+    if (!labelElt) return;
+
+    labelElt.textContent = value;
+  }
+
+  private setLabelEltColor(color: string) {
+    const labelElt = this.getLabelElt();
+    if (!labelElt) return;
+
+    labelElt.style.color = color;
   }
 }
 
