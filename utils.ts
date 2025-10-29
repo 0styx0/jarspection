@@ -3,18 +3,18 @@ import {
   defaultJarAttrs,
   JarAttrs,
 } from "./components/fillable-jar/jarAttrs.js";
-import { defaultJars } from "./defaultJars.js";
+import { queryElt } from "./components/utils.js";
 
-const selectors = {
+export const documentLevelSelectors = {
   jarGrid: "#jarGrid",
   addJar: "add-jar",
 };
 
-export function createDefaultJars() {
-  const jarGrid = queryElt(document, selectors.jarGrid);
-  const addJar = queryElt(document, selectors.addJar);
+export function createJars(jars: JarAttrs[]) {
+  const jarGrid = queryElt(document, documentLevelSelectors.jarGrid);
+  const addJar = queryElt(document, documentLevelSelectors.addJar);
 
-  const jarElts = createJarElts(defaultJars);
+  const jarElts = createJarElts(jars);
 
   jarGrid?.insertBefore(jarElts, addJar);
 }
@@ -42,23 +42,4 @@ export function createFillableJar(prefs: JarAttrs) {
     }
   });
   return jar;
-}
-
-export function queryElt<Elt extends Element>(
-  container: ShadowRoot | Document | null,
-  selector: string,
-) {
-  if (!container) {
-    console.warn("Unable to find container ", { container, selector });
-    return null;
-  }
-
-  const elt = container.querySelector<Elt>(selector);
-
-  if (!elt) {
-    console.warn("Unable to find element ", selector);
-    return null;
-  }
-
-  return elt;
 }

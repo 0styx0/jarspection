@@ -1,5 +1,5 @@
 import templateHtml from "bundle-text:./color-controls.html";
-import { queryElt } from "../../utils";
+import { defineCustomElt, queryElt } from "../utils";
 
 export type ColorChangeEventHandler = (event: ColorChangeEvent) => void;
 export type ColorChangeEvent = CustomEvent<{
@@ -65,4 +65,4 @@ export class ColorControls extends HTMLElement {
   }
 }
 
-customElements.define("color-controls", ColorControls);
+defineCustomElt("color-controls", ColorControls);

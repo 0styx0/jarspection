@@ -1,5 +1,5 @@
 import templateHtml from "bundle-text:./vertical-range.html";
-import { queryElt } from "../../utils";
+import { defineCustomElt, queryElt } from "../utils";
 
 export class VerticalRange extends HTMLElement {
   #shadow: ShadowRoot;
@@ -23,4 +23,4 @@ export class VerticalRange extends HTMLElement {
   }
 }
 
-customElements.define("vertical-range", VerticalRange);
+defineCustomElt("vertical-range", VerticalRange);

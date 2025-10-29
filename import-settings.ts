@@ -1,75 +1,84 @@
-import { FillableJar } from "./components/fillable-jar/fillable-jar";
 import { JarAttrs } from "./components/fillable-jar/jarAttrs";
-import { createFillableJar } from "./utils";
+import { queryElt } from "./components/utils";
+import { createJars } from "./utils";
 
-function importJarsFromJson(file: File): void {
-  const reader = new FileReader();
+const selectors = {
+  importJarsInput: "#importJarsInput",
+};
 
-  reader.onload = (e: ProgressEvent<FileReader>) => {
-    // Safely handle potential null or undefined result
-    const result = e.target?.result;
+void (function init() {
+  const importInput = queryElt<HTMLInputElement>(
+    document,
+    selectors.importJarsInput,
+  );
 
-    if (typeof result !== "string") {
-      console.error("Invalid file read result");
-      return;
-    }
+  if (!importInput) return;
 
-    try {
-      const data = JSON.parse(result) as JarAttrs[];
-      const jarGrid = document.getElementById("jarGrid");
-      const addJar = document.getElementById("addJar");
-
-      if (!jarGrid || !addJar) {
-        console.error("Required DOM elements not found", { jarGrid, addJar });
-        return;
-      }
-
-      // Remove existing jars if desired
-      jarGrid.querySelectorAll("fillable-jar").forEach((j) => j.remove());
-
-      data.forEach((item: JarAttrs) => {
-        const jar = createFillableJar(item);
-
-        jarGrid.insertBefore(jar, addJar);
-      });
-    } catch (error) {
-      console.error("Error parsing JSON:", error);
-    }
-  };
-
-  reader.onerror = (e) => {
-    console.error("File reading error", e);
-  };
-
-  reader.readAsText(file);
-}
-
-function startLoad(input: HTMLInputElement): void {
-  const file = input.files?.[0];
-  if (file) {
-    importJarsFromJson(file);
-  }
-}
-
-// Type-safe event handling
-function handleImportChange(e: Event): void {
-  const input = e.target as HTMLInputElement;
-  if (input.files && input.files.length) {
-    startLoad(input);
-  }
-}
-
-// Type assertions and null checks
-const importInput = document.getElementById(
-  "importJarsInput",
-) as HTMLInputElement;
-const importLoading = document.getElementById("import-loading");
-
-if (importInput) {
   importInput.addEventListener("change", handleImportChange);
 
   // Check for initial files
   if (importInput.files && importInput.files.length) {
     startLoad(importInput);
   }
+})();
+
+function importJarsFromFile(file: File): void {
+  const reader = new FileReader();
+
+  reader.onload = (e: ProgressEvent<FileReader>) => {
+    const fileStr = getFileContents(e) || "";
+
+    const jarAttrsList = parseFile(fileStr);
+
+    removeJars();
+
+    createJars(jarAttrsList);
+  };
+
+  reader.onerror = (e) => {
+    console.error("Importing: File reading error", e);
+  };
+
+  reader.readAsText(file);
+}
+
+function getFileContents(e: ProgressEvent<FileReader>) {
+  const result = e.target?.result;
+
+  if (typeof result !== "string") {
+    console.error("Invalid file read result");
+    return;
+  }
+  return result;
+}
+
+function parseFile(fileStr: string) {
+  let data: JarAttrs[] = [];
+  try {
+    data = JSON.parse(fileStr) as JarAttrs[];
+  } catch (error) {
+    console.error("Importing: Error parsing JSON:", error);
+  }
+
+  return data;
+}
+
+function removeJars() {
+  document.querySelectorAll("fillable-jar").forEach((j) => j.remove());
+}
+
+function startLoad(input: HTMLInputElement): void {
+  const file = input.files?.[0];
+
+  if (!file) {
+    console.warn("Importing: No file found");
+    return;
+  }
+
+  importJarsFromFile(file);
+}
+
+function handleImportChange(e: Event): void {
+  const input = e.target as HTMLInputElement;
+  startLoad(input);
 }

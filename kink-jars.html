@@ -93,8 +93,9 @@
     <script type="module" src="./export-settings.ts"></script>
 
     <script type="module">
-      import { createDefaultJars } from "./utils";
-      createDefaultJars();
+      import { createJars } from "./utils";
+      import { defaultJars } from "./defaultJars.ts";
+      createJars(defaultJars);
     </script>
   </body>
 </html>

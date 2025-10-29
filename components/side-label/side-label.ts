@@ -1,5 +1,5 @@
 import templateHtml from "bundle-text:./side-label.html";
-import { queryElt } from "../../utils";
+import { defineCustomElt, queryElt } from "../utils";
 
 const selectors = {
   label: ".label",
@@ -24,4 +24,4 @@ export class SideLabel extends HTMLElement {
   }
 }
 
-customElements.define("side-label", SideLabel);
+defineCustomElt("side-label", SideLabel);

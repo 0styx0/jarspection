@@ -5,8 +5,7 @@ import {
   colorControlsEmitted,
 } from "../color-controls/color-controls";
 import { paintJar } from "./jar-canvas-utils";
-import { queryElt } from "../../utils";
-import { BaseComponent } from "../base-component/base-component";
+import { defineCustomElt, mapPropertiesToAttribute, queryElt } from "../utils";
 import { SideLabel } from "../side-label/side-label";
 import { defaultJarAttrs, JarAttrs } from "./jarAttrs";
 
@@ -22,7 +21,7 @@ const selectors = {
   jarCanvas: ".jar",
 };
 
-export class FillableJar extends BaseComponent implements JarAttrs {
+export class FillableJar extends HTMLElement implements JarAttrs {
   fillleft = defaultJarAttrs.fillleft;
   fillright = defaultJarAttrs.fillright;
 
@@ -46,6 +45,8 @@ export class FillableJar extends BaseComponent implements JarAttrs {
   }
 
   connectedCallback() {
+    mapPropertiesToAttribute(this, FillableJar.mirroredProps);
+
     this.setupEventListeners();
 
     this.drawJar();
@@ -172,4 +173,4 @@ export class FillableJar extends BaseComponent implements JarAttrs {
   }
 }
 
-customElements.define("fillable-jar", FillableJar);
+defineCustomElt("fillable-jar", FillableJar);
