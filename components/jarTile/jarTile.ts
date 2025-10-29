@@ -3,6 +3,10 @@ import { defineCustomElt, mapPropertiesToAttribute, queryElt } from "../utils";
 import { SideLabel } from "../side-label/side-label";
 import { defaultJarAttrs, JarAttrs } from "../jarIllustration/jarAttrs";
 import { JarIllustration } from "../jarIllustration/jarIllustration";
+import {
+  ColorChangeEvent,
+  colorControlEvents,
+} from "../color-controls/color-controls";
 
 const selectors = {
   labelInput: ".label-input",
@@ -111,9 +115,9 @@ export class JarTile extends HTMLElement implements JarAttrs {
       handler: (color: string) => void,
     ) =>
       queryElt(this.shadowRoot, selector)!.addEventListener(
-        "input",
-        (e: InputEvent) => {
-          handler(e.originalTarget?.value || "");
+        colorControlEvents.colorchange,
+        (e: CustomEventInit<ColorChangeEvent>) => {
+          handler(e.detail?.color || "");
         },
       );
 
