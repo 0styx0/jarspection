@@ -1,4 +1,8 @@
-import { createFillableJar, createJars } from "../utils";
+import {
+  createFillableJar,
+  createJars,
+  documentLevelSelectors,
+} from "../utils";
 import templateHtml from "bundle-text:./add-jar.html";
 import { defaultJarAttrs } from "./fillable-jar/jarAttrs";
 import { defineCustomElt, queryElt } from "./utils";
@@ -14,7 +18,10 @@ class AddJar extends HTMLElement {
   }
 
   private createAddJarListener() {
-    const addJarButton = queryElt<HTMLDivElement>(this.shadowRoot, ".add-jar");
+    const addJarButton = queryElt<HTMLDivElement>(
+      this.shadowRoot,
+      documentLevelSelectors.addJar,
+    );
 
     if (!addJarButton) return;
 
