@@ -60,31 +60,34 @@
 
     <script
       type="module"
-      src="./components/jarIllustration/jarIllustration.ts"
+      src="./src/components/jarIllustration/jarIllustration.ts"
     ></script>
 
     <script
       type="module"
-      src="./components/color-controls/color-controls.ts"
+      src="./src/components/color-controls/color-controls.ts"
     ></script>
 
     <script
       type="module"
-      src="./components/vertical-range/vertical-range.ts"
+      src="./src/components/vertical-range/vertical-range.ts"
     ></script>
 
-    <script type="module" src="./components/side-label/side-label.ts"></script>
+    <script
+      type="module"
+      src="./src/components/side-label/side-label.ts"
+    ></script>
 
-    <script type="module" src="./components/jarTile/jarTile.ts"></script>
+    <script type="module" src="./src/components/jarTile/jarTile.ts"></script>
 
-    <script type="module" src="./components/add-jar.ts"></script>
-    <script type="module" src="./import-settings.ts"></script>
+    <script type="module" src="./src/components/add-jar.ts"></script>
+    <script type="module" src="./src/import-settings.ts"></script>
 
-    <script type="module" src="./export-settings.ts"></script>
+    <script type="module" src="./src/export-settings.ts"></script>
 
     <script type="module">
-      import { createJars } from "./utils";
-      import { defaultJars } from "./defaultJars.ts";
+      import { createJars } from "./src/utils";
+      import { defaultJars } from "./src/defaultJars.ts";
       createJars(defaultJars);
     </script>
   </body>
