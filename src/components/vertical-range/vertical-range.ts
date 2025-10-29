@@ -46,7 +46,7 @@ export class VerticalRange extends HTMLElement {
 
     switch (attr) {
       case "rangevalue":
-        this.setRangeEltValue(value);
+        this.updateRange(value);
         break;
     }
   }
@@ -67,11 +67,16 @@ export class VerticalRange extends HTMLElement {
   onRangeChange = (e: Event) => {
     const value = +(e.target as HTMLInputElement).value;
     this.rangevalue = value;
+    this.updateRange(value);
+  };
+
+  updateRange(value: number) {
+    this.setRangeEltValue(value);
 
     triggerCustomEvent(this, rangeEvents.rangechange, {
       value,
     });
-  };
+  }
 }
 
 defineCustomElt("vertical-range", VerticalRange);
