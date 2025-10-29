@@ -106,7 +106,11 @@
   </div>
 
   <div class="middle-controls">
-    <vertical-range class="range-left"></vertical-range>
+    <vertical-range
+      rangevalue="{{fillleft}}"
+      class="range-left"
+    ></vertical-range>
+
     <jar-illustration
       fillleft="{{fillleft}}"
       fillright="{{fillright}}"
@@ -114,8 +118,11 @@
       colorright="{{colorright}}"
       class="jar-illustration"
     ></jar-illustration>
-    <!-- <canvas class="jar"></canvas> -->
-    <vertical-range class="range-right"></vertical-range>
+
+    <vertical-range
+      rangevalue="{{fillright}}"
+      class="range-right"
+    ></vertical-range>
   </div>
 
   <div class="colors-container">

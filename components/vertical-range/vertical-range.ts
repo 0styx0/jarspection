@@ -1,26 +1,78 @@
 import templateHtml from "bundle-text:./vertical-range.html";
-import { defineCustomElt, queryElt } from "../utils";
+import {
+  defineCustomElt,
+  mapPropertiesToAttribute,
+  queryElt,
+  triggerCustomEvent,
+} from "../utils";
+
+export const rangeEvents = {
+  rangechange: "rangechange",
+};
+
+export interface RangeChangeEvent {
+  value: number;
+}
+
+const selectors = {
+  range: ".vertical-range",
+};
 
 export class VerticalRange extends HTMLElement {
-  #shadow: ShadowRoot;
+  #rangeElt: HTMLInputElement | null = null;
+  rangevalue = 0;
+
+  static observedAttributes = ["rangevalue"];
+  static mirroredProps = ["rangevalue"];
 
   constructor() {
     super();
-    this.#shadow = this.attachShadow({ mode: "open" });
-    this.#shadow.innerHTML = templateHtml;
+    this.attachShadow({ mode: "open" }).innerHTML = templateHtml.replaceAll(
+      "{{rangevalue}}",
+      this.rangevalue,
+    );
   }
 
-  getVerticalRangeElt() {
-    return queryElt<HTMLInputElement>(this.#shadow, ".vertical-range");
+  connectedCallback() {
+    mapPropertiesToAttribute(this, VerticalRange.mirroredProps);
+
+    this.#rangeElt = queryElt<HTMLInputElement>(
+      this.shadowRoot,
+      selectors.range,
+    );
   }
 
-  set value(val: string) {
-    const rangeElt = this.getVerticalRangeElt();
-    if (!rangeElt) {
-      return;
+  attributeChangedCallback(attr: string, was: number, value: number) {
+    if (was === value) return;
+
+    switch (attr) {
+      case "rangevalue":
+        this.setRangeEltValue(value);
+        break;
     }
-    rangeElt.value = val;
   }
+
+  setRangeEltValue(value: number) {
+    if (!this.#rangeElt) return;
+
+    this.#rangeElt.value = "" + value;
+  }
+
+  addRangeChangeEvent() {
+    queryElt(this.shadowRoot, selectors.range)?.addEventListener(
+      "change",
+      this.onRangeChange,
+    );
+  }
+
+  onRangeChange = (e: Event) => {
+    const value = +(e.target as HTMLInputElement).value;
+    this.rangevalue = value;
+
+    triggerCustomEvent(this, rangeEvents.rangechange, {
+      value,
+    });
+  };
 }
 
 defineCustomElt("vertical-range", VerticalRange);

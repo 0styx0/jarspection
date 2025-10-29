@@ -25,6 +25,21 @@ export function defineCustomElt(tag: string, elt: CustomElementConstructor) {
   }
 }
 
+export function triggerCustomEvent<T>(
+  self: HTMLElement,
+  eventName: string,
+  eventDetails: T,
+) {
+  const customEvent = new CustomEvent<T>(eventName, {
+    bubbles: true,
+    composed: true,
+    detail: {
+      ...eventDetails,
+    },
+  });
+  self.dispatchEvent(customEvent);
+}
+
 export function queryElt<Elt extends Element>(
   container: ShadowRoot | Document | null,
   selector: string,

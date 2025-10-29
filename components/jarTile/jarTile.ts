@@ -7,6 +7,7 @@ import {
   ColorChangeEvent,
   colorControlEvents,
 } from "../color-controls/color-controls";
+import { RangeChangeEvent } from "../vertical-range/vertical-range";
 
 const selectors = {
   labelInput: ".label-input",
@@ -139,8 +140,8 @@ export class JarTile extends HTMLElement implements JarAttrs {
     ) =>
       queryElt(this.shadowRoot, selector)!.addEventListener(
         "input",
-        (e: Event) => {
-          handler(e.originalTarget?.value);
+        (e: CustomEventInit<RangeChangeEvent>) => {
+          handler(e.detail?.value || 0);
         },
       );
 

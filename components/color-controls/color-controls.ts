@@ -1,5 +1,5 @@
 import templateHtml from "bundle-text:./color-controls.html";
-import { defineCustomElt, queryElt } from "../utils";
+import { defineCustomElt, queryElt, triggerCustomEvent } from "../utils";
 import { colors } from "../jarIllustration/jarAttrs";
 
 export const colorControlEvents = {
@@ -54,22 +54,11 @@ export class ColorControls extends HTMLElement {
 
   onSplotchChange = (e: Event) => {
     const selectedColor = (e.target as HTMLInputElement).value;
-    this.triggerColorChangeEvent(selectedColor);
-  };
 
-  triggerColorChangeEvent(selectedColor: string) {
-    const customEvent = new CustomEvent<ColorChangeEvent>(
-      colorControlEvents.colorchange,
-      {
-        bubbles: true,
-        composed: true,
-        detail: {
-          color: selectedColor,
-        },
-      },
-    );
-    this.dispatchEvent(customEvent);
-  }
+    triggerCustomEvent(this, colorControlEvents.colorchange, {
+      color: selectedColor,
+    });
+  };
 }
 
 defineCustomElt("color-controls", ColorControls);
