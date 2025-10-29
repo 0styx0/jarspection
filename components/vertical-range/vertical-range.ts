@@ -27,10 +27,7 @@ export class VerticalRange extends HTMLElement {
 
   constructor() {
     super();
-    this.attachShadow({ mode: "open" }).innerHTML = templateHtml.replaceAll(
-      "{{rangevalue}}",
-      this.rangevalue,
-    );
+    this.attachShadow({ mode: "open" }).innerHTML = templateHtml;
   }
 
   connectedCallback() {
@@ -40,6 +37,8 @@ export class VerticalRange extends HTMLElement {
       this.shadowRoot,
       selectors.range,
     );
+
+    this.addRangeChangeEvent();
   }
 
   attributeChangedCallback(attr: string, was: number, value: number) {
@@ -60,7 +59,7 @@ export class VerticalRange extends HTMLElement {
 
   addRangeChangeEvent() {
     queryElt(this.shadowRoot, selectors.range)?.addEventListener(
-      "change",
+      "input",
       this.onRangeChange,
     );
   }

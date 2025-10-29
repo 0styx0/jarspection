@@ -7,7 +7,10 @@ import {
   ColorChangeEvent,
   colorControlEvents,
 } from "../color-controls/color-controls";
-import { RangeChangeEvent } from "../vertical-range/vertical-range";
+import {
+  RangeChangeEvent,
+  rangeEvents,
+} from "../vertical-range/vertical-range";
 
 const selectors = {
   labelInput: ".label-input",
@@ -134,25 +137,24 @@ export class JarTile extends HTMLElement implements JarAttrs {
   };
 
   handleFillChanges = () => {
-    const addFillChangeEvent = (
-      selector: string,
-      handler: (rangeValue: number) => void,
-    ) =>
-      queryElt(this.shadowRoot, selector)!.addEventListener(
-        "input",
-        (e: CustomEventInit<RangeChangeEvent>) => {
-          handler(e.detail?.value || 0);
-        },
-      );
+    const rangeLeft = queryElt(this.shadowRoot, selectors.rangeLeft);
 
-    addFillChangeEvent(
-      selectors.rangeLeft,
-      (rangeValue) => (this.fillleft = rangeValue),
+    const rangeRight = queryElt(this.shadowRoot, selectors.rangeRight);
+
+    handleCustomEvent<CustomEventInit<RangeChangeEvent>>(
+      rangeLeft!,
+      rangeEvents.rangechange,
+      (detail) => {
+        this.fillleft = detail?.value || 0;
+      },
     );
 
-    addFillChangeEvent(
-      selectors.rangeRight,
-      (rangeValue) => (this.fillright = rangeValue),
+    handleCustomEvent<CustomEventInit<RangeChangeEvent>>(
+      rangeRight!,
+      rangeEvents.rangechange,
+      (detail) => {
+        this.fillright = detail?.value || 0;
+      },
     );
   };
 
@@ -172,6 +174,14 @@ export class JarTile extends HTMLElement implements JarAttrs {
     const removeBtn = queryElt(this.shadowRoot, selectors.removeBtn)!;
     removeBtn.addEventListener("click", () => this.remove());
   }
+}
+
+function handleCustomEvent<T extends CustomEventInit>(
+  elt: Element,
+  eventName: string,
+  cb: (detail: T["detail"]) => void,
+) {
+  elt.addEventListener(eventName, (e: T) => cb(e.detail));
 }
 
 export const jarTileTag = "jar-tile";

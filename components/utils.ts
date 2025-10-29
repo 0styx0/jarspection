@@ -40,6 +40,9 @@ export function triggerCustomEvent<T>(
   self.dispatchEvent(customEvent);
 }
 
+/**
+ * logs error if container or element is not found
+ */
 export function queryElt<Elt extends Element>(
   container: ShadowRoot | Document | null,
   selector: string,
