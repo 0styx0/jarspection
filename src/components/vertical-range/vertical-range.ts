@@ -78,4 +78,5 @@ export class VerticalRange extends HTMLElement {
   }
 }
 
-defineCustomElt("vertical-range", VerticalRange);
+export const verticalRangeTag = "vertical-range";
+defineCustomElt(verticalRangeTag, VerticalRange);
