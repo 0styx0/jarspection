@@ -1,7 +1,7 @@
 import templateHtml from "./side-label.html?raw";
 import { defineCustomElt, mapPropertiesToAttribute, queryElt } from "../utils";
 
-const selectors = {
+export const selectors = {
   label: ".label",
 };
 
@@ -51,4 +51,5 @@ export class SideLabel extends HTMLElement {
   }
 }
 
-defineCustomElt("side-label", SideLabel);
+export const sideLabelTag = "side-label";
+defineCustomElt(sideLabelTag, SideLabel);
