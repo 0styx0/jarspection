@@ -121,25 +121,26 @@ export class JarTile extends HTMLElement implements JarAttrs {
   }
 
   private handleColorChanges = () => {
-    const addColorChangeEvent = (
-      selector: string,
-      handler: (color: string) => void,
-    ) =>
-      queryElt(this.shadowRoot, selector)!.addEventListener(
-        colorControlEvents.colorchange,
-        (e: CustomEventInit<ColorChangeEvent>) => {
-          handler(e.detail?.color || "");
-        },
-      );
+    const colorLeft = queryElt(this.shadowRoot, selectors.colorLeft);
+    const colorRight = queryElt(this.shadowRoot, selectors.colorRight);
 
-    addColorChangeEvent(
-      selectors.colorLeft,
-      (color) => (this.colorleft = color),
+    if (!colorLeft || !colorRight) {
+      console.warn("Error setting color events. Element(s) not found", {
+        colorLeft,
+        colorRight,
+      });
+      return;
+    }
+
+    handleCustomEvent<CustomEventInit<ColorChangeEvent>>(
+      colorLeft,
+      colorControlEvents.colorchange,
+      (detail) => (this.colorleft = detail?.color || ""),
     );
-
-    addColorChangeEvent(
-      selectors.colorRight,
-      (color) => (this.colorright = color),
+    handleCustomEvent<CustomEventInit<ColorChangeEvent>>(
+      colorRight,
+      colorControlEvents.colorchange,
+      (detail) => (this.colorright = detail?.color || ""),
     );
   };
 
@@ -148,20 +149,24 @@ export class JarTile extends HTMLElement implements JarAttrs {
 
     const rangeRight = queryElt(this.shadowRoot, selectors.rangeRight);
 
+    if (!rangeRight || !rangeLeft) {
+      console.warn("Error setting range events. Element(s) not found", {
+        rangeLeft,
+        rangeRight,
+      });
+      return;
+    }
+
     handleCustomEvent<CustomEventInit<RangeChangeEvent>>(
-      rangeLeft!,
+      rangeLeft,
       rangeEvents.rangechange,
-      (detail) => {
-        this.fillleft = detail?.value || 0;
-      },
+      (detail) => (this.fillleft = detail?.value || 0),
     );
 
     handleCustomEvent<CustomEventInit<RangeChangeEvent>>(
-      rangeRight!,
+      rangeRight,
       rangeEvents.rangechange,
-      (detail) => {
-        this.fillright = detail?.value || 0;
-      },
+      (detail) => (this.fillright = detail?.value || 0),
     );
   };
 
