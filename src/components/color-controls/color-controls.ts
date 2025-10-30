@@ -10,7 +10,7 @@ export interface ColorChangeEvent {
   color: string;
 }
 
-const selectors = {
+export const selectors = {
   colorControls: ".color-controls",
   colorSplotches: ".color-splotch",
 };
@@ -58,4 +58,5 @@ export class ColorControls extends HTMLElement {
   };
 }
 
-defineCustomElt("color-controls", ColorControls);
+export const colorControlsTag = "color-controls";
+defineCustomElt(colorControlsTag, ColorControls);

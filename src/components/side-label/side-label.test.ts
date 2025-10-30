@@ -14,7 +14,7 @@ function renderComponent() {
 const getLabelElt = (sideLabel: SideLabel) =>
   sideLabel.shadowRoot?.querySelector<HTMLDivElement>(selectors.label);
 
-describe("SideLabel Web Component", () => {
+describe("<SideLabel>", () => {
   describe("defaults to", () => {
     it("empty label", () => {
       const component = renderComponent();
