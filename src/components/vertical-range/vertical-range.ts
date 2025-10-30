@@ -1,4 +1,4 @@
-import templateHtml from "bundle-text:./vertical-range.html";
+import templateHtml from "./vertical-range.html?raw";
 import {
   defineCustomElt,
   mapPropertiesToAttribute,

@@ -1,4 +1,4 @@
-import templateHtml from "bundle-text:./jarIllustration.html";
+import templateHtml from "./jarIllustration.html?raw";
 import { defineCustomElt, mapPropertiesToAttribute, queryElt } from "../utils";
 import { defaultJarAttrs, JarAttrs } from "./jarAttrs";
 import { paintJar } from "./jar-canvas-utils";

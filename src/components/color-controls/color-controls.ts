@@ -1,4 +1,4 @@
-import templateHtml from "bundle-text:./color-controls.html";
+import templateHtml from "./color-controls.html?raw";
 import { defineCustomElt, queryElt, triggerCustomEvent } from "../utils";
 import { colors } from "../jarIllustration/jarAttrs";
 

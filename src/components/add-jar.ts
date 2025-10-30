@@ -1,5 +1,5 @@
 import { createJars } from "../utils";
-import templateHtml from "bundle-text:./add-jar.html";
+import templateHtml from "./add-jar.html?raw";
 import { defineCustomElt, queryElt } from "./utils";
 import { defaultJarAttrs } from "./jarIllustration/jarAttrs";
 

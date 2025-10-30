@@ -1,4 +1,4 @@
-import templateHtml from "bundle-text:./jarTile.html";
+import templateHtml from "./jarTile.html?raw";
 import { defineCustomElt, mapPropertiesToAttribute, queryElt } from "../utils";
 import { SideLabel } from "../side-label/side-label";
 import { defaultJarAttrs, JarAttrs } from "../jarIllustration/jarAttrs";
