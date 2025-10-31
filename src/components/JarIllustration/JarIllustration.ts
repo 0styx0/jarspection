@@ -1,6 +1,6 @@
 import templateHtml from "./JarIllustration.html?raw";
 import { defineCustomElt, mapPropertiesToAttribute, queryElt } from "../utils";
-import { defaultJarAttrs, JarAttrs } from "./jarAttrs";
+import { defaultJarAttrs, JarAttrs } from "../jarAttrs";
 import { paintJar } from "./jarCanvasUtils";
 
 export const selectors = {

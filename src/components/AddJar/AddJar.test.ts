@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { defineCustomElt } from "../utils";
-import { defaultJarAttrs } from "../JarIllustration/jarAttrs";
+import { defaultJarAttrs } from "../jarAttrs";
 import { createJars } from "../../utils";
 import { AddJar, addJarTag, selectors } from "./AddJar";
 

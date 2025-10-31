@@ -1,6 +1,6 @@
 import templateHtml from "./AddJar.html?raw";
 import { defineCustomElt, queryElt } from "../utils";
-import { defaultJarAttrs } from "../JarIllustration/jarAttrs";
+import { defaultJarAttrs } from "../jarAttrs";
 import { createJars } from "../../utils";
 
 export const selectors = {

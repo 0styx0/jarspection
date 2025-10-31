@@ -1,6 +1,6 @@
 import templateHtml from "./ColorControls.html?raw";
 import { defineCustomElt, queryElt, triggerCustomEvent } from "../utils";
-import { colors } from "../JarIllustration/jarAttrs";
+import { colors } from "../jarAttrs";
 
 export const colorControlEvents = {
   colorchange: "colorchange",
@@ -41,7 +41,6 @@ export class ColorControls extends HTMLElement {
       splotch.style.backgroundColor = splotch.value;
     });
   }
-
 
   private addSplotchChangeEvent() {
     queryElt(this.shadowRoot, selectors.colorControls)?.addEventListener(

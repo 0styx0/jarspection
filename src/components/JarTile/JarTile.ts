@@ -1,16 +1,13 @@
 import templateHtml from "./JarTile.html?raw";
 import { defineCustomElt, mapPropertiesToAttribute, queryElt } from "../utils";
 import { SideLabel } from "../SideLabel/SideLabel";
-import { defaultJarAttrs, JarAttrs } from "../JarIllustration/jarAttrs";
+import { defaultJarAttrs, JarAttrs } from "../jarAttrs";
 import { JarIllustration } from "../JarIllustration/JarIllustration";
 import {
   ColorChangeEvent,
   colorControlEvents,
 } from "../ColorControls/ColorControls";
-import {
-  RangeChangeEvent,
-  rangeEvents,
-} from "../VerticalRange/VerticalRange";
+import { RangeChangeEvent, rangeEvents } from "../VerticalRange/VerticalRange";
 
 const selectors = {
   labelInput: ".label-input",

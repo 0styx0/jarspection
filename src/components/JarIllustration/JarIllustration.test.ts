@@ -6,7 +6,7 @@ import {
   jarIllustrationTag,
   selectors,
 } from "./JarIllustration";
-import { defaultJarAttrs } from "./jarAttrs";
+import { defaultJarAttrs } from "../jarAttrs";
 
 vi.mock("./jarCanvasUtils.ts", () => ({
   paintJar: vi.fn(),
