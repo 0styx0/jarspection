@@ -14,8 +14,8 @@ export interface RangeChangeEvent {
   value: number;
 }
 
-const selectors = {
-  range: ".VerticalRange",
+export const selectors = {
+  range: ".vertical-range",
 };
 
 export class VerticalRange extends HTMLElement {

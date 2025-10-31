@@ -11,7 +11,7 @@ export interface ColorChangeEvent {
 }
 
 export const selectors = {
-  colorControls: ".ColorControls",
+  colorControls: ".color-controls",
   colorSplotches: ".color-splotch",
 };
 
