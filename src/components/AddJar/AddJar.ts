@@ -3,15 +3,14 @@ import { defineCustomElt, queryElt } from "../utils";
 import { defaultJarAttrs } from "../JarIllustration/jarAttrs";
 import { createJars } from "../../utils";
 
-const selectors = {
+export const selectors = {
   addJar: ".add-jar",
 };
-class AddJar extends HTMLElement {
+export class AddJar extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: "open" }).innerHTML = templateHtml;
   }
-
 
   connectedCallback() {
     this.createAddJarListener();
@@ -31,4 +30,5 @@ class AddJar extends HTMLElement {
   }
 }
 
-defineCustomElt("add-jar", AddJar);
+export const addJarTag = "add-jar";
+defineCustomElt(addJarTag, AddJar);
