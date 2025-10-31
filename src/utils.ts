@@ -1,8 +1,8 @@
-import { JarTile, jarTileTag } from "./components/jarTile/jarTile.js";
+import { JarTile, jarTileTag } from "./components/JarTile/JarTile.js";
 import {
   defaultJarAttrs,
   JarAttrs,
-} from "./components/jarIllustration/jarAttrs";
+} from "./components/JarIllustration/jarAttrs.js";
 import { queryElt } from "./components/utils.js";
 
 const selectors = {

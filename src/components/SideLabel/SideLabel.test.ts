@@ -1,8 +1,8 @@
 import { describe, it, expect } from "vitest";
-import { selectors, SideLabel, sideLabelTag } from "./side-label";
+import { selectors, SideLabel, sideLabelTag } from "./SideLabel";
 import { defineCustomElt } from "../utils";
 
-defineCustomElt("side-label", SideLabel);
+defineCustomElt(sideLabelTag, SideLabel);
 
 function renderComponent() {
   const sideLabel = document.createElement(sideLabelTag) as SideLabel;
@@ -14,7 +14,7 @@ function renderComponent() {
 const getLabelElt = (sideLabel: SideLabel) =>
   sideLabel.shadowRoot?.querySelector<HTMLDivElement>(selectors.label);
 
-describe("<SideLabel>", () => {
+describe("<side-label>", () => {
   describe("defaults to", () => {
     it("empty label", () => {
       const component = renderComponent();

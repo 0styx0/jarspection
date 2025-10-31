@@ -1,5 +1,5 @@
 import { JarAttrs } from "./components/jar/jarAttrs";
-import { jarTileTag } from "./components/jarTile/jarTile";
+import { jarTileTag } from "./components/JarTile/JarTile";
 import { queryElt } from "./components/utils";
 import { createJars } from "./utils";
 

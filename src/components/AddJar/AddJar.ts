@@ -1,7 +1,7 @@
-import { createJars } from "../utils";
-import templateHtml from "./add-jar.html?raw";
-import { defineCustomElt, queryElt } from "./utils";
-import { defaultJarAttrs } from "./jarIllustration/jarAttrs";
+import templateHtml from "./AddJar.html?raw";
+import { defineCustomElt, queryElt } from "../utils";
+import { defaultJarAttrs } from "../JarIllustration/jarAttrs";
+import { createJars } from "../../utils";
 
 const selectors = {
   addJar: ".add-jar",
@@ -11,6 +11,7 @@ class AddJar extends HTMLElement {
     super();
     this.attachShadow({ mode: "open" }).innerHTML = templateHtml;
   }
+
 
   connectedCallback() {
     this.createAddJarListener();

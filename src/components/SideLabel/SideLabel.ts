@@ -1,4 +1,4 @@
-import templateHtml from "./side-label.html?raw";
+import templateHtml from "./SideLabel.html?raw";
 import { defineCustomElt, mapPropertiesToAttribute, queryElt } from "../utils";
 
 export const selectors = {

@@ -5,7 +5,7 @@ import {
   verticalRangeTag,
   rangeEvents,
   RangeChangeEvent,
-} from "./vertical-range";
+} from "./VerticalRange";
 import { defineCustomElt } from "../utils";
 
 defineCustomElt(verticalRangeTag, VerticalRange);
@@ -22,14 +22,14 @@ function renderComponent(rangeValue?: number) {
 
 const getRangeElt = (component: VerticalRange) => {
   const range =
-    component.shadowRoot?.querySelector<HTMLInputElement>(".vertical-range");
+    component.shadowRoot?.querySelector<HTMLInputElement>(".VerticalRange");
 
   expect(range).toBeTruthy();
 
   return range!;
 };
 
-describe("<VerticalRange>", () => {
+describe("<vertical-range>", () => {
   describe("initial rendering", () => {
     it("renders with passed-in rangevalue", () => {
       const expectedValue = 50;

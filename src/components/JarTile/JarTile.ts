@@ -1,16 +1,16 @@
-import templateHtml from "./jarTile.html?raw";
+import templateHtml from "./JarTile.html?raw";
 import { defineCustomElt, mapPropertiesToAttribute, queryElt } from "../utils";
-import { SideLabel } from "../side-label/side-label";
-import { defaultJarAttrs, JarAttrs } from "../jarIllustration/jarAttrs";
-import { JarIllustration } from "../jarIllustration/jarIllustration";
+import { SideLabel } from "../SideLabel/SideLabel";
+import { defaultJarAttrs, JarAttrs } from "../JarIllustration/jarAttrs";
+import { JarIllustration } from "../JarIllustration/JarIllustration";
 import {
   ColorChangeEvent,
   colorControlEvents,
-} from "../color-controls/color-controls";
+} from "../ColorControls/ColorControls";
 import {
   RangeChangeEvent,
   rangeEvents,
-} from "../vertical-range/vertical-range";
+} from "../VerticalRange/VerticalRange";
 
 const selectors = {
   labelInput: ".label-input",
@@ -21,7 +21,7 @@ const selectors = {
   labelLeft: ".label-left",
   labelRight: ".label-right",
   removeBtn: ".remove-btn",
-  jarIllustration: ".jar-illustration",
+  JarIllustration: ".jar-illustration",
 };
 
 export class JarTile extends HTMLElement implements JarAttrs {
@@ -173,7 +173,7 @@ export class JarTile extends HTMLElement implements JarAttrs {
   private drawJar() {
     const jarIllustrationElt = queryElt<JarIllustration>(
       this.shadowRoot,
-      selectors.jarIllustration,
+      selectors.JarIllustration,
     );
 
     if (!jarIllustrationElt) {

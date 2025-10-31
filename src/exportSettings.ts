@@ -1,4 +1,4 @@
-import { JarTile, jarTileTag } from "./components/jarTile/jarTile";
+import { JarTile, jarTileTag } from "./components/JarTile/JarTile";
 import { JarAttrs } from "./components/jar/jarAttrs";
 
 function exportJarsToJson() {

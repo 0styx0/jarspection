@@ -1,14 +1,14 @@
 import { describe, it, expect, vi } from "vitest";
 import { defineCustomElt } from "../utils";
-import { paintJar } from "./jar-canvas-utils";
+import { paintJar } from "./jarCanvasUtils";
 import {
   JarIllustration,
   jarIllustrationTag,
   selectors,
-} from "./jarIllustration";
+} from "./JarIllustration";
 import { defaultJarAttrs } from "./jarAttrs";
 
-vi.mock("./jar-canvas-utils", () => ({
+vi.mock("./jarCanvasUtils.ts", () => ({
   paintJar: vi.fn(),
 }));
 
@@ -44,7 +44,7 @@ const getCanvas = (component: JarIllustration) => {
   return canvas!;
 };
 
-describe("<JarIllustration>", () => {
+describe("<jar-illustration>", () => {
   describe("initial render", () => {
     it("calls paintJar on initial render with default attributes", () => {
       vi.clearAllMocks();

@@ -4,7 +4,7 @@ import {
   colorControlsTag,
   selectors,
   colorControlEvents,
-} from "./color-controls";
+} from "./ColorControls";
 import { defineCustomElt } from "../utils";
 
 defineCustomElt(colorControlsTag, ColorControls);
@@ -23,7 +23,7 @@ const getSplotches = (component: ColorControls) => {
   return splotches!;
 };
 
-describe("<ColorControls>", () => {
+describe("<color-controls>", () => {
   describe("initial rendering", () => {
     it("sets background colors of splotches to their values", () => {
       const component = renderComponent();

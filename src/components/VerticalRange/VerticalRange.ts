@@ -1,4 +1,4 @@
-import templateHtml from "./vertical-range.html?raw";
+import templateHtml from "./VerticalRange.html?raw";
 import {
   defineCustomElt,
   mapPropertiesToAttribute,
@@ -15,7 +15,7 @@ export interface RangeChangeEvent {
 }
 
 const selectors = {
-  range: ".vertical-range",
+  range: ".VerticalRange",
 };
 
 export class VerticalRange extends HTMLElement {
