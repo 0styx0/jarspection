@@ -3,18 +3,22 @@ import { defineCustomElt, mapPropertiesToAttribute, queryElt } from "../utils";
 import { defaultJarAttrs, JarAttrs } from "./jarAttrs";
 import { paintJar } from "./jar-canvas-utils";
 
-const selectors = {
+export const selectors = {
   jarCanvas: ".jar",
 };
 
+type JarIllustrationAttrs = Pick<
+  JarAttrs,
+  "fillleft" | "fillright" | "colorleft" | "colorright"
+>;
+
 export class JarIllustration
   extends HTMLElement
-  implements Omit<JarAttrs, "label">
+  implements JarIllustrationAttrs
 {
   fillleft = defaultJarAttrs.fillleft;
   fillright = defaultJarAttrs.fillright;
 
-  // set when colorControls mounts
   colorleft = defaultJarAttrs.colorleft;
   colorright = defaultJarAttrs.colorright;
 
@@ -44,7 +48,7 @@ export class JarIllustration
     this.drawJar();
   }
 
-  drawJar() {
+  private drawJar() {
     const canvas = queryElt<HTMLCanvasElement>(
       this.shadowRoot,
       selectors.jarCanvas,
@@ -56,11 +60,13 @@ export class JarIllustration
 
     paintJar(
       canvas,
-      this.fillleft,
+      +this.fillleft,
       this.colorleft,
-      this.fillright,
+      +this.fillright,
       this.colorright,
     );
   }
 }
-defineCustomElt("jar-illustration", JarIllustration);
+
+export const jarIllustrationTag = "jar-illustration";
+defineCustomElt(jarIllustrationTag, JarIllustration);

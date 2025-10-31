@@ -1,15 +1,19 @@
 /*
  * makes element attrs the source of truth
  * by defining default getters/setters for obj
+ *
+ * if an attr is undefined, the getter returns the default value of the instance variable
  */
-export function mapPropertiesToAttribute(
-  obj: HTMLElement,
+export function mapPropertiesToAttribute<T extends HTMLElement>(
+  obj: T,
   attrsToMap: string[],
 ) {
   attrsToMap.forEach((f) => {
+    const defaultVal = obj[f] as unknown;
+
     Object.defineProperty(obj, f, {
       get() {
-        return this.getAttribute(f);
+        return this.getAttribute(f) ?? defaultVal;
       },
 
       set(v) {
