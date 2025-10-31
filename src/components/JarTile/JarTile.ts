@@ -9,7 +9,7 @@ import {
 } from "../ColorControls/ColorControls";
 import { RangeChangeEvent, rangeEvents } from "../VerticalRange/VerticalRange";
 
-const selectors = {
+export const selectors = {
   labelInput: ".label-input",
   colorLeft: ".colors-left",
   colorRight: ".colors-right",
@@ -18,7 +18,7 @@ const selectors = {
   labelLeft: ".label-left",
   labelRight: ".label-right",
   removeBtn: ".remove-btn",
-  JarIllustration: ".jar-illustration",
+  jarIllustration: ".jar-illustration",
 };
 
 export class JarTile extends HTMLElement implements JarAttrs {
@@ -52,13 +52,17 @@ export class JarTile extends HTMLElement implements JarAttrs {
 
   constructor() {
     super();
+
+    // must wait to call mapProperties until after webcomponent constructor runs
+    const getAttribute = (name: string) => this.getAttribute(name) ?? "";
+
     this.attachShadow({ mode: "open" }).innerHTML = templateHtml
-      .replaceAll("{{fillleft}}", this.fillleft)
-      .replaceAll("{{fillright}}", this.fillright)
-      .replaceAll("{{colorleft}}", this.colorleft)
-      .replaceAll("{{colorright}}", this.colorright)
-      .replaceAll("{{labelleft}}", this.labelleft)
-      .replaceAll("{{labelright}}", this.labelright);
+      .replaceAll("{{fillleft}}", getAttribute("fillleft"))
+      .replaceAll("{{fillright}}", getAttribute("fillright"))
+      .replaceAll("{{colorleft}}", getAttribute("colorleft"))
+      .replaceAll("{{colorright}}", getAttribute("colorright"))
+      .replaceAll("{{labelleft}}", getAttribute("labelleft"))
+      .replaceAll("{{labelright}}", getAttribute("labelright"));
   }
 
   connectedCallback() {
@@ -170,7 +174,7 @@ export class JarTile extends HTMLElement implements JarAttrs {
   private drawJar() {
     const jarIllustrationElt = queryElt<JarIllustration>(
       this.shadowRoot,
-      selectors.JarIllustration,
+      selectors.jarIllustration,
     );
 
     if (!jarIllustrationElt) {

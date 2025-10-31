@@ -1,5 +1,5 @@
-import { JarTile, jarTileTag } from "./components/JarTile/JarTile";
-import { JarAttrs } from "./components/jar/jarAttrs";
+import { JarAttrs } from "../jarAttrs";
+import { JarTile, jarTileTag } from "../JarTile/JarTile";
 
 function exportJarsToJson() {
   const jarPrefs = getJarPrefsFromPage();

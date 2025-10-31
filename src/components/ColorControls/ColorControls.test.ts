@@ -6,14 +6,12 @@ import {
   colorControlEvents,
 } from "./ColorControls";
 import { defineCustomElt } from "../utils";
+import { renderComponent } from "../../test/testUtils";
 
 defineCustomElt(colorControlsTag, ColorControls);
 
-function renderComponent() {
-  const component = document.createElement(colorControlsTag) as ColorControls;
-  document.body.appendChild(component);
-  return component;
-}
+const renderColorControls = () =>
+  renderComponent<ColorControls>(colorControlsTag);
 
 const getSplotches = (component: ColorControls) => {
   const splotches = component.shadowRoot?.querySelectorAll<HTMLInputElement>(
@@ -26,7 +24,7 @@ const getSplotches = (component: ColorControls) => {
 describe("<color-controls>", () => {
   describe("initial rendering", () => {
     it("sets background colors of splotches to their values", () => {
-      const component = renderComponent();
+      const component = renderColorControls();
       const splotches = getSplotches(component);
 
       splotches.forEach((splotch) => {
@@ -38,7 +36,7 @@ describe("<color-controls>", () => {
 
   describe("click", () => {
     it("emits colorchange event with color=option.value", () => {
-      const component = renderComponent();
+      const component = renderColorControls();
       const splotches = getSplotches(component);
 
       const firstSplotch = splotches[0];

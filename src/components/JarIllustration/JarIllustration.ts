@@ -7,14 +7,14 @@ export const selectors = {
   jarCanvas: ".jar",
 };
 
-type JarIllustrationAttrs = Pick<
+export type JarIllustrationProps = Pick<
   JarAttrs,
   "fillleft" | "fillright" | "colorleft" | "colorright"
 >;
 
 export class JarIllustration
   extends HTMLElement
-  implements JarIllustrationAttrs
+  implements JarIllustrationProps
 {
   fillleft = defaultJarAttrs.fillleft;
   fillright = defaultJarAttrs.fillright;

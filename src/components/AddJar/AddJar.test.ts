@@ -3,6 +3,7 @@ import { defineCustomElt } from "../utils";
 import { defaultJarAttrs } from "../jarAttrs";
 import { createJars } from "../../utils";
 import { AddJar, addJarTag, selectors } from "./AddJar";
+import { renderComponent } from "../../test/testUtils";
 
 vi.mock("../../utils", () => ({
   createJars: vi.fn(),
@@ -10,11 +11,7 @@ vi.mock("../../utils", () => ({
 
 defineCustomElt(addJarTag, AddJar);
 
-function renderComponent() {
-  const component = document.createElement(addJarTag) as AddJar;
-  document.body.appendChild(component);
-  return component;
-}
+const renderAddJar = () => renderComponent<AddJar>(addJarTag);
 
 const getButton = (component: AddJar) => {
   const button = component.shadowRoot?.querySelector<HTMLDivElement>(
@@ -28,7 +25,7 @@ describe("<add-jar>", () => {
   describe("initial render", () => {
     it("renders a button with a plus sign", () => {
       vi.clearAllMocks();
-      const component = renderComponent();
+      const component = renderAddJar();
       const button = getButton(component);
       expect(button.textContent?.trim()).toBe("+");
     });
@@ -37,7 +34,7 @@ describe("<add-jar>", () => {
   describe("interaction", () => {
     it("calls createJars with defaultJarAttrs when the button is clicked", () => {
       vi.clearAllMocks();
-      const component = renderComponent();
+      const component = renderAddJar();
       const button = getButton(component);
 
       button.click();

@@ -3,10 +3,12 @@ import { defineCustomElt } from "../utils";
 import { paintJar } from "./jarCanvasUtils";
 import {
   JarIllustration,
+  JarIllustrationProps,
   jarIllustrationTag,
   selectors,
 } from "./JarIllustration";
 import { defaultJarAttrs } from "../jarAttrs";
+import { renderComponent } from "../../test/testUtils";
 
 vi.mock("./jarCanvasUtils.ts", () => ({
   paintJar: vi.fn(),
@@ -14,27 +16,8 @@ vi.mock("./jarCanvasUtils.ts", () => ({
 
 defineCustomElt(jarIllustrationTag, JarIllustration);
 
-function renderComponent(
-  attrs?: Partial<{
-    fillleft: number;
-    fillright: number;
-    colorleft: string;
-    colorright: string;
-  }>,
-) {
-  const component = document.createElement(
-    jarIllustrationTag,
-  ) as JarIllustration;
-
-  if (attrs) {
-    for (const [k, v] of Object.entries(attrs)) {
-      component.setAttribute(k, String(v));
-    }
-  }
-
-  document.body.appendChild(component);
-  return component;
-}
+const renderJarIllustration = (attrs: Partial<JarIllustrationProps> = {}) =>
+  renderComponent<JarIllustration>(jarIllustrationTag, attrs);
 
 const getCanvas = (component: JarIllustration) => {
   const canvas = component.shadowRoot?.querySelector<HTMLCanvasElement>(
@@ -48,7 +31,7 @@ describe("<jar-illustration>", () => {
   describe("initial render", () => {
     it("calls paintJar on initial render with default attributes", () => {
       vi.clearAllMocks();
-      const component = renderComponent();
+      const component = renderJarIllustration();
       const canvas = getCanvas(component);
 
       expect(paintJar).toHaveBeenCalledTimes(1);
@@ -69,7 +52,7 @@ describe("<jar-illustration>", () => {
         colorleft: "#111111",
         colorright: "#222222",
       };
-      const component = renderComponent(attrs);
+      const component = renderJarIllustration(attrs);
       const canvas = getCanvas(component);
 
       // initial render + each updated attribute
@@ -87,7 +70,7 @@ describe("<jar-illustration>", () => {
   describe("attribute changes", () => {
     it("calls paintJar and updates fillleft", () => {
       vi.clearAllMocks();
-      const component = renderComponent();
+      const component = renderJarIllustration();
       const canvas = getCanvas(component);
 
       const newFillLeft = "75";
@@ -106,7 +89,7 @@ describe("<jar-illustration>", () => {
 
     it("calls paintJar and updates fillright", () => {
       vi.clearAllMocks();
-      const component = renderComponent();
+      const component = renderJarIllustration();
       const canvas = getCanvas(component);
 
       const newFillRight = "25";
@@ -125,7 +108,7 @@ describe("<jar-illustration>", () => {
 
     it("calls paintJar and updates colorleft", () => {
       vi.clearAllMocks();
-      const component = renderComponent();
+      const component = renderJarIllustration();
       const canvas = getCanvas(component);
 
       const newColorLeft = "#ff0000";
@@ -144,7 +127,7 @@ describe("<jar-illustration>", () => {
 
     it("calls paintJar and updates colorright", () => {
       vi.clearAllMocks();
-      const component = renderComponent();
+      const component = renderJarIllustration();
       const canvas = getCanvas(component);
 
       const newColorRight = "#00ff00";

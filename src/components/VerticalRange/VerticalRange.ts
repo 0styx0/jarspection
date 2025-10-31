@@ -18,7 +18,11 @@ export const selectors = {
   range: ".vertical-range",
 };
 
-export class VerticalRange extends HTMLElement {
+export interface VerticalRangeProps {
+  rangevalue: number;
+}
+
+export class VerticalRange extends HTMLElement implements VerticalRangeProps {
   rangevalue = 0;
 
   static observedAttributes = ["rangevalue"];

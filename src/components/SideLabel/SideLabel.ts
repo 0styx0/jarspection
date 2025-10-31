@@ -5,7 +5,12 @@ export const selectors = {
   label: ".label",
 };
 
-export class SideLabel extends HTMLElement {
+export interface SideLabelProps {
+  label: string;
+  color: string;
+}
+
+export class SideLabel extends HTMLElement implements SideLabelProps {
   label = "";
   color = "";
 

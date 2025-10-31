@@ -6,20 +6,15 @@ import {
   rangeEvents,
   RangeChangeEvent,
   selectors,
+  VerticalRangeProps,
 } from "./VerticalRange";
 import { defineCustomElt } from "../utils";
+import { renderComponent } from "../../test/testUtils";
 
 defineCustomElt(verticalRangeTag, VerticalRange);
 
-function renderComponent(rangeValue?: number) {
-  const component = document.createElement(verticalRangeTag) as VerticalRange;
-
-  if (rangeValue !== undefined) component.rangevalue = rangeValue;
-
-  document.body.appendChild(component);
-
-  return component;
-}
+const renderVerticalRange = (attrs: Partial<VerticalRangeProps> = {}) =>
+  renderComponent<VerticalRange>(verticalRangeTag, attrs);
 
 const getRangeElt = (component: VerticalRange) => {
   const range = component.shadowRoot?.querySelector<HTMLInputElement>(
@@ -35,7 +30,7 @@ describe("<vertical-range>", () => {
   describe("initial rendering", () => {
     it("renders with passed-in rangevalue", () => {
       const expectedValue = 50;
-      const component = renderComponent(expectedValue);
+      const component = renderVerticalRange({ rangevalue: expectedValue });
       const range = getRangeElt(component);
       expect(+range.value).toBe(expectedValue);
     });
@@ -43,7 +38,7 @@ describe("<vertical-range>", () => {
 
   describe("user input", () => {
     it("fires rangechange event when range is changed", () => {
-      const component = renderComponent();
+      const component = renderVerticalRange();
       const range = getRangeElt(component);
 
       const expectedValue = 30;
@@ -59,7 +54,7 @@ describe("<vertical-range>", () => {
     });
 
     it("updates rangevalue attr when range is changed", () => {
-      const component = renderComponent();
+      const component = renderVerticalRange();
       const range = getRangeElt(component);
 
       const expectedValue = 19;
