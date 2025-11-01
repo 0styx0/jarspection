@@ -7,8 +7,8 @@ import {
   jarIllustrationTag,
   selectors,
 } from "./JarIllustration";
-import { defaultJarAttrs } from "../jarAttrs";
 import { renderComponent } from "../../test/testUtils";
+import { defaultJarTileProps } from "../JarTile/JarTile";
 
 vi.mock("./jarCanvasUtils.ts", () => ({
   paintJar: vi.fn(),
@@ -37,10 +37,10 @@ describe("<jar-illustration>", () => {
       expect(paintJar).toHaveBeenCalledTimes(1);
       expect(paintJar).toHaveBeenLastCalledWith(
         canvas,
-        defaultJarAttrs.fillleft,
-        defaultJarAttrs.colorleft,
-        defaultJarAttrs.fillright,
-        defaultJarAttrs.colorright,
+        defaultJarTileProps.fillleft,
+        defaultJarTileProps.colorleft,
+        defaultJarTileProps.fillright,
+        defaultJarTileProps.colorright,
       );
     });
 
@@ -80,9 +80,9 @@ describe("<jar-illustration>", () => {
       expect(paintJar).toHaveBeenLastCalledWith(
         canvas,
         +newFillLeft,
-        defaultJarAttrs.colorleft,
-        +defaultJarAttrs.fillright,
-        defaultJarAttrs.colorright,
+        defaultJarTileProps.colorleft,
+        +defaultJarTileProps.fillright,
+        defaultJarTileProps.colorright,
       );
       expect(component.fillleft).toBe(newFillLeft);
     });
@@ -98,10 +98,10 @@ describe("<jar-illustration>", () => {
       expect(paintJar).toHaveBeenCalledTimes(2);
       expect(paintJar).toHaveBeenLastCalledWith(
         canvas,
-        +defaultJarAttrs.fillleft,
-        defaultJarAttrs.colorleft,
+        +defaultJarTileProps.fillleft,
+        defaultJarTileProps.colorleft,
         +newFillRight,
-        defaultJarAttrs.colorright,
+        defaultJarTileProps.colorright,
       );
       expect(component.fillright).toBe(newFillRight);
     });

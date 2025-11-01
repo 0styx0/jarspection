@@ -1,5 +1,9 @@
-import { JarTile, jarTileTag } from "./components/JarTile/JarTile.js";
-import { defaultJarAttrs, JarAttrs } from "./components/jarAttrs.js";
+import {
+  defaultJarTileProps,
+  JarTile,
+  JarTileProps,
+  jarTileTag,
+} from "./components/JarTile/JarTile.js";
 import { queryElt } from "./components/utils.js";
 
 const selectors = {
@@ -7,7 +11,7 @@ const selectors = {
   addJar: "#addJar",
 };
 
-export function createJars(jars: JarAttrs[]) {
+export function createJars(jars: JarTileProps[]) {
   const jarGrid = queryElt(document, selectors.jarGrid);
   const addJar = queryElt(document, selectors.addJar);
 
@@ -16,12 +20,12 @@ export function createJars(jars: JarAttrs[]) {
   jarGrid?.insertBefore(jarElts, addJar);
 }
 
-function createJarElts(jarAttrsList: Partial<JarAttrs>[]) {
+function createJarElts(jarAttrsList: Partial<JarTileProps>[]) {
   const fragment = document.createDocumentFragment();
 
   jarAttrsList.forEach((item) => {
     const newJar = createFillableJar({
-      ...defaultJarAttrs,
+      ...defaultJarTileProps,
       ...item,
     });
 
@@ -30,7 +34,7 @@ function createJarElts(jarAttrsList: Partial<JarAttrs>[]) {
   return fragment;
 }
 
-export function createFillableJar(prefs: JarAttrs) {
+export function createFillableJar(prefs: JarTileProps) {
   const jar = document.createElement(jarTileTag) as JarTile;
 
   requestAnimationFrame(() => {

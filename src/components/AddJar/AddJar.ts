@@ -1,7 +1,7 @@
 import templateHtml from "./AddJar.html?raw";
 import { defineCustomElt, queryElt } from "../utils";
-import { defaultJarAttrs } from "../jarAttrs";
 import { createJars } from "../../utils";
+import { defaultJarTileProps } from "../JarTile/JarTile";
 
 export const selectors = {
   addJar: ".add-jar",
@@ -25,7 +25,7 @@ export class AddJar extends HTMLElement {
     if (!addJarButton) return;
 
     addJarButton.addEventListener("click", () => {
-      createJars([defaultJarAttrs]);
+      createJars([defaultJarTileProps]);
     });
   }
 }

@@ -1,6 +1,26 @@
-import { JarAttrs } from "../jarAttrs";
 import { JarTile, jarTileTag } from "../JarTile/JarTile";
+import { defineCustomElt } from "../utils";
 
+const selectors = {
+  exportJarsInput: ".exportJarsInput",
+};
+
+interface ExportedPreferences {
+  version: number;
+  labels: string[];
+  // jars: JarAttrs;
+}
+
+class ExportPreferences extends HTMLElement {
+  constructor() {
+    super();
+  }
+}
+
+export const exportPreferencesTag = "export-preferences";
+defineCustomElt(exportPreferencesTag, ExportPreferences);
+
+/*
 function exportJarsToJson() {
   const jarPrefs = getJarPrefsFromPage();
   downloadJars(jarPrefs);
@@ -34,3 +54,4 @@ function downloadJars(jarPrefs: JarAttrs[]) {
 document
   .getElementById("exportJarsInput")
   ?.addEventListener("click", exportJarsToJson);
+  */

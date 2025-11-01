@@ -1,11 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { JarTile, jarTileTag, selectors } from "./JarTile";
+import { defaultJarTileProps, JarTile, jarTileTag, selectors } from "./JarTile";
 import { defineCustomElt, queryElt } from "../utils";
 import { SideLabel } from "../SideLabel/SideLabel";
 import { JarIllustration } from "../JarIllustration/JarIllustration";
 import { colorControlEvents } from "../ColorControls/ColorControls";
 import { rangeEvents } from "../VerticalRange/VerticalRange";
-import { defaultJarAttrs } from "../jarAttrs";
 import { queryTestElement, renderComponent } from "../../test/testUtils";
 
 defineCustomElt(jarTileTag, JarTile);
@@ -22,8 +21,8 @@ describe("<jar-tile>", () => {
         selectors.jarIllustration,
       );
 
-      expect(component.fillleft).toBe(defaultJarAttrs.fillleft);
-      expect(component.fillright).toBe(defaultJarAttrs.fillright);
+      expect(component.fillleft).toBe(defaultJarTileProps.fillleft);
+      expect(component.fillright).toBe(defaultJarTileProps.fillright);
       expect(component.colorleft).toBeTruthy();
       expect(component.colorright).toBeTruthy();
       expect(jarIllustration).toBeTruthy();

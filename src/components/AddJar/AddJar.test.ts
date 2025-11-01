@@ -1,9 +1,9 @@
 import { describe, it, expect, vi } from "vitest";
 import { defineCustomElt } from "../utils";
-import { defaultJarAttrs } from "../jarAttrs";
 import { createJars } from "../../utils";
 import { AddJar, addJarTag, selectors } from "./AddJar";
 import { renderComponent } from "../../test/testUtils";
+import { defaultJarTileProps } from "../JarTile/JarTile";
 
 vi.mock("../../utils", () => ({
   createJars: vi.fn(),
@@ -40,7 +40,7 @@ describe("<add-jar>", () => {
       button.click();
 
       expect(createJars).toHaveBeenCalledTimes(1);
-      expect(createJars).toHaveBeenCalledWith([defaultJarAttrs]);
+      expect(createJars).toHaveBeenCalledWith([defaultJarTileProps]);
     });
   });
 });

@@ -1,26 +1,28 @@
 import templateHtml from "./JarIllustration.html?raw";
 import { defineCustomElt, mapPropertiesToAttribute, queryElt } from "../utils";
-import { defaultJarAttrs, JarAttrs } from "../jarAttrs";
 import { paintJar } from "./jarCanvasUtils";
+import { defaultJarTileProps } from "../JarTile/JarTile";
 
 export const selectors = {
   jarCanvas: ".jar",
 };
 
-export type JarIllustrationProps = Pick<
-  JarAttrs,
-  "fillleft" | "fillright" | "colorleft" | "colorright"
->;
+export type JarIllustrationProps = {
+  colorleft: string;
+  colorright: string;
+  fillleft: number;
+  fillright: number;
+};
 
 export class JarIllustration
   extends HTMLElement
   implements JarIllustrationProps
 {
-  fillleft = defaultJarAttrs.fillleft;
-  fillright = defaultJarAttrs.fillright;
+  fillleft = defaultJarTileProps.fillleft;
+  fillright = defaultJarTileProps.fillright;
 
-  colorleft = defaultJarAttrs.colorleft;
-  colorright = defaultJarAttrs.colorright;
+  colorleft = defaultJarTileProps.colorleft;
+  colorright = defaultJarTileProps.colorright;
 
   static observedAttributes = [
     "fillleft",

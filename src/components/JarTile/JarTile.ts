@@ -1,13 +1,13 @@
 import templateHtml from "./JarTile.html?raw";
 import { defineCustomElt, mapPropertiesToAttribute, queryElt } from "../utils";
 import { SideLabel } from "../SideLabel/SideLabel";
-import { defaultJarAttrs, JarAttrs } from "../jarAttrs";
 import { JarIllustration } from "../JarIllustration/JarIllustration";
 import {
   ColorChangeEvent,
   colorControlEvents,
 } from "../ColorControls/ColorControls";
 import { RangeChangeEvent, rangeEvents } from "../VerticalRange/VerticalRange";
+import { colors } from "../jarAttrs";
 
 export const selectors = {
   labelInput: ".label-input",
@@ -21,15 +21,35 @@ export const selectors = {
   jarIllustration: ".jar-illustration",
 };
 
-export class JarTile extends HTMLElement implements JarAttrs {
-  fillleft = defaultJarAttrs.fillleft;
-  fillright = defaultJarAttrs.fillright;
+export interface JarTileProps {
+  label: string;
+  labelleft: string;
+  labelright: string;
+  fillleft: number;
+  fillright: number;
+  colorleft: string;
+  colorright: string;
+}
 
-  colorleft = defaultJarAttrs.colorleft;
-  colorright = defaultJarAttrs.colorright;
+export const defaultJarTileProps: JarTileProps = {
+  label: "New Jar",
+  labelleft: "P1",
+  labelright: "P2",
+  fillleft: 50,
+  fillright: 50,
+  colorleft: colors.maybe,
+  colorright: colors.maybe,
+};
 
-  labelleft = defaultJarAttrs.labelleft;
-  labelright = defaultJarAttrs.labelright;
+export class JarTile extends HTMLElement implements JarTileProps {
+  fillleft = defaultJarTileProps.fillleft;
+  fillright = defaultJarTileProps.fillright;
+
+  colorleft = defaultJarTileProps.colorleft;
+  colorright = defaultJarTileProps.colorright;
+
+  labelleft = defaultJarTileProps.labelleft;
+  labelright = defaultJarTileProps.labelright;
 
   static observedAttributes = [
     "label",
