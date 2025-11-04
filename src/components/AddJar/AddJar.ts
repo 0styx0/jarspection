@@ -1,8 +1,15 @@
 import templateHtml from "./AddJar.html?raw";
-import { defineCustomElt, queryElt } from "../utils";
+import { defineCustomElt, queryElt, triggerCustomEvent } from "../utils";
 import { createJars } from "../../utils";
-import { defaultJarTileProps } from "../JarTile/JarTile";
+import { defaultJarTileProps, JarTileProps } from "../JarTile/JarTile";
 
+export const addJarEvents = {
+  addJar: "addJar",
+};
+
+export interface AddJarEvent {
+  jar: JarTileProps;
+}
 export const selectors = {
   addJar: ".add-jar",
 };
@@ -27,6 +34,10 @@ export class AddJar extends HTMLElement {
     addJarButton.addEventListener("click", () => {
       createJars([defaultJarTileProps]);
     });
+    // before addingthis, I must figure out export spec
+    // triggerCustomEvent(this, colorControlEvents.colorchange, {
+    //   color: selectedColor,
+    // });
   }
 }
 

@@ -43,18 +43,7 @@
   </head>
 
   <body>
-    <!-- Export & Import Buttons -->
-    <div class="page-controls">
-      <label>
-        Import Preferences:
-        <input type="file" accept="application/json" id="importJarsInput" />
-      </label>
-      <button id="exportJarsInput">Export Preferences</button>
-    </div>
-
-    <div id="jarGrid">
-      <add-jar id="addJar"></add-jar>
-    </div>
+    <jars-page></jars-page>
 
     <script
       type="module"
@@ -86,10 +75,6 @@
       src="./src/components/ExportPreferences/ExportPreferences.ts"
     ></script>
 
-    <script type="module">
-      import { createJars } from "./src/utils";
-      import { defaultJars } from "./src/defaultJars.ts";
-      createJars(defaultJars);
-    </script>
+    <script type="module" src="./src/pages/JarsPage/JarsPage.ts"></script>
   </body>
 </html>

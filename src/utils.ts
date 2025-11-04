@@ -7,9 +7,11 @@ import {
 import { queryElt } from "./components/utils.js";
 
 const selectors = {
-  jarGrid: "#jarGrid",
+  jarGrid: ".jarGrid",
   addJar: "#addJar",
 };
+
+// todo: potentially delete file
 
 export function createJars(jars: JarTileProps[]) {
   const jarGrid = queryElt(document, selectors.jarGrid);

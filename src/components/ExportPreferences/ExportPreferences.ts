@@ -1,3 +1,4 @@
+import templateHtml from "./ExportPreferences.html?raw";
 import { JarTile, jarTileTag } from "../JarTile/JarTile";
 import { defineCustomElt } from "../utils";
 
@@ -5,15 +6,19 @@ const selectors = {
   exportJarsInput: ".exportJarsInput",
 };
 
-interface ExportedPreferences {
-  version: number;
-  labels: string[];
-  // jars: JarAttrs;
-}
+// on connected: load prefs
+// on file upload: load prefs
+// load prefs = custom event
+//
+// handle event: where?
+//
+// JarsPage renders JarsTiles and the import/export
 
 class ExportPreferences extends HTMLElement {
   constructor() {
     super();
+
+    this.attachShadow({ mode: "open" }).innerHTML = templateHtml;
   }
 }
 
