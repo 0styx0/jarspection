@@ -1,6 +1,6 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { defaultJarTileProps, JarTile, jarTileTag, selectors } from "./JarTile";
-import { defineCustomElt, queryElt } from "../utils";
+import { defineCustomElt } from "../utils";
 import { SideLabel } from "../SideLabel/SideLabel";
 import { JarIllustration } from "../JarIllustration/JarIllustration";
 import { colorControlEvents } from "../ColorControls/ColorControls";
@@ -172,6 +172,32 @@ describe("<jar-tile>", () => {
       expect(component.colorright).toBe("#00ffff");
       expect(jarIllustration.colorright).toBe("#00ffff");
       expect(labelRight.color).toBe("#00ffff");
+    });
+
+    it("updates labelleft property", () => {
+      const component = renderJarTile();
+      const leftLabelElt = queryTestElement<SideLabel>(
+        component,
+        selectors.labelLeft,
+      );
+      const newLabel = "new left lab";
+
+      component.labelleft = newLabel;
+
+      expect(leftLabelElt.label).toBe(newLabel);
+    });
+
+    it("updates labelright property", () => {
+      const component = renderJarTile();
+      const rightLabelElt = queryTestElement<SideLabel>(
+        component,
+        selectors.labelRight,
+      );
+      const newLabel = "new right lab";
+
+      component.labelright = newLabel;
+
+      expect(rightLabelElt.label).toBe(newLabel);
     });
 
     it("updates label property", () => {

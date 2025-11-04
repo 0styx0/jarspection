@@ -104,6 +104,12 @@ export class JarTile extends HTMLElement implements JarTileProps {
       case "colorright":
         this.setSideLabelColor(selectors.labelRight, this.colorright);
         break;
+      case "labelleft":
+        this.setSideLabelText(selectors.labelLeft, this.labelleft);
+        break;
+      case "labelright":
+        this.setSideLabelText(selectors.labelRight, this.labelright);
+        break;
     }
 
     this.drawJar();
@@ -139,6 +145,15 @@ export class JarTile extends HTMLElement implements JarTileProps {
       return;
     }
     sideLabel.color = color;
+  }
+
+  private setSideLabelText(selector: string, text: string) {
+    const sideLabel = queryElt<SideLabel>(this.shadowRoot, selector);
+
+    if (!sideLabel) {
+      return;
+    }
+    sideLabel.label = text;
   }
 
   private handleColorChanges = () => {
