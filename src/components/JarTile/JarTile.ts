@@ -27,8 +27,8 @@ export interface JarTileProps {
   labelright: string;
   fillleft: number;
   fillright: number;
-  colorleft: string;
-  colorright: string;
+  colorleft: HexColorValue;
+  colorright: HexColorValue;
 }
 
 export const defaultJarTileProps: Container = {
@@ -128,12 +128,12 @@ export class JarTile extends HTMLElement implements JarTileProps {
         {
           categoryLabel: this.labelleft,
           hexColor: this.colorleft,
-          percent: this.fillleft,
+          percent: +this.fillleft,
         },
         {
           categoryLabel: this.labelright,
           hexColor: this.colorright,
-          percent: this.fillright,
+          percent: +this.fillright,
         },
       ],
     };

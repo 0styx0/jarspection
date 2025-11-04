@@ -1,11 +1,18 @@
 import { describe, it, expect } from "vitest";
-import { defaultJarTileProps, JarTile, jarTileTag, selectors } from "./JarTile";
+import {
+  defaultJarTileProps,
+  JarTile,
+  JarTileProps,
+  jarTileTag,
+  selectors,
+} from "./JarTile";
 import { defineCustomElt } from "../utils";
 import { SideLabel } from "../SideLabel/SideLabel";
 import { JarIllustration } from "../JarIllustration/JarIllustration";
 import { colorControlEvents } from "../ColorControls/ColorControls";
 import { rangeEvents } from "../VerticalRange/VerticalRange";
 import { queryTestElement, renderComponent } from "../../test/testUtils";
+import { Container, HexColorValue } from "../../api";
 
 defineCustomElt(jarTileTag, JarTile);
 
@@ -357,7 +364,10 @@ describe("<jar-tile>", () => {
   describe("remove functionality", () => {
     it("removes component when remove button is clicked", () => {
       const component = renderJarTile();
-      const removeBtn = queryTestElement(component, selectors.removeBtn);
+      const removeBtn = queryTestElement<HTMLButtonElement>(
+        component,
+        selectors.removeBtn,
+      );
 
       expect(document.body.contains(component)).toBe(true);
 
@@ -368,6 +378,35 @@ describe("<jar-tile>", () => {
   });
 
   describe("export", () => {
-    it("returns all properties", () => {});
+    it("returns all properties", () => {
+      const attrs: JarTileProps = {
+        fillleft: 39,
+        fillright: 30,
+        colorleft: "#ffdd44",
+        colorright: "#ffdd44",
+        label: "eeeeeh",
+        labelleft: "lefty",
+        labelright: "righty-o",
+      };
+
+      const component = renderJarTile(attrs);
+      const exported = component.export();
+
+      expect(exported).toEqual({
+        containerLabel: attrs.label,
+        categories: [
+          {
+            categoryLabel: attrs.labelleft,
+            hexColor: attrs.colorleft,
+            percent: attrs.fillleft,
+          },
+          {
+            categoryLabel: attrs.labelright,
+            hexColor: attrs.colorright,
+            percent: attrs.fillright,
+          },
+        ],
+      } as Container);
+    });
   });
 });
