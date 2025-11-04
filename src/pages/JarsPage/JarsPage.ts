@@ -15,6 +15,12 @@ export const selectors = {
   addJar: ".addJar",
 };
 
+// process:
+//   onClick export:
+//     go through each tile (internal? external?)
+//     set export object
+//     save to json file
+
 class JarsPage extends HTMLElement {
   constructor() {
     super();

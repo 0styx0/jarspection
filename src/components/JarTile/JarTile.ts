@@ -7,7 +7,7 @@ import {
   colorControlEvents,
 } from "../ColorControls/ColorControls";
 import { RangeChangeEvent, rangeEvents } from "../VerticalRange/VerticalRange";
-import { colors } from "../jarAttrs";
+import { colors, Container, HexColorValue } from "../../api";
 
 export const selectors = {
   labelInput: ".label-input",
@@ -31,25 +31,31 @@ export interface JarTileProps {
   colorright: string;
 }
 
-export const defaultJarTileProps: JarTileProps = {
-  label: "New Jar",
-  labelleft: "P1",
-  labelright: "P2",
-  fillleft: 50,
-  fillright: 50,
-  colorleft: colors.maybe,
-  colorright: colors.maybe,
+export const defaultJarTileProps: Container = {
+  containerLabel: "New Jar",
+  categories: [
+    {
+      categoryLabel: "G",
+      hexColor: colors.maybe,
+      percent: 50,
+    },
+    {
+      categoryLabel: "R",
+      hexColor: colors.maybe,
+      percent: 50,
+    },
+  ],
 };
 
 export class JarTile extends HTMLElement implements JarTileProps {
-  fillleft = defaultJarTileProps.fillleft;
-  fillright = defaultJarTileProps.fillright;
+  fillleft = defaultJarTileProps.categories[0].percent;
+  fillright = defaultJarTileProps.categories[1].percent;
 
-  colorleft = defaultJarTileProps.colorleft;
-  colorright = defaultJarTileProps.colorright;
+  colorleft: HexColorValue = defaultJarTileProps.categories[0].hexColor;
+  colorright: HexColorValue = defaultJarTileProps.categories[1].hexColor;
 
-  labelleft = defaultJarTileProps.labelleft;
-  labelright = defaultJarTileProps.labelright;
+  labelleft = defaultJarTileProps.categories[0].categoryLabel;
+  labelright = defaultJarTileProps.categories[1].categoryLabel;
 
   static observedAttributes = [
     "label",
@@ -113,6 +119,24 @@ export class JarTile extends HTMLElement implements JarTileProps {
     }
 
     this.drawJar();
+  }
+
+  export(): Container {
+    return {
+      containerLabel: this.label,
+      categories: [
+        {
+          categoryLabel: this.labelleft,
+          hexColor: this.colorleft,
+          percent: this.fillleft,
+        },
+        {
+          categoryLabel: this.labelright,
+          hexColor: this.colorright,
+          percent: this.fillright,
+        },
+      ],
+    };
   }
 
   private setupEventListeners() {

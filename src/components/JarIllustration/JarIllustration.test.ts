@@ -37,10 +37,10 @@ describe("<jar-illustration>", () => {
       expect(paintJar).toHaveBeenCalledTimes(1);
       expect(paintJar).toHaveBeenLastCalledWith(
         canvas,
-        defaultJarTileProps.fillleft,
-        defaultJarTileProps.colorleft,
-        defaultJarTileProps.fillright,
-        defaultJarTileProps.colorright,
+        defaultJarTileProps.categories[0].percent,
+        defaultJarTileProps.categories[0].hexColor,
+        defaultJarTileProps.categories[1].percent,
+        defaultJarTileProps.categories[1].hexColor,
       );
     });
 
@@ -80,9 +80,9 @@ describe("<jar-illustration>", () => {
       expect(paintJar).toHaveBeenLastCalledWith(
         canvas,
         +newFillLeft,
-        defaultJarTileProps.colorleft,
-        +defaultJarTileProps.fillright,
-        defaultJarTileProps.colorright,
+        defaultJarTileProps.categories[0].hexColor,
+        +defaultJarTileProps.categories[1].percent,
+        defaultJarTileProps.categories[1].hexColor,
       );
       expect(component.fillleft).toBe(newFillLeft);
     });
@@ -98,10 +98,10 @@ describe("<jar-illustration>", () => {
       expect(paintJar).toHaveBeenCalledTimes(2);
       expect(paintJar).toHaveBeenLastCalledWith(
         canvas,
-        +defaultJarTileProps.fillleft,
-        defaultJarTileProps.colorleft,
+        +defaultJarTileProps.categories[0].percent,
+        defaultJarTileProps.categories[0].hexColor,
         +newFillRight,
-        defaultJarTileProps.colorright,
+        defaultJarTileProps.categories[1].hexColor,
       );
       expect(component.fillright).toBe(newFillRight);
     });

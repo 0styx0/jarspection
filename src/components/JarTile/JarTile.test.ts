@@ -21,8 +21,12 @@ describe("<jar-tile>", () => {
         selectors.jarIllustration,
       );
 
-      expect(component.fillleft).toBe(defaultJarTileProps.fillleft);
-      expect(component.fillright).toBe(defaultJarTileProps.fillright);
+      expect(component.fillleft).toBe(
+        defaultJarTileProps.categories[0].percent,
+      );
+      expect(component.fillright).toBe(
+        defaultJarTileProps.categories[1].percent,
+      );
       expect(component.colorleft).toBeTruthy();
       expect(component.colorright).toBeTruthy();
       expect(jarIllustration).toBeTruthy();
@@ -361,5 +365,9 @@ describe("<jar-tile>", () => {
 
       expect(document.body.contains(component)).toBe(false);
     });
+  });
+
+  describe("export", () => {
+    it("returns all properties", () => {});
   });
 });

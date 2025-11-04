@@ -18,11 +18,11 @@ export class JarIllustration
   extends HTMLElement
   implements JarIllustrationProps
 {
-  fillleft = defaultJarTileProps.fillleft;
-  fillright = defaultJarTileProps.fillright;
+  fillleft = defaultJarTileProps.categories[0].percent;
+  fillright = defaultJarTileProps.categories[1].percent;
 
-  colorleft = defaultJarTileProps.colorleft;
-  colorright = defaultJarTileProps.colorright;
+  colorleft = defaultJarTileProps.categories[0].hexColor;
+  colorright = defaultJarTileProps.categories[1].hexColor;
 
   static observedAttributes = [
     "fillleft",

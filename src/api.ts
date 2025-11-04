@@ -4,12 +4,12 @@ export const colors = {
   no: "#ff4444",
 } as const;
 
-export type HexColorValues = (typeof colors)[keyof typeof colors];
+export type HexColorValue = (typeof colors)[keyof typeof colors];
 
 export interface CategoryItem {
   // technically this repeats info. but I want to keep api flexible for future
   categoryLabel: string;
-  hexColor: HexColorValues;
+  hexColor: HexColorValue;
   /** 0-100 **/
   percent: number;
 }
