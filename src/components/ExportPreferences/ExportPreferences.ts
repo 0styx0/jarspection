@@ -2,6 +2,14 @@ import templateHtml from "./ExportPreferences.html?raw";
 import { JarTile, jarTileTag } from "../JarTile/JarTile";
 import { defineCustomElt } from "../utils";
 
+export const exportControlEvents = {
+  exportclick: "exportclick",
+};
+
+export interface exportChangeEvent {
+  export: string;
+}
+
 const selectors = {
   exportJarsInput: ".exportJarsInput",
 };
@@ -14,6 +22,7 @@ const selectors = {
 //
 // JarsPage renders JarsTiles and the import/export
 
+// onClick: fire custom event
 class ExportPreferences extends HTMLElement {
   constructor() {
     super();
@@ -22,7 +31,7 @@ class ExportPreferences extends HTMLElement {
   }
 }
 
-export const exportPreferencesTag = "export-preferences";
+export const exportPreferencesTag = "export-containers";
 defineCustomElt(exportPreferencesTag, ExportPreferences);
 
 /*

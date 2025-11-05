@@ -65,3 +65,15 @@ export function queryElt<Elt extends Element>(
 
   return elt;
 }
+
+export function queryElts<Elt extends Element>(
+  container: ShadowRoot | Document | null,
+  selector: string,
+) {
+  if (!container) {
+    console.trace("Unable to find container ", { container, selector });
+    return [];
+  }
+
+  return [...container.querySelectorAll<Elt>(selector)];
+}
