@@ -15,7 +15,7 @@ interface JarsPageControlsProps {
 
 const selectors = {
   jarImporterPlaceholder: ".jar-importer-placeholder",
-  exportElt: ".exportContainers",
+  jarExporterPlaceholder: ".jar-exporter-placeholder",
 };
 
 const defaultProps: JarsPageControlsProps = {
@@ -28,7 +28,7 @@ const defaultProps: JarsPageControlsProps = {
   },
 };
 
-class JarsPageControls extends HTMLElement {
+export class JarsPageControls extends HTMLElement {
   private props: JarsPageControlsProps = defaultProps;
 
   constructor() {

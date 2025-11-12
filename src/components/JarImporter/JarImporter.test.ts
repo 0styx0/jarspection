@@ -6,27 +6,12 @@ import { Container, ContainerSettings } from "../../api";
 import { defaultContainers } from "../../defaultJars";
 import { defineCustomElt } from "../utils";
 import { renderComponent } from "../../test/testUtils";
+import {
+  createMockFile,
+  createMockImportContents,
+} from "../../../test/importHelpers";
 
 defineCustomElt(jarImporterTag, JarImporter);
-
-const createMockFile = (content: string, filename = "test.json"): File =>
-  new File([content], filename, { type: "application/json" });
-
-const createMockImportContents = (): ContainerSettings => ({
-  version: "1.0.9",
-  containers: [
-    {
-      containerLabel: "Test Container",
-      categories: [
-        {
-          categoryLabel: "Yes",
-          hexColor: "#44ff44",
-          percent: 50,
-        },
-      ],
-    },
-  ],
-});
 
 const getFileInput = (component: JarImporter): HTMLInputElement => {
   const input =

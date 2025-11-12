@@ -1,0 +1,35 @@
+{
+  "version": "1.0",
+  "containers": [
+    {
+      "containerLabel": "Container 1",
+      "categories": [
+        {
+          "categoryLabel": "P1",
+          "hexColor": "#44ff44",
+          "percent": 80
+        },
+        {
+          "categoryLabel": "P2",
+          "hexColor": "#ffdd44",
+          "percent": 50
+        }
+      ]
+    },
+    {
+      "containerLabel": "Container 2",
+      "categories": [
+        {
+          "categoryLabel": "P1",
+          "hexColor": "#44ff44",
+          "percent": 100
+        },
+        {
+          "categoryLabel": "P2",
+          "hexColor": "#ffdd44",
+          "percent": 40
+        }
+      ]
+    }
+  ]
+}
