@@ -54,11 +54,10 @@ export class JarImporter extends HTMLElement {
 
   setProps(props: JarImporterProps) {
     this.props = props;
+    this.initializeContainers();
   }
 
   connectedCallback() {
-    this.initializeContainers();
-
     this.addImportClickHandler();
   }
 

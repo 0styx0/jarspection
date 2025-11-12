@@ -51,8 +51,6 @@ describe("<jar-importer>", () => {
     it("calls importContainers with default containers when no file is present", () => {
       const { component, importContainersSpy } = renderJarImporter();
 
-      component.connectedCallback();
-
       expect(importContainersSpy).toHaveBeenCalledWith(defaultContainers);
       expect(importContainersSpy).toHaveBeenCalledTimes(1);
     });
@@ -66,8 +64,6 @@ describe("<jar-importer>", () => {
       const input = getFileInput(component);
       await user.upload(input, mockFile);
 
-      component.connectedCallback();
-
       await waitFor(() => {
         expect(importContainersSpy).toHaveBeenCalled();
       });
@@ -80,8 +76,6 @@ describe("<jar-importer>", () => {
       const mockFile = createMockFile("invalid json content");
       await user.upload(input, mockFile);
 
-      component.connectedCallback();
-
       await waitFor(() => {
         expect(importContainersSpy).toHaveBeenCalledWith([]);
       });
@@ -93,8 +87,6 @@ describe("<jar-importer>", () => {
       const user = userEvent.setup();
       const { component, importContainersSpy } = renderJarImporter();
       const input = getFileInput(component);
-
-      component.connectedCallback();
 
       const mockImportContents = createMockImportContents();
       const mockFile = createMockFile(JSON.stringify(mockImportContents));
@@ -112,7 +104,6 @@ describe("<jar-importer>", () => {
       const { component, importContainersSpy } = renderJarImporter();
       const input = getFileInput(component);
 
-      component.connectedCallback();
       const initialCallCount = importContainersSpy.mock.calls.length;
 
       input.dispatchEvent(new Event("change", { bubbles: true }));
