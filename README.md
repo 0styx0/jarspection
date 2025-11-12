@@ -1,3 +1,4 @@
+Status: WIP. All functionality and appearance subject to change.
 
 Connect with yourself and others by filling a jar with a color and amount that shows your feelings about a given topic.
 
