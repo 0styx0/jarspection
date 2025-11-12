@@ -1,3 +1,18 @@
+/**
+
+### Overview
+On component load:
+- Loads a file that the user previously uploaded
+- Loads default view if the user has not provided an import file
+
+When a user uploads a file:
+- Load that file into the view
+
+If the user provides an invalid file, we fallback to a blank screen
+  Later we will add error messages, for now we log errors
+
+
+*/
 import templateHtml from "./JarImporter.html?raw";
 import {
   CategoryItem,
@@ -42,12 +57,12 @@ export class JarImporter extends HTMLElement {
   }
 
   connectedCallback() {
-    this.loadContainers();
+    this.initializeContainers();
 
     this.addImportClickHandler();
   }
 
-  private loadContainers() {
+  private initializeContainers() {
     const importFile = this.getImportFile();
     if (importFile) {
       this.importFromFile(importFile);
@@ -58,26 +73,30 @@ export class JarImporter extends HTMLElement {
   }
 
   private addImportClickHandler() {
-    const importFile = this.getImportFile();
+    this.getFileInputElt()?.addEventListener("change", () => {
+      const importFile = this.getImportFile();
 
-    if (!importFile) {
-      console.info("No import file");
-      return;
-    }
+      if (!importFile) {
+        console.info("JarImporter: Unable to import settings - No import file");
+        return;
+      }
 
-    this.importFromFile(importFile);
+      this.importFromFile(importFile);
+    });
+  }
+
+  private getFileInputElt() {
+    return queryElt<HTMLInputElement>(this.shadowRoot, selectors.importBtn);
   }
 
   private async importFromFile(file: File) {
     const containers = await this.parseImportFile(file);
+
     this.props.importContainers(containers);
   }
 
   private getImportFile(): File | null {
-    const importInput = queryElt<HTMLInputElement>(
-      this.shadowRoot,
-      selectors.importBtn,
-    );
+    const importInput = this.getFileInputElt();
 
     return importInput?.files?.item(0) ?? null;
   }

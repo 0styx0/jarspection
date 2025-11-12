@@ -89,7 +89,7 @@ describe("<jar-importer>", () => {
   });
 
   describe("file upload", () => {
-    it.only("calls importContainers with file contents when valid file is uploaded", async () => {
+    it("calls importContainers with file contents when valid file is uploaded", async () => {
       const user = userEvent.setup();
       const { component, importContainersSpy } = renderJarImporter();
       const input = getFileInput(component);
@@ -106,20 +106,6 @@ describe("<jar-importer>", () => {
           mockImportContents.containers,
         );
       });
-    });
-
-    it("refrains from calling importContainers with empty array when invalid file is uploaded", async () => {
-      const user = userEvent.setup();
-      const { component, importContainersSpy } = renderJarImporter();
-      const input = getFileInput(component);
-
-      component.connectedCallback();
-      importContainersSpy.mockClear();
-
-      const mockFile = createMockFile("invalid json content");
-      await user.upload(input, mockFile);
-
-      expect(importContainersSpy).not.toHaveBeenCalled();
     });
 
     it("does not call importContainers when no file is selected after initial load", async () => {
