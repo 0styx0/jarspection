@@ -1,23 +1,29 @@
+/**
+
+Creates and prompts user to download a json file consisting of all containers retrieved via props.exportContainers
+
+*/
+
 import templateHtml from "./JarExporter.html?raw";
-import { Container } from "../../api";
-import { defineCustomElt } from "../utils";
+import { Container, ContainerSettings } from "../../api";
+import { defineCustomElt, queryElt } from "../utils";
 
 interface ExportContainersProps {
   exportContainers: () => Container[];
 }
 
-const selectors = {
-  exportBtn: ".exportBtn",
+export const selectors = {
+  exportBtn: ".exportJarsInput",
 };
 
 const defaultProps: ExportContainersProps = {
   exportContainers: () => {
-    console.error("JarsPageControls: Please set exportContainers prop");
+    console.error("JarExporter: Please set exportContainers prop");
     return [];
   },
 };
 
-class JarExporter extends HTMLElement {
+export class JarExporter extends HTMLElement {
   private props: ExportContainersProps = defaultProps;
 
   constructor() {
@@ -26,8 +32,51 @@ class JarExporter extends HTMLElement {
     this.attachShadow({ mode: "open" }).innerHTML = templateHtml;
   }
 
-  handleExport() {
-    this.props.exportContainers();
+  connectedCallback() {
+    this.addExportHandler();
+  }
+
+  setProps(props: ExportContainersProps) {
+    this.props = props;
+  }
+
+  private addExportHandler() {
+    this.getExportBtnElt()?.addEventListener("click", () => {
+      this.exportSettings();
+    });
+  }
+
+  private exportSettings = () => {
+    const settings = this.getExportData();
+    const exportFile = this.createFile(settings);
+    this.triggerDownload(exportFile);
+  };
+
+  private getExportData(): ContainerSettings {
+    const containers = this.props.exportContainers();
+    return {
+      version: "1.0.0",
+      containers,
+    };
+  }
+
+  private createFile(containerSettings: ContainerSettings): Blob {
+    return new Blob([JSON.stringify(containerSettings, null, 2)], {
+      type: "application/json",
+    });
+  }
+
+  private async triggerDownload(downloadFile: Blob) {
+    const url = URL.createObjectURL(downloadFile);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "jars-export.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  private getExportBtnElt(): HTMLButtonElement | null {
+    return queryElt<HTMLButtonElement>(this.shadowRoot, selectors.exportBtn);
   }
 }
 

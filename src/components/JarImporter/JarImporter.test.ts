@@ -1,8 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { waitFor } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
-import { JarImporter, JarImporterProps, jarImporterTag } from "./JarImporter";
-import { Container, ContainerSettings } from "../../api";
+import { JarImporter, jarImporterTag } from "./JarImporter";
 import { defaultContainers } from "../../defaultJars";
 import { defineCustomElt } from "../utils";
 import { renderComponent } from "../../test/testUtils";
