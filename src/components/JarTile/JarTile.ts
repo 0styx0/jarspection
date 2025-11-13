@@ -1,37 +1,34 @@
 import templateHtml from "./JarTile.html?raw";
-import { defineCustomElt, mapPropertiesToAttribute, queryElt } from "../utils";
+import { defineCustomElt, queryElt } from "../utils";
 import { SideLabel } from "../SideLabel/SideLabel";
 import { JarIllustration } from "../JarIllustration/JarIllustration";
 import {
   ColorChangeEvent,
   colorControlEvents,
 } from "../ColorControls/ColorControls";
-import { RangeChangeEvent, rangeEvents } from "../VerticalRange/VerticalRange";
+import {
+  RangeChangeEvent,
+  rangeEvents,
+  VerticalRange,
+} from "../VerticalRange/VerticalRange";
 import { colors, Container, HexColorValue } from "../../api";
+import { ComplexComponent } from "../../interfaces/ComplexComponent";
 
 export const selectors = {
   labelInput: ".label-input",
-  colorLeft: ".colors-left",
-  colorRight: ".colors-right",
-  rangeLeft: ".range-left",
-  rangeRight: ".range-right",
-  labelLeft: ".label-left",
-  labelRight: ".label-right",
+  colors: [".colors-left", ".colors-right"],
+  ranges: [".range-left", ".range-right"],
+  labels: [".label-left", ".label-right"],
   removeBtn: ".remove-btn",
   jarIllustration: ".jar-illustration",
 };
 
 export interface JarTileProps {
-  label: string;
-  labelleft: string;
-  labelright: string;
-  fillleft: number;
-  fillright: number;
-  colorleft: HexColorValue;
-  colorright: HexColorValue;
+  container: Container;
 }
 
 export const defaultJarTileProps: Container = {
+  id: Symbol(),
   containerLabel: "New Jar",
   categories: [
     {
@@ -47,131 +44,74 @@ export const defaultJarTileProps: Container = {
   ],
 };
 
-export class JarTile extends HTMLElement implements JarTileProps {
-  fillleft = defaultJarTileProps.categories[0].percent;
-  fillright = defaultJarTileProps.categories[1].percent;
-
-  colorleft: HexColorValue = defaultJarTileProps.categories[0].hexColor;
-  colorright: HexColorValue = defaultJarTileProps.categories[1].hexColor;
-
-  labelleft = defaultJarTileProps.categories[0].categoryLabel;
-  labelright = defaultJarTileProps.categories[1].categoryLabel;
-
-  static observedAttributes = [
-    "label",
-    "labelleft",
-    "labelright",
-    "fillleft",
-    "fillright",
-    "colorleft",
-    "colorright",
-  ];
-
-  static mirroredProps = [
-    "labelleft",
-    "labelright",
-    "fillleft",
-    "fillright",
-    "colorleft",
-    "colorright",
-  ];
+export class JarTile
+  extends HTMLElement
+  implements ComplexComponent<JarTileProps>
+{
+  private container = defaultJarTileProps;
 
   constructor() {
     super();
 
-    // must wait to call mapProperties until after webcomponent constructor runs
-    const getAttribute = (name: string) => this.getAttribute(name) ?? "";
-
-    this.attachShadow({ mode: "open" }).innerHTML = templateHtml
-      .replaceAll("{{fillleft}}", getAttribute("fillleft"))
-      .replaceAll("{{fillright}}", getAttribute("fillright"))
-      .replaceAll("{{colorleft}}", getAttribute("colorleft"))
-      .replaceAll("{{colorright}}", getAttribute("colorright"))
-      .replaceAll("{{labelleft}}", getAttribute("labelleft"))
-      .replaceAll("{{labelright}}", getAttribute("labelright"));
+    this.attachShadow({ mode: "open" }).innerHTML = templateHtml;
   }
 
   connectedCallback() {
-    mapPropertiesToAttribute(this, JarTile.mirroredProps);
-
     this.setupEventListeners();
 
     this.drawJar();
   }
 
-  attributeChangedCallback(attr: string, was: string, value: string) {
-    switch (attr) {
-      case "label":
-        this.label = value;
-        break;
-      case "colorleft":
-        this.setSideLabelColor(selectors.labelLeft, this.colorleft);
-        break;
-      case "colorright":
-        this.setSideLabelColor(selectors.labelRight, this.colorright);
-        break;
-      case "labelleft":
-        this.setSideLabelText(selectors.labelLeft, this.labelleft);
-        break;
-      case "labelright":
-        this.setSideLabelText(selectors.labelRight, this.labelright);
-        break;
-    }
+  setProps(props: JarTileProps) {
+    this.container = props.container;
+
+    this.updateContainerLabelElt(props.container.containerLabel);
+    props.container.categories.forEach((category, i) => {
+      this.updateColor(i, category.hexColor);
+      this.updateRange(i, category.percent);
+      this.updateCategoryLabel(i, category.categoryLabel);
+    });
 
     this.drawJar();
   }
 
   export(): Container {
-    return {
-      containerLabel: this.label,
-      categories: [
-        {
-          categoryLabel: this.labelleft,
-          hexColor: this.colorleft,
-          percent: +this.fillleft,
-        },
-        {
-          categoryLabel: this.labelright,
-          hexColor: this.colorright,
-          percent: +this.fillright,
-        },
-      ],
-    };
+    return this.container;
   }
 
   private setupEventListeners() {
     this.handleRemove();
     this.handleColorChanges();
     this.handleFillChanges();
+    this.handleLabelChanges();
   }
 
-  private getLabelElt = () =>
-    queryElt<HTMLTextAreaElement>(this.shadowRoot, selectors.labelInput);
-
-  get label() {
-    return this.getLabelElt()?.value || "";
+  private updateColor(categoryIdx: number, color?: string) {
+    if (!color) {
+      console.warn("JarTile: Updating color failed. No color found", color);
+      return;
+    }
+    this.container.categories[categoryIdx].hexColor = color as HexColorValue;
+    this.updateCategoryElt(selectors.colors[categoryIdx], color);
+    // note: this piece could trigger multiple re-draws (for each updated attr). update if it affects performance
+    this.drawJar();
   }
 
-  set label(value: string) {
-    const labelElt = this.getLabelElt();
+  // todo: currently I wrap update*Elt in update*. should I?
 
-    if (!labelElt) {
+  private updateRange(categoryIdx: number, rangeValue?: number) {
+    if (rangeValue === undefined) {
+      console.warn("Updating range failed. No range found", rangeValue);
       return;
     }
 
-    labelElt.value = value || "";
+    this.container.categories[categoryIdx].percent = rangeValue;
+    this.updateRangeElt(selectors.ranges[categoryIdx], rangeValue);
+    this.drawJar();
   }
 
-  private setSideLabelColor(selector: string, color: string) {
-    const sideLabel = queryElt<SideLabel>(this.shadowRoot, selector);
-
-    if (!sideLabel) {
-      return;
-    }
-    sideLabel.color = color;
-  }
-
-  private setSideLabelText(selector: string, text: string) {
+  private updateCategoryLabel(categoryIdx: number, text: string) {
+    const selector = selectors.labels[categoryIdx];
     const sideLabel = queryElt<SideLabel>(this.shadowRoot, selector);
 
     if (!sideLabel) {
@@ -180,54 +120,90 @@ export class JarTile extends HTMLElement implements JarTileProps {
     sideLabel.label = text;
   }
 
-  private handleColorChanges = () => {
-    const colorLeft = queryElt(this.shadowRoot, selectors.colorLeft);
-    const colorRight = queryElt(this.shadowRoot, selectors.colorRight);
+  private updateContainerLabelElt(text: string) {
+    const labelElt = queryElt<HTMLTextAreaElement>(
+      this.shadowRoot,
+      selectors.labelInput,
+    );
+    if (!labelElt) {
+      console.warn("JarTile: No label elt found");
+      return;
+    }
+    labelElt.value = text;
+    this.container.containerLabel = text;
+  }
 
-    if (!colorLeft || !colorRight) {
-      console.warn("Error setting color events. Element(s) not found", {
-        colorLeft,
-        colorRight,
-      });
+  private updateCategoryElt(selector: string, color: string) {
+    const sideLabel = queryElt<SideLabel>(this.shadowRoot, selector);
+
+    if (!sideLabel) {
+      return;
+    }
+    sideLabel.color = color;
+  }
+
+  private updateRangeElt(selector: string, level: number) {
+    const rangeElt = queryElt<VerticalRange>(this.shadowRoot, selector);
+
+    if (!rangeElt) {
       return;
     }
 
-    handleCustomEvent<CustomEventInit<ColorChangeEvent>>(
-      colorLeft,
-      colorControlEvents.colorchange,
-      (detail) => (this.colorleft = detail?.color || ""),
+    rangeElt.rangevalue = level;
+  }
+
+  private handleLabelChanges = () => {
+    const labelElt = queryElt<HTMLTextAreaElement>(
+      this.shadowRoot,
+      selectors.labelInput,
     );
-    handleCustomEvent<CustomEventInit<ColorChangeEvent>>(
-      colorRight,
-      colorControlEvents.colorchange,
-      (detail) => (this.colorright = detail?.color || ""),
-    );
+    labelElt?.addEventListener("input", (e) => {
+      const newLabel = (e.target as HTMLInputElement).value;
+      this.updateContainerLabelElt(newLabel);
+    });
   };
 
   private handleFillChanges = () => {
-    const rangeLeft = queryElt(this.shadowRoot, selectors.rangeLeft);
+    selectors.ranges.forEach((rangeSelector, i) => {
+      const rangeElt = queryElt(this.shadowRoot, rangeSelector);
 
-    const rangeRight = queryElt(this.shadowRoot, selectors.rangeRight);
+      if (!rangeElt) {
+        console.warn("Error setting range events. Element(s) not found", {
+          rangeElt,
+          i,
+          rangeSelector,
+        });
+        return;
+      }
+      handleCustomEvent<CustomEventInit<RangeChangeEvent>>(
+        rangeElt,
+        rangeEvents.rangechange,
+        (detail) => this.updateRange(i, detail?.value),
+      );
+    });
+  };
 
-    if (!rangeRight || !rangeLeft) {
-      console.warn("Error setting range events. Element(s) not found", {
-        rangeLeft,
-        rangeRight,
-      });
-      return;
-    }
+  private handleColorChanges = () => {
+    selectors.colors.forEach((colorSelector, i) => {
+      const colorElt = queryElt(this.shadowRoot, colorSelector);
 
-    handleCustomEvent<CustomEventInit<RangeChangeEvent>>(
-      rangeLeft,
-      rangeEvents.rangechange,
-      (detail) => (this.fillleft = detail?.value || 0),
-    );
+      if (!colorElt) {
+        console.warn("Error setting color events. Element(s) not found", {
+          colorElt,
+          i,
+          colorSelector,
+        });
+        return;
+      }
 
-    handleCustomEvent<CustomEventInit<RangeChangeEvent>>(
-      rangeRight,
-      rangeEvents.rangechange,
-      (detail) => (this.fillright = detail?.value || 0),
-    );
+      handleCustomEvent<CustomEventInit<ColorChangeEvent>>(
+        colorElt,
+        colorControlEvents.colorchange,
+        (detail) => {
+          this.updateColor(i, detail?.color);
+        },
+      );
+    });
   };
 
   private drawJar() {
@@ -241,10 +217,10 @@ export class JarTile extends HTMLElement implements JarTileProps {
       return;
     }
 
-    jarIllustrationElt.colorleft = this.colorleft;
-    jarIllustrationElt.colorright = this.colorright;
-    jarIllustrationElt.fillleft = this.fillleft;
-    jarIllustrationElt.fillright = this.fillright;
+    jarIllustrationElt.colorleft = this.container.categories[0].hexColor;
+    jarIllustrationElt.colorright = this.container.categories[1].hexColor;
+    jarIllustrationElt.fillleft = this.container.categories[0].percent;
+    jarIllustrationElt.fillright = this.container.categories[1].percent;
   }
 
   private handleRemove() {

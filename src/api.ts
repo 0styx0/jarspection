@@ -17,6 +17,7 @@ export interface CategoryItem {
 export interface Container {
   containerLabel: string;
   categories: CategoryItem[];
+  id: Symbol;
 }
 
 export interface ContainerSettings {
