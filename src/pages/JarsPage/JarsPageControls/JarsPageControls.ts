@@ -1,12 +1,22 @@
 import templateHtml from "./JarsPageControls.html?raw";
 import { Container } from "../../../api";
-import { defineCustomElt, queryElt } from "../../../components/utils";
+import {
+  createComplexComponent,
+  defineCustomElt,
+  queryElt,
+} from "../../../components/utils";
 import { defaultContainers } from "../../../defaultJars";
 import {
   JarImporter,
   JarImporterProps,
   jarImporterTag,
 } from "../../../components/JarImporter/JarImporter";
+import { ComplexComponent } from "../../../interfaces/ComplexComponent";
+import {
+  JarExporter,
+  JarExporterProps,
+  jarExporterTag,
+} from "../../../components/JarExporter/JarExporter";
 
 interface JarsPageControlsProps {
   exportContainers: () => Container[];
@@ -39,6 +49,7 @@ export class JarsPageControls extends HTMLElement {
 
   connectedCallback() {
     this.renderImportElt();
+    this.renderExportElt();
   }
 
   setProps(props: JarsPageControlsProps) {
@@ -46,32 +57,37 @@ export class JarsPageControls extends HTMLElement {
   }
 
   renderImportElt() {
-    const importElt = createJarImporterElt({
-      importContainers: this.handleImport,
-    });
+    const importElt = createComplexComponent<JarImporter, JarImporterProps>(
+      jarImporterTag,
+      {
+        importContainers: this.handleImport,
+      },
+    );
     queryElt(this.shadowRoot, selectors.jarImporterPlaceholder)?.replaceWith(
       importElt,
     );
   }
 
-  handleExport() {
-    this.props.exportContainers();
+  renderExportElt() {
+    const importElt = createComplexComponent<JarExporter, JarExporterProps>(
+      jarExporterTag,
+      {
+        exportContainers: this.handleExport,
+      },
+    );
+    queryElt(this.shadowRoot, selectors.jarExporterPlaceholder)?.replaceWith(
+      importElt,
+    );
   }
+
+  handleExport = () => {
+    return this.props.exportContainers();
+  };
 
   // proxy for props in case props change
   handleImport = (containers: Container[]) => {
     this.props.importContainers(containers);
   };
-}
-
-function createJarImporterElt(jarImporterProps: JarImporterProps) {
-  const jarImporter = document.createElement(jarImporterTag) as JarImporter;
-
-  requestAnimationFrame(() => {
-    jarImporter.setProps(jarImporterProps);
-  });
-
-  return jarImporter;
 }
 
 export const jarPageControlsTag = "jar-page-controls";

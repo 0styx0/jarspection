@@ -7,8 +7,9 @@ Creates and prompts user to download a json file consisting of all containers re
 import templateHtml from "./JarExporter.html?raw";
 import { Container, ContainerSettings } from "../../api";
 import { defineCustomElt, queryElt } from "../utils";
+import { ComplexComponent } from "../../interfaces/ComplexComponent";
 
-interface ExportContainersProps {
+export interface JarExporterProps {
   exportContainers: () => Container[];
 }
 
@@ -16,15 +17,18 @@ export const selectors = {
   exportBtn: ".exportJarsInput",
 };
 
-const defaultProps: ExportContainersProps = {
+const defaultProps: JarExporterProps = {
   exportContainers: () => {
     console.error("JarExporter: Please set exportContainers prop");
     return [];
   },
 };
 
-export class JarExporter extends HTMLElement {
-  private props: ExportContainersProps = defaultProps;
+export class JarExporter
+  extends HTMLElement
+  implements ComplexComponent<JarExporterProps>
+{
+  private props: JarExporterProps = defaultProps;
 
   constructor() {
     super();
@@ -36,7 +40,7 @@ export class JarExporter extends HTMLElement {
     this.addExportHandler();
   }
 
-  setProps(props: ExportContainersProps) {
+  setProps(props: JarExporterProps) {
     this.props = props;
   }
 

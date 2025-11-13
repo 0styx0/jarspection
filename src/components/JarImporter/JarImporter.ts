@@ -23,6 +23,7 @@ import {
 } from "../../api";
 import { defaultContainers } from "../../defaultJars";
 import { defineCustomElt, queryElt } from "../utils";
+import { ComplexComponent } from "../../interfaces/ComplexComponent";
 
 export interface JarImporterProps {
   importContainers: (containers: Container[]) => void;
@@ -43,7 +44,10 @@ const fallbackImportContents = {
   containers: [],
 };
 
-export class JarImporter extends HTMLElement {
+export class JarImporter
+  extends HTMLElement
+  implements ComplexComponent<JarImporterProps>
+{
   private props: JarImporterProps = defaultProps;
 
   constructor() {

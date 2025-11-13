@@ -7,7 +7,10 @@ import { waitFor } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
 import { JarsPageControls, jarPageControlsTag } from "./JarsPageControls";
 import { jarImporterTag } from "../../../components/JarImporter/JarImporter";
-import { jarExporterTag } from "../../../components/JarExporter/JarExporter";
+import {
+  jarExporterTag,
+  selectors as exportSelectors,
+} from "../../../components/JarExporter/JarExporter";
 import { Container, ContainerSettings } from "../../../api";
 import { defineCustomElt } from "../../../components/utils";
 import { renderComponent } from "../../../test/testUtils";
@@ -99,7 +102,7 @@ describe("<jar-page-controls>", () => {
     });
 
     it("calls props.exportContainers when <jar-exporter> calls _its_ props.exportContainers", async () => {
-      const { component, exportContainersSpy } = renderJarsPageControls();
+      const { component, exportContainersSpy, user } = renderJarsPageControls();
 
       await waitFor(() => {
         const jarExporter = component.shadowRoot?.querySelector(jarExporterTag);
@@ -110,10 +113,11 @@ describe("<jar-page-controls>", () => {
 
       const exportButton =
         jarExporter.shadowRoot?.querySelector<HTMLButtonElement>(
-          "button.exportBtn",
+          exportSelectors.exportBtn,
         );
 
-      exportButton?.click();
+      expect(exportButton).toBeTruthy();
+      await user.click(exportButton!);
 
       await waitFor(() => {
         expect(exportContainersSpy).toHaveBeenCalled();

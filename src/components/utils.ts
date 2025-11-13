@@ -1,3 +1,5 @@
+import { ComplexComponent } from "../interfaces/ComplexComponent";
+
 /*
  * makes element attrs the source of truth
  * by defining default getters/setters for obj
@@ -76,4 +78,17 @@ export function queryElts<Elt extends Element>(
   }
 
   return [...container.querySelectorAll<Elt>(selector)];
+}
+
+export function createComplexComponent<
+  Comp extends ComplexComponent<Props>,
+  Props,
+>(tagName: string, props: Props) {
+  const component = document.createElement(tagName) as Comp;
+
+  requestAnimationFrame(() => {
+    component.setProps(props);
+  });
+
+  return component;
 }

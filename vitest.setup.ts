@@ -1,10 +1,17 @@
-import { beforeAll, beforeEach } from "vitest";
+import { beforeAll, beforeEach, vi } from "vitest";
 
 beforeEach(() => {
   document.body.innerHTML = "";
 });
 
 beforeAll(() => {
+  // fixes TypeError: The "obj" argument must be an instance of Blob. Received an instance of Blob
+  //  when testing or including JarExporter into other tests
+  // https://github.com/vitest-dev/vitest/issues/3985#issuecomment-1695910320
+  vi.spyOn(window.URL, "createObjectURL").mockImplementation(
+    () => "http://fake.vitestsetup",
+  );
+
   if (!Blob.prototype.text) {
     Blob.prototype.text = function () {
       return new Promise((resolve, reject) => {
