@@ -1,0 +1,24 @@
+<style>
+  .jarGrid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    width: 100%;
+    max-width: 100%;
+    padding: 0 20px;
+    box-sizing: border-box;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  .jarGrid > * {
+    flex: 0 0 8rem;
+    aspect-ratio: 2 / 1;
+    height: auto;
+    box-sizing: border-box;
+  }
+</style>
+
+<div class="jarGrid">
+  <add-jar class="addJar"></add-jar>
+</div>
