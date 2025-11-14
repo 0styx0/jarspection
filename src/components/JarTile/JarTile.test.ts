@@ -1,11 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  defaultJarTileProps,
-  JarTile,
-  JarTileProps,
-  jarTileTag,
-  selectors,
-} from "./JarTile";
+import { JarTile, jarTileTag, selectors } from "./JarTile";
 import { defineCustomElt } from "../utils";
 import { SideLabel, sideLabelTag } from "../SideLabel/SideLabel";
 import { JarIllustration } from "../JarIllustration/JarIllustration";

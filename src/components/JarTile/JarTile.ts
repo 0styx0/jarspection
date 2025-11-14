@@ -28,7 +28,7 @@ export interface JarTileProps {
 }
 
 export const defaultJarTileProps: Container = {
-  id: Symbol(),
+  id: Symbol("Default JarTile"),
   containerLabel: "New Jar",
   categories: [
     {
@@ -93,11 +93,8 @@ export class JarTile
     }
     this.container.categories[categoryIdx].hexColor = color as HexColorValue;
     this.updateCategoryElt(selectors.colors[categoryIdx], color);
-    // note: this piece could trigger multiple re-draws (for each updated attr). update if it affects performance
     this.drawJar();
   }
-
-  // todo: currently I wrap update*Elt in update*. should I?
 
   private updateRange(categoryIdx: number, rangeValue?: number) {
     if (rangeValue === undefined) {
