@@ -8,7 +8,10 @@
     "strict": true,
     "noImplicitAny": true,
     "isolatedModules": true,
-    "skipLibCheck": true,
+    "lib": [
+      "dom",
+      "esnext"
+    ],
     "forceConsistentCasingInFileNames": true
   },
   "include": [
