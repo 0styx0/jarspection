@@ -5,20 +5,18 @@ import {
   defineCustomElt,
   queryElt,
 } from "../../../components/utils";
-import { defaultContainers } from "../../../defaultJars";
 import {
   JarImporter,
   JarImporterProps,
   jarImporterTag,
 } from "../../../components/JarImporter/JarImporter";
-import { ComplexComponent } from "../../../interfaces/ComplexComponent";
 import {
   JarExporter,
   JarExporterProps,
   jarExporterTag,
 } from "../../../components/JarExporter/JarExporter";
 
-interface JarsPageControlsProps {
+export interface JarsPageControlsProps {
   exportContainers: () => Container[];
   importContainers: (containers: Container[]) => void;
 }
@@ -56,7 +54,7 @@ export class JarsPageControls extends HTMLElement {
     this.props = props;
   }
 
-  renderImportElt() {
+  private renderImportElt() {
     const importElt = createComplexComponent<JarImporter, JarImporterProps>(
       jarImporterTag,
       {
@@ -68,7 +66,7 @@ export class JarsPageControls extends HTMLElement {
     );
   }
 
-  renderExportElt() {
+  private renderExportElt() {
     const importElt = createComplexComponent<JarExporter, JarExporterProps>(
       jarExporterTag,
       {
@@ -80,12 +78,13 @@ export class JarsPageControls extends HTMLElement {
     );
   }
 
-  handleExport = () => {
+  private handleExport = () => {
     return this.props.exportContainers();
   };
 
   // proxy for props in case props change
-  handleImport = (containers: Container[]) => {
+  private handleImport = (containers: Container[]) => {
+    console.log("page conts handle", containers);
     this.props.importContainers(containers);
   };
 }

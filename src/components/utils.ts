@@ -71,13 +71,13 @@ export function queryElt<Elt extends Element>(
 export function queryElts<Elt extends Element>(
   container: ShadowRoot | Document | null,
   selector: string,
-) {
+): Elt[] {
   if (!container) {
     console.trace("Unable to find container ", { container, selector });
     return [];
   }
 
-  return [...container.querySelectorAll<Elt>(selector)];
+  return Array.from(container.querySelectorAll<Elt>(selector));
 }
 
 export function createComplexComponent<

@@ -23,7 +23,14 @@ export const queryTestElement = <T extends Element>(
   component: HTMLElement,
   selector: string,
 ) => {
-  const element = component.shadowRoot?.querySelector<T>(selector);
+  return queryTestElements<T>(component, selector).item(0);
+};
+
+export const queryTestElements = <T extends Element>(
+  component: HTMLElement,
+  selector: string,
+): NodeListOf<T> => {
+  const element = component.shadowRoot?.querySelectorAll<T>(selector);
 
   expect(element).toBeTruthy();
 

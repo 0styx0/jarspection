@@ -1,14 +1,34 @@
+/**
+
+Acts as the controller for the page:
+- Loads imported data into the grid
+- Sets data from the grid when export functionality is called
+*/
+
 import templateHtml from "./JarsPage.html?raw";
-import { defineCustomElt, queryElt, queryElts } from "../../components/utils";
-import { defaultContainers } from "../../defaultJars";
-import { JarTile, jarTileTag } from "../../components/JarTile/JarTile";
+import {
+  createComplexComponent,
+  defineCustomElt,
+  queryElt,
+  queryElts,
+} from "../../components/utils";
 import { Container } from "../../api";
+import {
+  jarPageControlsTag,
+  JarsPageControls,
+  JarsPageControlsProps,
+} from "./JarsPageControls/JarsPageControls";
+import {
+  JarGrid,
+  JarGridProps,
+  jarGridTag,
+} from "../../components/JarGrid/JarGrid";
 
 export const selectors = {
-  jarGrid: ".jarGrid",
-  addJar: ".addJar",
-  jarTiles: ".jarTile",
-  exportContainers: ".exportContainers",
+  jarPageControlsPlaceholder: ".jar-page-controls-placeholder",
+  jarGridPlaceholder: ".jar-grid-placeholder",
+  jarGrid: jarGridTag,
+  jarPageControls: jarPageControlsTag,
 };
 
 // process:
@@ -34,7 +54,16 @@ export const selectors = {
 //   </jarPage>
 //
 
-class JarsPage extends HTMLElement {
+/*
+
+programmatically create JarPageControls
+onExport: return tile attrs
+onImport: replace tiles with importer info
+  warn user about data loss
+
+*/
+
+export class JarsPage extends HTMLElement {
   constructor() {
     super();
 
@@ -42,66 +71,49 @@ class JarsPage extends HTMLElement {
   }
 
   connectedCallback() {
-    this.createJars(defaultContainers);
+    this.renderJarGrid();
+    this.renderPageControls();
   }
 
-  private export() {
-    const jarTiles = queryElts<JarTile>(this.shadowRoot, selectors.jarTiles);
+  private export = (): Container[] => {
+    const jarGrid = queryElt<JarGrid>(this.shadowRoot, selectors.jarGrid)!;
+    return [...jarGrid.getJars().values()];
+  };
 
-    return jarTiles.reduce((containers, curTile) => {
-      containers.push(curTile.export());
-      return containers;
-    }, [] as Container[]);
-  }
-
-  private createJars(jars: Container[]) {
-    const jarGrid = queryElt(this.shadowRoot, selectors.jarGrid);
-    const addJar = queryElt(this.shadowRoot, selectors.addJar);
-
-    if (!jarGrid || !addJar) {
-      console.error("JarsPage: Required elt not found", {
-        jarGrid,
-        addJar,
-      });
+  private import = (containers: Container[]) => {
+    const jarGrid = queryElt<JarGrid>(this.shadowRoot, selectors.jarGrid);
+    if (!jarGrid) {
+      console.warn("JarsPage: Import failed. Grid not found!");
       return;
     }
 
-    const jarElts = createJarElts(jars);
+    jarGrid.setProps({ jars: containers });
+  };
 
-    jarGrid.insertBefore(jarElts, addJar);
+  private renderPageControls() {
+    const pageControls = createComplexComponent<
+      JarsPageControls,
+      JarsPageControlsProps
+    >(jarPageControlsTag, {
+      exportContainers: this.export,
+      importContainers: this.import,
+    });
+
+    queryElt(
+      this.shadowRoot,
+      selectors.jarPageControlsPlaceholder,
+    )?.replaceWith(pageControls);
   }
-}
 
-function createJarElts(containers: Container[]) {
-  const fragment = document.createDocumentFragment();
+  private renderJarGrid() {
+    const jarGrid = createComplexComponent<JarGrid, JarGridProps>(jarGridTag, {
+      jars: [],
+    });
 
-  containers.forEach((container) => {
-    const newJar = createFillableJar(container);
-
-    fragment.appendChild(newJar);
-  });
-  return fragment;
-}
-
-// todo: use template instead?
-function createFillableJar(container: Container) {
-  const jar = document.createElement(jarTileTag) as JarTile;
-
-  requestAnimationFrame(() => {
-    jar.classList.add(selectors.jarTiles.slice(1));
-
-    jar.label = container.containerLabel;
-
-    jar.fillleft = container.categories[0].percent;
-    jar.fillright = container.categories[1].percent;
-
-    jar.colorleft = container.categories[0].hexColor;
-    jar.colorright = container.categories[1].hexColor;
-
-    jar.labelleft = container.categories[0].categoryLabel;
-    jar.labelright = container.categories[1].categoryLabel;
-  });
-  return jar;
+    queryElt(this.shadowRoot, selectors.jarGridPlaceholder)?.replaceWith(
+      jarGrid,
+    );
+  }
 }
 
 export const jarsPageTag = "jars-page";

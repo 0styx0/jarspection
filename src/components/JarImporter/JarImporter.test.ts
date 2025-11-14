@@ -8,16 +8,10 @@ import { renderComponent } from "../../test/testUtils";
 import {
   createMockFile,
   createMockImportContents,
+  getImportInput,
 } from "../../../test/importHelpers";
 
 defineCustomElt(jarImporterTag, JarImporter);
-
-const getFileInput = (component: JarImporter): HTMLInputElement => {
-  const input =
-    component.shadowRoot?.querySelector<HTMLInputElement>('input[type="file"]');
-  expect(input).toBeTruthy();
-  return input!;
-};
 
 const renderJarImporter = () => {
   const component = renderComponent<JarImporter>(jarImporterTag);
@@ -45,7 +39,7 @@ describe("<jar-importer>", () => {
       const mockImportContents = createMockImportContents();
       const mockFile = createMockFile(JSON.stringify(mockImportContents));
 
-      const input = getFileInput(component);
+      const input = getImportInput(component);
       await user.upload(input, mockFile);
 
       await waitFor(() => {
@@ -55,7 +49,7 @@ describe("<jar-importer>", () => {
 
     it("calls importContainers with empty array when invalid file is present on load", async () => {
       const { component, importContainersSpy, user } = renderJarImporter();
-      const input = getFileInput(component);
+      const input = getImportInput(component);
 
       const mockFile = createMockFile("invalid json content");
       await user.upload(input, mockFile);
@@ -70,7 +64,7 @@ describe("<jar-importer>", () => {
     it("calls importContainers with file contents when valid file is uploaded", async () => {
       const user = userEvent.setup();
       const { component, importContainersSpy } = renderJarImporter();
-      const input = getFileInput(component);
+      const input = getImportInput(component);
 
       const mockImportContents = createMockImportContents();
       const mockFile = createMockFile(JSON.stringify(mockImportContents));
@@ -86,7 +80,7 @@ describe("<jar-importer>", () => {
 
     it("does not call importContainers when no file is selected after initial load", async () => {
       const { component, importContainersSpy } = renderJarImporter();
-      const input = getFileInput(component);
+      const input = getImportInput(component);
 
       const initialCallCount = importContainersSpy.mock.calls.length;
 
