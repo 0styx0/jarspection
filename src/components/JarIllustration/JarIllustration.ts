@@ -1,10 +1,11 @@
 import templateHtml from "./JarIllustration.html?raw";
 import { defineCustomElt, mapPropertiesToAttribute, queryElt } from "../utils";
-import { paintJar } from "./jarCanvasUtils";
+import { paintJar, paintLeftJar, paintRightJar } from "./jarCanvasUtils";
 import { defaultJarTileProps } from "../JarTile/JarTile";
 
 export const selectors = {
-  jarCanvas: ".jar",
+  jarLeft: ".left-side .liquid",
+  jarRight: ".right-side .liquid",
 };
 
 export type JarIllustrationProps = {
@@ -51,22 +52,27 @@ export class JarIllustration
   }
 
   private drawJar() {
-    const canvas = queryElt<HTMLCanvasElement>(
+    const leftJar = queryElt<HTMLDivElement>(
       this.shadowRoot,
-      selectors.jarCanvas,
+      selectors.jarLeft,
+    );
+    const rightJar = queryElt<HTMLDivElement>(
+      this.shadowRoot,
+      selectors.jarRight,
     );
 
-    if (!canvas) {
+    if (!leftJar || !rightJar) {
+      console.warn("JarIllustration: Unable to find jar half", {
+        leftJar,
+        rightJar,
+      });
       return;
     }
+    leftJar.style.backgroundColor = this.colorleft;
+    leftJar.style.height = this.fillleft + "%";
 
-    paintJar(
-      canvas,
-      +this.fillleft,
-      this.colorleft,
-      +this.fillright,
-      this.colorright,
-    );
+    rightJar.style.backgroundColor = this.colorright;
+    rightJar.style.height = this.fillright + "%";
   }
 }
 

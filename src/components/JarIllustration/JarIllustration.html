@@ -1,8 +1,142 @@
 <style>
+  .jar-container {
+    position: relative;
+  }
+
   .jar {
+    position: relative;
     width: 100%;
+    aspect-ratio: 1 / 1;
+    background: black;
+    clip-path: polygon(
+      0% 20%,
+      35% 15%,
+      35% 0%,
+      65% 0%,
+      65% 15%,
+      100% 20%,
+      100% 100%,
+      0% 100%
+    );
+  }
+
+  /* Main jar body */
+  .jar-body {
+    background-color: white;
+    width: 85%;
+    aspect-ratio: 1 / 1.4;
+    margin: 0 auto;
+    border-radius: 0 0 10% 10%;
+    overflow: hidden;
+    box-shadow:
+      inset -5px -5px 15px rgba(255, 255, 255, 0.5),
+      inset 5px 5px 15px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+
+    clip-path: polygon(
+      0% 20%,
+      35% 15%,
+      35% 0%,
+      65% 0%,
+      65% 15%,
+      100% 20%,
+      100% 100%,
+      0% 100%
+    );
+  }
+
+  /* Split the jar into two sides */
+  .jar-side {
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .left-side {
+    left: 0;
+  }
+
+  .right-side {
+    right: 0;
+  }
+
+  /* Liquid fill */
+  .liquid {
+    width: 100%;
+    transition: height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Liquid surface effect */
+  .liquid::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.4),
+      rgba(255, 255, 255, 0.8),
+      rgba(255, 255, 255, 0.4)
+    );
+    animation: shimmer 2s ease-in-out infinite;
+  }
+
+  /* Glass shine effect */
+  .jar-body::before {
+    content: "";
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 80px;
+    height: 200px;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.6) 0%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    border-radius: 50%;
+    filter: blur(10px);
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* Glass reflection effect */
+  .jar-body::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    width: 40px;
+    height: 150px;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.3) 0%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    border-radius: 50%;
+    filter: blur(8px);
+    pointer-events: none;
+    z-index: 10;
   }
 </style>
 
-<canvas class="jar"></canvas>
-
+<div class="jar-container">
+  <div class="jar">
+    <div class="jar-body">
+      <div class="jar-side left-side">
+        <div class="liquid" id="leftLiquid"></div>
+      </div>
+      <div class="jar-side right-side">
+        <div class="liquid" id="rightLiquid"></div>
+      </div>
+    </div>
+  </div>
+</div>
