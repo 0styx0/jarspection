@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { JarExporter, jarExporterTag, selectors } from "./JarExporter";
 import { Container } from "../../api";
-import { defineCustomElt } from "../utils";
+import { defineCustomElt } from "../componentUtils";
 import { renderComponent } from "../../test/testUtils";
 import { createMockImportContents } from "../../../test/importHelpers";
 import { waitFor } from "@testing-library/dom";

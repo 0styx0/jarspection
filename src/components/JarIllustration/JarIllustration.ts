@@ -1,5 +1,5 @@
 import templateHtml from "./JarIllustration.html?raw";
-import { defineCustomElt, mapPropertiesToAttribute, queryElt } from "../utils";
+import { defineCustomElt, mapPropertiesToAttribute, queryElt } from "../componentUtils";
 import { paintJar, paintLeftJar, paintRightJar } from "./jarCanvasUtils";
 import { defaultJarTileProps } from "../JarTile/JarTile";
 

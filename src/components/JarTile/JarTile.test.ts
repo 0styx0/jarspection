@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { JarTile, jarTileTag, selectors } from "./JarTile";
-import { defineCustomElt } from "../utils";
+import { defineCustomElt } from "../componentUtils";
 import { SideLabel, sideLabelTag } from "../SideLabel/SideLabel";
 import { JarIllustration } from "../JarIllustration/JarIllustration";
 import { colorControlEvents } from "../ColorControls/ColorControls";

@@ -13,7 +13,7 @@ import {
   defineCustomElt,
   queryElt,
   queryElts,
-} from "../utils";
+} from "../componentUtils";
 
 export const selectors = {
   jarGrid: ".jarGrid",

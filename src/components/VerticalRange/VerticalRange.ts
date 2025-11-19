@@ -4,7 +4,7 @@ import {
   mapPropertiesToAttribute,
   queryElt,
   triggerCustomEvent,
-} from "../utils";
+} from "../componentUtils";
 
 export const rangeEvents = {
   rangechange: "rangechange",

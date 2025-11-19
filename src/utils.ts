@@ -4,14 +4,14 @@ import {
   JarTileProps,
   jarTileTag,
 } from "./components/JarTile/JarTile.js";
-import { queryElt } from "./components/utils.js";
+import { queryElt } from "./components/componentUtils.js";
 
 const selectors = {
   jarGrid: ".jarGrid",
   addJar: "#addJar",
 };
 
-// todo: potentially delete file
+// todo: delete file after making addjar rely on JarPage
 
 export function createJars(jars: JarTileProps[]) {
   const jarGrid = queryElt(document, selectors.jarGrid);

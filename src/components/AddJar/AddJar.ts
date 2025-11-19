@@ -1,5 +1,9 @@
 import templateHtml from "./AddJar.html?raw";
-import { defineCustomElt, queryElt, triggerCustomEvent } from "../utils";
+import {
+  defineCustomElt,
+  queryElt,
+  triggerCustomEvent,
+} from "../componentUtils";
 import { createJars } from "../../utils";
 import { defaultJarTileProps, JarTileProps } from "../JarTile/JarTile";
 

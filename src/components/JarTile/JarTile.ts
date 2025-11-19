@@ -1,5 +1,5 @@
 import templateHtml from "./JarTile.html?raw";
-import { defineCustomElt, queryElt } from "../utils";
+import { defineCustomElt, queryElt } from "../componentUtils";
 import { SideLabel } from "../SideLabel/SideLabel";
 import { JarIllustration } from "../JarIllustration/JarIllustration";
 import {

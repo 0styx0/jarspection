@@ -1,6 +1,6 @@
 import { describe, it, test, expect, vi } from "vitest";
 import { JarGrid, jarGridTag, selectors } from "./JarGrid";
-import { defineCustomElt } from "../utils";
+import { defineCustomElt } from "../componentUtils";
 import { JarTile, jarTileTag } from "../JarTile/JarTile";
 import {
   queryTestElement,

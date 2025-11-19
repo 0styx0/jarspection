@@ -8,7 +8,7 @@ import {
   selectors,
   VerticalRangeProps,
 } from "./VerticalRange";
-import { defineCustomElt } from "../utils";
+import { defineCustomElt } from "../componentUtils";
 import { renderComponent } from "../../test/testUtils";
 
 defineCustomElt(verticalRangeTag, VerticalRange);

@@ -4,7 +4,7 @@ import {
   createComplexComponent,
   defineCustomElt,
   queryElt,
-} from "../../../components/utils";
+} from "../../../components/componentUtils";
 import {
   JarImporter,
   JarImporterProps,

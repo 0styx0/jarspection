@@ -22,7 +22,7 @@ import {
   HexColorValue,
 } from "../../api";
 import { defaultContainers } from "../../defaultJars";
-import { defineCustomElt, queryElt } from "../utils";
+import { defineCustomElt, queryElt } from "../componentUtils";
 import { ComplexComponent } from "../../interfaces/ComplexComponent";
 
 export interface JarImporterProps {

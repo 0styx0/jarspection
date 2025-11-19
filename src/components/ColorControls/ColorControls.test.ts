@@ -5,7 +5,7 @@ import {
   selectors,
   colorControlEvents,
 } from "./ColorControls";
-import { defineCustomElt } from "../utils";
+import { defineCustomElt } from "../componentUtils";
 import { renderComponent } from "../../test/testUtils";
 
 defineCustomElt(colorControlsTag, ColorControls);

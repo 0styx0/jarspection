@@ -1,5 +1,5 @@
 import templateHtml from "./SideLabel.html?raw";
-import { defineCustomElt, mapPropertiesToAttribute, queryElt } from "../utils";
+import { defineCustomElt, mapPropertiesToAttribute, queryElt } from "../componentUtils";
 
 export const selectors = {
   label: ".label",

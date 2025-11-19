@@ -6,7 +6,7 @@ Creates and prompts user to download a json file consisting of all containers re
 
 import templateHtml from "./JarExporter.html?raw";
 import { Container, ContainerSettings } from "../../api";
-import { defineCustomElt, queryElt } from "../utils";
+import { defineCustomElt, queryElt } from "../componentUtils";
 import { ComplexComponent } from "../../interfaces/ComplexComponent";
 
 export interface JarExporterProps {

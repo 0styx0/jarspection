@@ -11,7 +11,7 @@ import {
   defineCustomElt,
   queryElt,
   queryElts,
-} from "../../components/utils";
+} from "../../components/componentUtils";
 import { Container } from "../../api";
 import {
   jarPageControlsTag,

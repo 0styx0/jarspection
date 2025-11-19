@@ -3,7 +3,7 @@ import { waitFor } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
 import { JarImporter, jarImporterTag } from "./JarImporter";
 import { defaultContainers } from "../../defaultJars";
-import { defineCustomElt } from "../utils";
+import { defineCustomElt } from "../componentUtils";
 import { renderComponent } from "../../test/testUtils";
 import {
   createMockFile,

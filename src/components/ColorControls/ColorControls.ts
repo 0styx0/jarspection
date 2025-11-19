@@ -1,6 +1,6 @@
 import templateHtml from "./ColorControls.html?raw";
-import { defineCustomElt, queryElt, triggerCustomEvent } from "../utils";
-import { colors } from "../jarAttrs";
+import { defineCustomElt, queryElt, triggerCustomEvent } from "../componentUtils";
+import { colors } from "../../api";
 
 export const colorControlEvents = {
   colorchange: "colorchange",

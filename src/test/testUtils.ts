@@ -1,5 +1,5 @@
 import { expect } from "vitest";
-import { queryElt } from "../components/utils";
+import { queryElt } from "../components/componentUtils";
 
 export function renderComponent<T extends HTMLElement>(
   tag: string,

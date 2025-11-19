@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { defineCustomElt } from "../utils";
+import { defineCustomElt } from "../componentUtils";
 import {
   JarIllustration,
   JarIllustrationProps,

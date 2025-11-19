@@ -5,7 +5,7 @@ import {
   SideLabelProps,
   sideLabelTag,
 } from "./SideLabel";
-import { defineCustomElt } from "../utils";
+import { defineCustomElt } from "../componentUtils";
 import { renderComponent } from "../../test/testUtils";
 
 defineCustomElt(sideLabelTag, SideLabel);
