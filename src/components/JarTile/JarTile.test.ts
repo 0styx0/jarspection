@@ -9,6 +9,7 @@ import { queryTestElement, renderComponent } from "../../test/testUtils";
 import { colors, Container, HexColorValue } from "../../api";
 import userEvent from "@testing-library/user-event";
 
+defineCustomElt(sideLabelTag, SideLabel);
 defineCustomElt(jarTileTag, JarTile);
 
 const renderJarTile = () => renderComponent<JarTile>(jarTileTag);
@@ -36,6 +37,13 @@ const getJarIllustration = (component: JarTile) => {
     selectors.jarIllustration,
   );
 };
+
+function getSideLabel(component: JarTile, sideLabelN: number) {
+  return queryTestElement<SideLabel>(
+    component,
+    selectors.labels.at(sideLabelN)!,
+  );
+}
 
 describe("<jar-tile>", () => {
   describe("initial rendering", () => {
@@ -127,9 +135,11 @@ describe("<jar-tile>", () => {
       colorLeft.dispatchEvent(event);
 
       const jarIllustration = getJarIllustration(component);
+      const sideLabel = getSideLabel(component, 0);
 
       expect(jarIllustration.colorleft).toBe(newColor);
       expect(component.export().categories[0].hexColor, newColor);
+      expect(sideLabel.color).toBe(newColor);
     });
 
     it("updates colorright when right color controls emit colorchange", () => {
@@ -142,9 +152,11 @@ describe("<jar-tile>", () => {
       colorRight.dispatchEvent(event);
 
       const jarIllustration = getJarIllustration(component);
+      const sideLabel = getSideLabel(component, 1);
 
       expect(jarIllustration.colorright).toBe(newColor);
       expect(component.export().categories[1].hexColor, newColor);
+      expect(sideLabel.color).toBe(newColor);
     });
 
     it("empty color keeps previous color", () => {

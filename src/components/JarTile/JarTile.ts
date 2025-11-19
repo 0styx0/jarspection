@@ -92,7 +92,7 @@ export class JarTile
       return;
     }
     this.container.categories[categoryIdx].hexColor = color as HexColorValue;
-    this.updateCategoryElt(selectors.colors[categoryIdx], color);
+    this.updateCategoryElt(selectors.labels[categoryIdx], color);
     this.drawJar();
   }
 
@@ -134,6 +134,7 @@ export class JarTile
     const sideLabel = queryElt<SideLabel>(this.shadowRoot, selector);
 
     if (!sideLabel) {
+      console.warn("JarTile: No sidelabel elt found!", { selector, color });
       return;
     }
     sideLabel.color = color;
