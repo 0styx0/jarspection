@@ -84,7 +84,6 @@ export class JarsPageControls extends HTMLElement {
 
   // proxy for props in case props change
   private handleImport = (containers: Container[]) => {
-    console.log("page conts handle", containers);
     this.props.importContainers(containers);
   };
 }
