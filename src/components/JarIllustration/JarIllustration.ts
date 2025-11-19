@@ -6,6 +6,9 @@ import { defaultJarTileProps } from "../JarTile/JarTile";
 export const selectors = {
   jarLeft: ".left-side .liquid",
   jarRight: ".right-side .liquid",
+  accessibility: {
+    fullJarState: ".screenreader-only .full-state",
+  },
 };
 
 export type JarIllustrationProps = {
@@ -68,11 +71,33 @@ export class JarIllustration
       });
       return;
     }
+
+    this.updateAccessibleText();
+    this.updateJars(leftJar, rightJar);
+  }
+
+  private updateJars(leftJar: HTMLDivElement, rightJar: HTMLDivElement) {
     leftJar.style.backgroundColor = this.colorleft;
     leftJar.style.height = this.fillleft + "%";
 
     rightJar.style.backgroundColor = this.colorright;
     rightJar.style.height = this.fillright + "%";
+  }
+
+  private updateAccessibleText() {
+    const fullStateElt = queryElt<HTMLSpanElement>(
+      this.shadowRoot,
+      selectors.accessibility.fullJarState,
+    );
+
+    if (!fullStateElt) {
+      console.warn(
+        "JarIllustration: Accessible text elt not found",
+        selectors.accessibility.fullJarState,
+      );
+      return;
+    }
+    fullStateElt.textContent = `Left jar: ${this.colorleft}, ${this.fillleft}% filled. Right jar: ${this.colorright}, ${this.fillright}% filled.`;
   }
 }
 

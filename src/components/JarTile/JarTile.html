@@ -1,6 +1,15 @@
+<link rel="stylesheet" href="./src/styles/utils.css" />
 <style>
   :host {
     container-type: inline-size;
+  }
+
+  button,
+  fieldset {
+    background-color: transparent;
+    border: none;
+    margin: 0;
+    padding: 0;
   }
 
   .jar-container {
@@ -33,8 +42,6 @@
   .remove-btn {
     font-size: 0.5rem;
     color: red;
-    cursor: pointer;
-    user-select: none;
   }
 
   .remove-btn:hover {
@@ -99,18 +106,40 @@
   }
 </style>
 
-<div class="jar-container">
+<section aria-labelledby="jar-name-input" class="jar-container">
+  <div class="screenreader-only">
+    <span id="left-fill-desc">Left jar fill level</span>
+    <span id="right-fill-desc">Right jar fill level</span>
+    <span id="left-color-desc">Left jar color</span>
+    <span id="right-color-desc">Right jar color</span>
+  </div>
+
   <div class="top-controls">
-    <div class="remove-btn">×</div>
+    <button aria-label="Delete jar" class="remove-btn">×</button>
   </div>
 
   <div class="side-labels">
-    <side-label class="label-left" label="-" color="#FFFFFF"></side-label>
-    <side-label class="label-right" label="-" color="#FFFFFF"></side-label>
+    <side-label
+      id="label-left-half"
+      class="label-left"
+      label="G"
+      color="#FFFFFF"
+    ></side-label>
+    <side-label
+      id="label-right-half"
+      class="label-right"
+      label="R"
+      color="#FFFFFF"
+    ></side-label>
   </div>
 
-  <div class="middle-controls">
-    <vertical-range rangevalue="20" class="range-left"></vertical-range>
+  <fieldset class="middle-controls">
+    <legend class="screenreader-only">Fill level controls for each jar</legend>
+    <vertical-range
+      rangevalue="20"
+      aria-labelledby="label-left-half left-fill-desc"
+      class="range-left"
+    ></vertical-range>
 
     <jar-illustration
       fillleft="30"
@@ -120,15 +149,32 @@
       class="jar-illustration"
     ></jar-illustration>
 
-    <vertical-range rangevalue="20" class="range-right"></vertical-range>
-  </div>
+    <vertical-range
+      rangevalue="20"
+      aria-labelledby="label-right-half right-fill-desc"
+      class="range-right"
+    ></vertical-range>
+  </fieldset>
 
-  <div class="colors-container">
-    <color-controls class="colors-left"></color-controls>
-    <color-controls class="colors-right"></color-controls>
-  </div>
+  <fieldset class="colors-container">
+    <legend class="screenreader-only">Color controls for each jar</legend>
+
+    <color-controls
+      aria-labelledby="label-left-half left-color-desc"
+      class="colors-left"
+    ></color-controls>
+
+    <color-controls
+      aria-labelledby="label-right-half right-color-desc"
+      class="colors-right"
+    ></color-controls>
+  </fieldset>
 
   <div class="label-container">
-    <textarea class="label-input"></textarea>
+    <textarea
+      id="jar-name-input"
+      aria-label="Jar name"
+      class="label-input"
+    ></textarea>
   </div>
-</div>
+</section>

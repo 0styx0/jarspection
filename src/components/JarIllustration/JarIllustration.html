@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="./src/styles/utils.css" />
 <style>
   .jar-container {
     position: relative;
@@ -112,14 +113,21 @@
   }
 </style>
 
-<div class="jar-container">
-  <div class="jar-outline">
-    <div class="jar-body">
-      <div class="jar-side left-side">
-        <div class="liquid"></div>
-      </div>
-      <div class="jar-side right-side">
-        <div class="liquid"></div>
+<!-- image role can apply to text too https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/img_role -->
+<div role="img" aria-labelledby="jar-full-state">
+  <div class="screenreader-only">
+    <span id="jar-full-state" class="full-state"></span>
+  </div>
+
+  <div aria-hidden="true" class="jar-container">
+    <div class="jar-outline">
+      <div class="jar-body">
+        <div class="jar-side left-side">
+          <div class="liquid"></div>
+        </div>
+        <div class="jar-side right-side">
+          <div class="liquid"></div>
+        </div>
       </div>
     </div>
   </div>
