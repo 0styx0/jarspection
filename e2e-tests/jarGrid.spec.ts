@@ -5,7 +5,7 @@ test("basic jar interactions", async ({ page }) => {
   const jarGridPage = new JarGridPage(page);
 
   await jarGridPage.visit();
-  const { leftJar, rightJar } = await jarGridPage.setTile('Acts of Service');
+  const { leftJar, rightJar } = await jarGridPage.getTile("Acts of Service");
 
   await leftJar.setFillLevel(100);
   await rightJar.setFillLevel(29);
@@ -17,12 +17,11 @@ test("basic jar interactions", async ({ page }) => {
   await leftJar.setFillLevel(39);
 });
 
-test('basic tile-level controls', async ({page}) => {
-  
+test("basic tile-level controls", async ({ page }) => {
   const jarGridPage = new JarGridPage(page);
 
   await jarGridPage.visit();
-  await jarGridPage.setTile('Quality Time');
+  const { tile } = await jarGridPage.getTile("Quality Time");
 
-  await jarGridPage.deleteTile()
-})
+  await tile.remove();
+});

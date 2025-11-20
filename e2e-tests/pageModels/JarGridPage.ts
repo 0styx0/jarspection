@@ -14,7 +14,6 @@ const labels = ["G", "R"];
 
 export class JarGridPage {
   readonly page: Page;
-  private tile?: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -24,21 +23,40 @@ export class JarGridPage {
     return this.page.goto("/");
   }
 
-  async setTile(tileDesc: string) {
-    this.tile = this.page.getByRole("region", { name: tileDesc });
-    await expect(this.tile).toBeVisible();
+  async getTile(tileDesc: string) {
+    const tileElt = this.page.getByRole("region", { name: tileDesc });
+    await expect(tileElt).toBeVisible();
 
-    return this.getJarSides();
+    const tile = new Tile(this.page, tileElt);
+    return {
+      tile,
+      ...tile.getJarSides(),
+    };
+  }
+}
+
+class Tile {
+  readonly page: Page;
+  private tile: Locator;
+
+  constructor(page: Page, tile: Locator) {
+    this.page = page;
+    this.tile = tile;
   }
 
-  private getJarSides() {
+  getJarSides() {
     return {
       leftJar: new JarSide(this.tile!, 0),
       rightJar: new JarSide(this.tile!, 1),
     };
   }
 
-  async deleteTile() {
+  async setLabel(label: string) {
+    const labelElt = this.tile!.getByLabel("Jar name");
+    await labelElt.fill(label);
+  }
+
+  async remove() {
     const originalTiles = await this.page.locator("jar-tile").count();
     this.tile!.getByLabel("Delete jar").click();
     const afterTiles = this.page.locator("jar-tile");
@@ -49,7 +67,7 @@ export class JarGridPage {
 }
 
 class JarSide {
-  private tile?: Locator;
+  private tile: Locator;
   private jarSide: Side;
 
   constructor(tile: Locator, side: Side) {
