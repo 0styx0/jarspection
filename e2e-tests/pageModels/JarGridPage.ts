@@ -27,6 +27,23 @@ export class JarGridPage {
     const tileElt = this.page.getByRole("region", { name: tileDesc });
     await expect(tileElt).toBeVisible();
 
+    return this.constructHelperClasses(tileElt);
+  }
+
+  async addTile() {
+
+    const originalTiles = await this.page.locator("jar-tile").count();
+    await this.page.getByRole("button", { name: "+" }).click();
+    const afterTiles = this.page.locator("jar-tile");
+
+    const newTile = this.page.getByRole("region", { name: "New Jar" }).last();
+    await expect(newTile).toBeVisible();
+    await expect(afterTiles).toHaveCount(originalTiles + 1);
+
+    return this.constructHelperClasses(newTile);
+  }
+
+  private constructHelperClasses(tileElt: Locator) {
     const tile = new Tile(this.page, tileElt);
     return {
       tile,
@@ -56,15 +73,16 @@ class Tile {
     await labelElt.fill(label);
 
     this.tile = this.page.getByRole("region", { name: label });
-    await expect(this.tile).toBeVisible()
+    await expect(this.tile).toBeVisible();
   }
 
   async remove() {
+
     const originalTiles = await this.page.locator("jar-tile").count();
+
     this.tile.getByLabel("Delete jar").click();
     const afterTiles = this.page.locator("jar-tile");
 
-    await expect(this.tile).toHaveCount(0);
     await expect(afterTiles).toHaveCount(originalTiles - 1);
   }
 }
@@ -105,9 +123,9 @@ class JarSide {
   }
 
   private selectColor(colorIdx: ColorIdx) {
-    const colorControls = this.tile.locator("fieldset.color-controls").nth(
-      this.jarSide,
-    );
+    const colorControls = this.tile
+      .locator("fieldset.color-controls")
+      .nth(this.jarSide);
     const colorOptElt = colorControls.getByRole("radio").nth(colorIdx);
     colorOptElt.check();
     return colorOptElt.evaluate((el) => el.style.backgroundColor);
