@@ -46,22 +46,25 @@ class Tile {
 
   getJarSides() {
     return {
-      leftJar: new JarSide(this.tile!, 0),
-      rightJar: new JarSide(this.tile!, 1),
+      leftJar: new JarSide(this.tile, 0),
+      rightJar: new JarSide(this.tile, 1),
     };
   }
 
   async setLabel(label: string) {
-    const labelElt = this.tile!.getByLabel("Jar name");
+    const labelElt = this.tile.getByLabel("Jar name");
     await labelElt.fill(label);
+
+    this.tile = this.page.getByRole("region", { name: label });
+    await expect(this.tile).toBeVisible()
   }
 
   async remove() {
     const originalTiles = await this.page.locator("jar-tile").count();
-    this.tile!.getByLabel("Delete jar").click();
+    this.tile.getByLabel("Delete jar").click();
     const afterTiles = this.page.locator("jar-tile");
 
-    await expect(this.tile!).toHaveCount(0);
+    await expect(this.tile).toHaveCount(0);
     await expect(afterTiles).toHaveCount(originalTiles - 1);
   }
 }
@@ -98,11 +101,11 @@ class JarSide {
     const label = labels.at(this.jarSide);
     expect(label).toBeDefined();
 
-    return this.tile!.getByText(label!, { exact: true });
+    return this.tile.getByText(label!, { exact: true });
   }
 
   private selectColor(colorIdx: ColorIdx) {
-    const colorControls = this.tile!.locator("fieldset.color-controls").nth(
+    const colorControls = this.tile.locator("fieldset.color-controls").nth(
       this.jarSide,
     );
     const colorOptElt = colorControls.getByRole("radio").nth(colorIdx);
@@ -111,10 +114,10 @@ class JarSide {
   }
 
   private getLiquid() {
-    return this.tile!.locator(".liquid").nth(this.jarSide);
+    return this.tile.locator(".liquid").nth(this.jarSide);
   }
 
   private fillJarSide(amount: number) {
-    this.tile!.getByRole("slider").nth(this.jarSide).fill(amount.toString());
+    this.tile.getByRole("slider").nth(this.jarSide).fill(amount.toString());
   }
 }

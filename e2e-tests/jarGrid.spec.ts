@@ -23,5 +23,6 @@ test("basic tile-level controls", async ({ page }) => {
   await jarGridPage.visit();
   const { tile } = await jarGridPage.getTile("Quality Time");
 
+  await tile.setLabel('My very own unicorn')
   await tile.remove();
 });
