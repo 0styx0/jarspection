@@ -7,30 +7,20 @@ import {
   queryTestElements,
   renderComponent,
 } from "../../test/testUtils";
-import { colors, Container } from "../../api";
 import { ComplexComponent } from "../../interfaces/ComplexComponent";
+import { Container } from "../../models/Container";
+import { addJarEvents } from "../AddJar/AddJar";
 
 defineCustomElt(jarGridTag, JarGrid);
 defineCustomElt(jarTileTag, JarTile);
 
 const renderJarGrid = () => renderComponent<JarGrid>(jarGridTag);
 
-const createExampleContainer = (label: string): Container => ({
-  id: Symbol(label),
-  containerLabel: label,
-  categories: [
-    {
-      categoryLabel: "Left",
-      hexColor: colors.yes,
-      percent: 50,
-    },
-    {
-      categoryLabel: "Right",
-      hexColor: colors.no,
-      percent: 75,
-    },
-  ],
-});
+const createExampleContainer = (label: string) => {
+  const cont = new Container();
+  cont.containerLabel = label;
+  return cont;
+};
 
 // setProps takes an animationframe to complete
 function setComplexPropsTest<P>(component: ComplexComponent<P>, props: P) {
@@ -303,6 +293,23 @@ describe("<jar-grid>", () => {
         expect(retrievedJar?.containerLabel).toBe(jar.containerLabel);
         expect(retrievedJar?.categories.length).toBe(jar.categories.length);
       });
+    });
+  });
+
+  describe("addJar event", () => {
+    it("adds jar to the grid", () => {
+      const component = renderJarGrid();
+      component.setProps({ jars: [] });
+      const addJarElt = queryTestElement(component, selectors.addJar);
+
+      const newContainer = new Container().setId('my new wonderful id').setContainerLabel('chips')
+      const event = new CustomEvent(addJarEvents.addJar, {
+        detail: { container: newContainer },
+      });
+      addJarElt.dispatchEvent(event);
+
+      vi.advanceTimersToNextFrame();
+      expect(component.getJars().get(newContainer.id)).toEqual(newContainer);
     });
   });
 });

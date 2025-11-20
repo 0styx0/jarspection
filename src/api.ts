@@ -6,7 +6,7 @@ export const colors = {
 
 export type HexColorValue = (typeof colors)[keyof typeof colors];
 
-export interface CategoryItem {
+export interface ApiCategoryItem {
   // technically this repeats info. but I want to keep api flexible for future
   categoryLabel: string;
   hexColor: HexColorValue;
@@ -14,13 +14,13 @@ export interface CategoryItem {
   percent: number;
 }
 
-export interface Container {
+export interface ApiContainer {
   containerLabel: string;
-  categories: CategoryItem[];
-  id: Symbol;
+  categories: ApiCategoryItem[];
+  id: string;
 }
 
-export interface ContainerSettings {
+export interface ApiContainerSettings {
   version: string;
-  containers: Container[];
+  containers: ApiContainer[];
 }

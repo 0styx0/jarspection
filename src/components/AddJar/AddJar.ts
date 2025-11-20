@@ -4,15 +4,14 @@ import {
   queryElt,
   triggerCustomEvent,
 } from "../componentUtils";
-import { createJars } from "../../utils";
-import { defaultJarTileProps, JarTileProps } from "../JarTile/JarTile";
+import { Container } from "../../models/Container";
 
 export const addJarEvents = {
   addJar: "addJar",
 };
 
 export interface AddJarEvent {
-  jar: JarTileProps;
+  container: Container;
 }
 export const selectors = {
   addJar: ".add-jar",
@@ -27,7 +26,7 @@ export class AddJar extends HTMLElement {
     this.createAddJarListener();
   }
 
-  private createAddJarListener() {
+  private createAddJarListener = () => {
     const addJarButton = queryElt<HTMLDivElement>(
       this.shadowRoot,
       selectors.addJar,
@@ -36,13 +35,11 @@ export class AddJar extends HTMLElement {
     if (!addJarButton) return;
 
     addJarButton.addEventListener("click", () => {
-      createJars([defaultJarTileProps]);
+      triggerCustomEvent(this, addJarEvents.addJar, {
+        container: new Container(),
+      });
     });
-    // before addingthis, I must figure out export spec
-    // triggerCustomEvent(this, colorControlEvents.colorchange, {
-    //   color: selectedColor,
-    // });
-  }
+  };
 }
 
 export const addJarTag = "add-jar";

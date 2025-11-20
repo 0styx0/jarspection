@@ -1,5 +1,5 @@
 import templateHtml from "./JarTile.html?raw";
-import { defineCustomElt, queryElt } from "../componentUtils";
+import { defineCustomElt, handleCustomEvent, queryElt } from "../componentUtils";
 import { SideLabel } from "../SideLabel/SideLabel";
 import { JarIllustration } from "../JarIllustration/JarIllustration";
 import {
@@ -28,7 +28,7 @@ export interface JarTileProps {
 }
 
 export const defaultJarTileProps: Container = {
-  id: Symbol("Default JarTile"),
+  id: "Default JarTile",
   containerLabel: "New Jar",
   categories: [
     {
@@ -225,14 +225,6 @@ export class JarTile
     const removeBtn = queryElt(this.shadowRoot, selectors.removeBtn)!;
     removeBtn.addEventListener("click", () => this.remove());
   }
-}
-
-function handleCustomEvent<T extends CustomEventInit>(
-  elt: Element,
-  eventName: string,
-  cb: (detail: T["detail"]) => void,
-) {
-  elt.addEventListener(eventName, (e: T) => cb(e.detail));
 }
 
 export const jarTileTag = "jar-tile";

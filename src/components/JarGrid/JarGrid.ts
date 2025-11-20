@@ -6,14 +6,16 @@
 
 import templateHtml from "./JarGrid.html?raw";
 import { ComplexComponent } from "../../interfaces/ComplexComponent";
-import { Container } from "../../api";
 import { JarTile, JarTileProps, jarTileTag } from "../JarTile/JarTile";
 import {
   createComplexComponent,
   defineCustomElt,
+  handleCustomEvent,
   queryElt,
   queryElts,
 } from "../componentUtils";
+import { Container } from "../../models/Container";
+import { AddJarEvent, addJarEvents } from "../AddJar/AddJar";
 
 export const selectors = {
   jarGrid: ".jarGrid",
@@ -27,6 +29,10 @@ export interface JarGridProps {
 
 type JarTileMap = Map<Container["id"], JarTile>;
 
+// addJar:
+// addAddJar event
+// appendJars
+
 export class JarGrid
   extends HTMLElement
   implements ComplexComponent<JarGridProps>
@@ -37,17 +43,37 @@ export class JarGrid
     this.attachShadow({ mode: "open" }).innerHTML = templateHtml;
   }
 
+  connectedCallback() {
+    this.createAddJarListener();
+  }
+
   setProps(props: JarGridProps) {
     this.renderJars(props.jars);
   }
 
-  getJars(): Map<Symbol, Container> {
+  getJars(): Map<string, Container> {
     const jarTiles = queryElts<JarTile>(this.shadowRoot, selectors.jarTiles);
     return jarTiles.reduce((jars, curTile) => {
       const curJar = curTile.export();
       jars.set(curJar.id, curJar);
       return jars;
-    }, new Map<Symbol, Container>());
+    }, new Map<string, Container>());
+  }
+
+  private createAddJarListener() {
+    const addJarElt = queryElt(this.shadowRoot, selectors.addJar);
+    if (!addJarElt) {
+      console.warn("Error setting addJar event. addJar not found");
+      return;
+    }
+
+    handleCustomEvent<CustomEventInit<AddJarEvent>>(
+      addJarElt,
+      addJarEvents.addJar,
+      (detail) => {
+        this.appendJar(detail!.container);
+      },
+    );
   }
 
   private getJarTiles(): JarTileMap {
@@ -119,7 +145,7 @@ export class JarGrid
 }
 
 function getIdsAsSet(jars: Container[]) {
-  return jars.reduce((ids, curJar) => ids.add(curJar.id), new Set<Symbol>());
+  return jars.reduce((ids, curJar) => ids.add(curJar.id), new Set<string>());
 }
 
 export const jarGridTag = "jar-grid";

@@ -1,6 +1,6 @@
-import { colors, Container, ContainerSettings } from "./api";
+import { colors, Container, ApiContainerSettings } from "./api";
 
-export const xxx: ContainerSettings = {
+export const xxx: ApiContainerSettings = {
   version: "1.0.0",
   containers: [],
 };

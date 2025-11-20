@@ -1,13 +1,15 @@
 import { describe, it, expect, vi } from "vitest";
 import { defineCustomElt } from "../componentUtils";
-import { createJars } from "../../utils";
-import { AddJar, addJarTag, selectors } from "./AddJar";
+import {
+  AddJar,
+  AddJarEvent,
+  addJarEvents,
+  addJarTag,
+  selectors,
+} from "./AddJar";
 import { renderComponent } from "../../test/testUtils";
 import { defaultJarTileProps } from "../JarTile/JarTile";
-
-vi.mock("../../utils", () => ({
-  createJars: vi.fn(),
-}));
+import { Container } from "../../models/Container";
 
 defineCustomElt(addJarTag, AddJar);
 
@@ -24,23 +26,24 @@ const getButton = (component: AddJar) => {
 describe("<add-jar>", () => {
   describe("initial render", () => {
     it("renders a button with a plus sign", () => {
-      vi.clearAllMocks();
       const component = renderAddJar();
       const button = getButton(component);
       expect(button.textContent?.trim()).toBe("+");
     });
   });
 
-  describe("interaction", () => {
-    it("calls createJars with defaultJarAttrs when the button is clicked", () => {
-      vi.clearAllMocks();
+  describe("click", () => {
+    it("fires addJar event with a new jar", () => {
       const component = renderAddJar();
       const button = getButton(component);
 
+      let emittedContainer = null;
+      component.addEventListener(addJarEvents.addJar, (e: Event) => {
+        emittedContainer = (e as CustomEvent<AddJarEvent>).detail.container;
+      });
       button.click();
 
-      expect(createJars).toHaveBeenCalledTimes(1);
-      expect(createJars).toHaveBeenCalledWith([defaultJarTileProps]);
+      expect(emittedContainer).toBeInstanceOf(Container);
     });
   });
 });

@@ -11,7 +11,7 @@ import {
   jarExporterTag,
   selectors as exportSelectors,
 } from "../../../components/JarExporter/JarExporter";
-import { Container, ContainerSettings } from "../../../api";
+import { Container, ApiContainerSettings } from "../../../api";
 import { defineCustomElt } from "../../../components/componentUtils";
 import { renderComponent } from "../../../test/testUtils";
 import {

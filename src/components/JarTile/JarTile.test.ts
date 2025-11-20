@@ -6,30 +6,15 @@ import { JarIllustration } from "../JarIllustration/JarIllustration";
 import { colorControlEvents } from "../ColorControls/ColorControls";
 import { rangeEvents } from "../VerticalRange/VerticalRange";
 import { queryTestElement, renderComponent } from "../../test/testUtils";
-import { colors, Container, HexColorValue } from "../../api";
 import userEvent from "@testing-library/user-event";
+import { Container } from "../../models/Container";
 
 defineCustomElt(sideLabelTag, SideLabel);
 defineCustomElt(jarTileTag, JarTile);
 
 const renderJarTile = () => renderComponent<JarTile>(jarTileTag);
 
-const exampleContainer: Container = {
-  id: Symbol(),
-  containerLabel: "init render test",
-  categories: [
-    {
-      categoryLabel: "MF",
-      hexColor: colors.yes,
-      percent: 28,
-    },
-    {
-      categoryLabel: "ON",
-      hexColor: colors.no,
-      percent: 92,
-    },
-  ],
-};
+const exampleContainer = new Container();
 
 const getJarIllustration = (component: JarTile) => {
   return queryTestElement<JarIllustration>(

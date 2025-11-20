@@ -46,6 +46,14 @@ export function triggerCustomEvent<T>(
   self.dispatchEvent(customEvent);
 }
 
+export function handleCustomEvent<T extends CustomEventInit>(
+  elt: Element,
+  eventName: string,
+  cb: (detail: T["detail"]) => void,
+) {
+  elt.addEventListener(eventName, (e: T) => cb(e.detail));
+}
+
 /**
  * logs error if container or element is not found
  */

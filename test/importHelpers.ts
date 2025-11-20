@@ -1,11 +1,11 @@
 import { expect } from "vitest";
-import { ContainerSettings } from "../src/api";
+import { ApiContainerSettings } from "../src/api";
 import { JarImporter } from "../src/components/JarImporter/JarImporter";
 
 export const createMockFile = (content: string, filename = "test.json"): File =>
   new File([content], filename, { type: "application/json" });
 
-export const createMockImportContents = (): ContainerSettings => ({
+export const createMockImportContents = (): ApiContainerSettings => ({
   version: "1.0.9",
   containers: [
     {

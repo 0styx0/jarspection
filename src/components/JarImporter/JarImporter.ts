@@ -15,10 +15,10 @@ If the user provides an invalid file, we fallback to a blank screen
 */
 import templateHtml from "./JarImporter.html?raw";
 import {
-  CategoryItem,
+  ApiCategoryItem,
   colors,
   Container,
-  ContainerSettings,
+  ApiContainerSettings,
   HexColorValue,
 } from "../../api";
 import { defaultContainers } from "../../defaultJars";
@@ -116,7 +116,7 @@ export class JarImporter
     return json.containers;
   }
 
-  private parseContainerJson(containerText: string): ContainerSettings {
+  private parseContainerJson(containerText: string): ApiContainerSettings {
     try {
       return JSON.parse(containerText);
     } catch (e) {
@@ -144,7 +144,7 @@ export class JarImporter
     });
   }
 
-  private validateImportFile(containerSettings: ContainerSettings): boolean {
+  private validateImportFile(containerSettings: ApiContainerSettings): boolean {
     // Check top-level structure
     if (
       !containerSettings ||
@@ -197,7 +197,7 @@ export class JarImporter
     return true;
   }
 
-  private isValidCategory(category: unknown): category is CategoryItem {
+  private isValidCategory(category: unknown): category is ApiCategoryItem {
     if (!category || typeof category !== "object") {
       return false;
     }
