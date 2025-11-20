@@ -1,12 +1,28 @@
 import { test, expect, Locator, Page } from "@playwright/test";
 import { JarGridPage } from "./pageModels/JarGridPage";
 
-test("sliders fill jars", async ({ page }) => {
+test("basic jar interactions", async ({ page }) => {
   const jarGridPage = new JarGridPage(page);
 
   await jarGridPage.visit();
-  await jarGridPage.setTile(1);
+  const { leftJar, rightJar } = await jarGridPage.setTile('Acts of Service');
 
-  await jarGridPage.setFillLevel(0, 100);
-  await jarGridPage.setFillLevel(1, 29);
+  await leftJar.setFillLevel(100);
+  await rightJar.setFillLevel(29);
+
+  await leftJar.setColor(0);
+  await rightJar.setColor(2);
+  await leftJar.setColor(1);
+
+  await leftJar.setFillLevel(39);
 });
+
+test('basic tile-level controls', async ({page}) => {
+  
+  const jarGridPage = new JarGridPage(page);
+
+  await jarGridPage.visit();
+  await jarGridPage.setTile('Quality Time');
+
+  await jarGridPage.deleteTile()
+})

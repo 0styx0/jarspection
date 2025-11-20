@@ -1,7 +1,16 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 
-type JarSide = 0 | 1;
+type Side = 0 | 1;
 type ColorIdx = 0 | 1 | 2;
+
+const rgbColors = [
+  "rgb(68, 255, 68)", // for "yes"
+  "rgb(255, 221, 68)", // for "maybe"
+  "rgb(255, 68, 68)", // for "no"
+];
+
+// indexed by JarSide
+const labels = ["G", "R"];
 
 export class JarGridPage {
   readonly page: Page;
@@ -15,32 +24,79 @@ export class JarGridPage {
     return this.page.goto("/");
   }
 
-  async setTile(n: number) {
-    this.tile = this.page.locator("jar-tile").nth(n);
+  async setTile(tileDesc: string) {
+    this.tile = this.page.getByRole("region", { name: tileDesc });
     await expect(this.tile).toBeVisible();
+
+    return this.getJarSides();
+  }
+
+  private getJarSides() {
+    return {
+      leftJar: new JarSide(this.tile!, 0),
+      rightJar: new JarSide(this.tile!, 1),
+    };
+  }
+
+  async deleteTile() {
+    const originalTiles = await this.page.locator("jar-tile").count();
+    this.tile!.getByLabel("Delete jar").click();
+    const afterTiles = this.page.locator("jar-tile");
+
+    await expect(this.tile!).toHaveCount(0);
+    await expect(afterTiles).toHaveCount(originalTiles - 1);
+  }
+}
+
+class JarSide {
+  private tile?: Locator;
+  private jarSide: Side;
+
+  constructor(tile: Locator, side: Side) {
+    this.tile = tile;
+    this.jarSide = side;
   }
 
   /** requires setTile to have been called **/
-  async setFillLevel(jarSide: JarSide, amount: number) {
-    this.fillJarSide(jarSide, amount);
-    const liquid = this.getLiquid(jarSide);
+  async setFillLevel(amount: number) {
+    this.fillJarSide(amount);
+    const liquid = this.getLiquid();
 
     const actualAmount = await liquid.evaluate((el) => el.style.height);
     expect(actualAmount).toBe(`${amount}%`);
   }
 
-  async setColor(jarSide: JarSide, colorIdx: ColorIdx) {
-    this.tile!.getByRole("radio").nth(colorIdx).check();
-    const liquid = this.getLiquid(jarSide);
+  async setColor(colorIdx: ColorIdx) {
+    const newColor = await this.selectColor(colorIdx);
 
-    await expect(liquid).toHaveCSS("background-color", "rgb(255, 221, 68)");
+    const liquid = this.getLiquid();
+    const categoryLabelElt = this.getCategoryLabel();
+
+    await expect(liquid).toHaveCSS("background-color", newColor);
+    await expect(categoryLabelElt).toHaveCSS("color", newColor);
   }
 
-  private getLiquid(jarSide: JarSide) {
-    return this.tile!.locator(".liquid").nth(jarSide);
+  private getCategoryLabel() {
+    const label = labels.at(this.jarSide);
+    expect(label).toBeDefined();
+
+    return this.tile!.getByText(label!, { exact: true });
   }
 
-  private fillJarSide(jarSide: JarSide, amount: number) {
-    this.tile!.getByRole("slider").nth(jarSide).fill(amount.toString());
+  private selectColor(colorIdx: ColorIdx) {
+    const colorControls = this.tile!.locator("fieldset.color-controls").nth(
+      this.jarSide,
+    );
+    const colorOptElt = colorControls.getByRole("radio").nth(colorIdx);
+    colorOptElt.check();
+    return colorOptElt.evaluate((el) => el.style.backgroundColor);
+  }
+
+  private getLiquid() {
+    return this.tile!.locator(".liquid").nth(this.jarSide);
+  }
+
+  private fillJarSide(amount: number) {
+    this.tile!.getByRole("slider").nth(this.jarSide).fill(amount.toString());
   }
 }
