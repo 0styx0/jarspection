@@ -73,7 +73,7 @@ describe("<jar-importer>", () => {
 
       await waitFor(() => {
         expect(importContainersSpy).toBeCalledWith(
-          mockImportContents.containers,
+          mockImportContents.topic,
         );
       });
     });

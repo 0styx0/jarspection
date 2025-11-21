@@ -9,7 +9,7 @@ import {
 } from "./AddJar";
 import { renderComponent } from "../../test/testUtils";
 import { defaultJarTileProps } from "../JarTile/JarTile";
-import { Container } from "../../models/Container";
+import { TopicHolder } from "../../models/TopicHolder";
 
 defineCustomElt(addJarTag, AddJar);
 
@@ -43,7 +43,7 @@ describe("<add-jar>", () => {
       });
       button.click();
 
-      expect(emittedContainer).toBeInstanceOf(Container);
+      expect(emittedContainer).toBeInstanceOf(TopicHolder);
     });
   });
 });

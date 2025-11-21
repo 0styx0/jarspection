@@ -1,8 +1,8 @@
-import { colors, Container, ApiContainerSettings } from "./api";
+import { colors, Container, ExportApi } from "./api";
 
-export const xxx: ApiContainerSettings = {
+export const xxx: ExportApi = {
   version: "1.0.0",
-  containers: [],
+  topic: [],
 };
 
 export const defaultContainers: Container[] = [

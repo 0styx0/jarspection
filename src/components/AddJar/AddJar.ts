@@ -4,14 +4,14 @@ import {
   queryElt,
   triggerCustomEvent,
 } from "../componentUtils";
-import { Container } from "../../models/Container";
+import { TopicHolder } from "../../models/TopicHolder";
 
 export const addJarEvents = {
   addJar: "addJar",
 };
 
 export interface AddJarEvent {
-  container: Container;
+  container: TopicHolder;
 }
 export const selectors = {
   addJar: ".add-jar",
@@ -36,7 +36,7 @@ export class AddJar extends HTMLElement {
 
     addJarButton.addEventListener("click", () => {
       triggerCustomEvent(this, addJarEvents.addJar, {
-        container: new Container(),
+        container: new TopicHolder(),
       });
     });
   };

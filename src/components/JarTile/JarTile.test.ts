@@ -7,14 +7,14 @@ import { colorControlEvents } from "../ColorControls/ColorControls";
 import { rangeEvents } from "../VerticalRange/VerticalRange";
 import { queryTestElement, renderComponent } from "../../test/testUtils";
 import userEvent from "@testing-library/user-event";
-import { Container } from "../../models/Container";
+import { TopicHolder } from "../../models/TopicHolder";
 
 defineCustomElt(sideLabelTag, SideLabel);
 defineCustomElt(jarTileTag, JarTile);
 
 const renderJarTile = () => renderComponent<JarTile>(jarTileTag);
 
-const exampleContainer = new Container();
+const exampleContainer = new TopicHolder();
 
 const getJarIllustration = (component: JarTile) => {
   return queryTestElement<JarIllustration>(
@@ -54,10 +54,10 @@ describe("<jar-tile>", () => {
       );
 
       expect(jarIllustration.fillleft).toBe(
-        exampleContainer.categories[0].percent,
+        exampleContainer.emotions[0].percent,
       );
       expect(jarIllustration.fillright).toBe(
-        exampleContainer.categories[1].percent,
+        exampleContainer.emotions[1].percent,
       );
     });
 
@@ -71,10 +71,10 @@ describe("<jar-tile>", () => {
       );
 
       expect(jarIllustration.colorleft).toBe(
-        exampleContainer.categories[0].hexColor,
+        exampleContainer.emotions[0].hexColor,
       );
       expect(jarIllustration.colorright).toBe(
-        exampleContainer.categories[1].hexColor,
+        exampleContainer.emotions[1].hexColor,
       );
     });
 
@@ -85,7 +85,7 @@ describe("<jar-tile>", () => {
       selectors.labels.forEach((selector, i) => {
         const labelElt = queryTestElement<SideLabel>(component, selector);
         expect(labelElt.label).toBe(
-          exampleContainer.categories[i].categoryLabel,
+          exampleContainer.emotions[i].categoryLabel,
         );
       });
     });

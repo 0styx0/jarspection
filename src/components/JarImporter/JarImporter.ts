@@ -15,10 +15,10 @@ If the user provides an invalid file, we fallback to a blank screen
 */
 import templateHtml from "./JarImporter.html?raw";
 import {
-  ApiCategoryItem,
+  Emotion,
   colors,
   Container,
-  ApiContainerSettings,
+  ExportApi,
   HexColorValue,
 } from "../../api";
 import { defaultContainers } from "../../defaultJars";
@@ -113,10 +113,10 @@ export class JarImporter
       return fallbackImportContents.containers;
     }
 
-    return json.containers;
+    return json.topic;
   }
 
-  private parseContainerJson(containerText: string): ApiContainerSettings {
+  private parseContainerJson(containerText: string): ExportApi {
     try {
       return JSON.parse(containerText);
     } catch (e) {
@@ -144,20 +144,20 @@ export class JarImporter
     });
   }
 
-  private validateImportFile(containerSettings: ApiContainerSettings): boolean {
+  private validateImportFile(containerSettings: ExportApi): boolean {
     // Check top-level structure
     if (
       !containerSettings ||
       typeof containerSettings !== "object" ||
       typeof containerSettings.version !== "string" ||
-      !Array.isArray(containerSettings.containers)
+      !Array.isArray(containerSettings.topic)
     ) {
       console.error("Invalid import file structure");
       return false;
     }
 
     // Validate each container
-    for (const container of containerSettings.containers) {
+    for (const container of containerSettings.topic) {
       if (!this.isValidContainer(container)) {
         console.error("Invalid container found:", container);
         return false;
@@ -197,7 +197,7 @@ export class JarImporter
     return true;
   }
 
-  private isValidCategory(category: unknown): category is ApiCategoryItem {
+  private isValidCategory(category: unknown): category is Emotion {
     if (!category || typeof category !== "object") {
       return false;
     }

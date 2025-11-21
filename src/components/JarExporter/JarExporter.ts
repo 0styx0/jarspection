@@ -5,7 +5,7 @@ Creates and prompts user to download a json file consisting of all containers re
 */
 
 import templateHtml from "./JarExporter.html?raw";
-import { Container, ApiContainerSettings } from "../../api";
+import { Container, ExportApi } from "../../api";
 import { defineCustomElt, queryElt } from "../componentUtils";
 import { ComplexComponent } from "../../interfaces/ComplexComponent";
 
@@ -56,15 +56,15 @@ export class JarExporter
     this.triggerDownload(exportFile);
   };
 
-  private getExportData(): ApiContainerSettings {
+  private getExportData(): ExportApi {
     const containers = this.props.exportContainers();
     return {
       version: "1.0.0",
-      containers,
+      topic: containers,
     };
   }
 
-  private createFile(containerSettings: ApiContainerSettings): Blob {
+  private createFile(containerSettings: ExportApi): Blob {
     return new Blob([JSON.stringify(containerSettings, null, 2)], {
       type: "application/json",
     });

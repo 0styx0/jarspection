@@ -28,7 +28,7 @@ const getExportButton = (component: JarExporter): HTMLButtonElement => {
 };
 
 const createMockContainers = (): Container[] =>
-  createMockImportContents().containers;
+  createMockImportContents().topic;
 
 describe("<jar-exporter>", () => {
   it("renders download button", () => {

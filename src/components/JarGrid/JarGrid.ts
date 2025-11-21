@@ -14,7 +14,7 @@ import {
   queryElt,
   queryElts,
 } from "../componentUtils";
-import { Container } from "../../models/Container";
+import { TopicHolder } from "../../models/TopicHolder";
 import { AddJarEvent, addJarEvents } from "../AddJar/AddJar";
 
 export const selectors = {
@@ -24,10 +24,10 @@ export const selectors = {
 };
 
 export interface JarGridProps {
-  jars: Container[];
+  jars: TopicHolder[];
 }
 
-type JarTileMap = Map<Container["id"], JarTile>;
+type JarTileMap = Map<TopicHolder["id"], JarTile>;
 
 // addJar:
 // addAddJar event
@@ -51,13 +51,13 @@ export class JarGrid
     this.renderJars(props.jars);
   }
 
-  getJars(): Map<string, Container> {
+  getJars(): Map<string, TopicHolder> {
     const jarTiles = queryElts<JarTile>(this.shadowRoot, selectors.jarTiles);
     return jarTiles.reduce((jars, curTile) => {
       const curJar = curTile.export();
       jars.set(curJar.id, curJar);
       return jars;
-    }, new Map<string, Container>());
+    }, new Map<string, TopicHolder>());
   }
 
   private createAddJarListener() {
@@ -90,14 +90,14 @@ export class JarGrid
    * Updates jars in the dom to match `jars`
    * Removes jars in the dom but absent from `jars` from the dom
    */
-  private renderJars(jars: Container[]): void {
+  private renderJars(jars: TopicHolder[]): void {
     const currentJarTiles = this.getJarTiles();
 
     this.addNewJars(currentJarTiles, jars);
     this.removeDeletedJars(currentJarTiles, jars);
   }
 
-  private addNewJars(currentJarTiles: JarTileMap, updatedJars: Container[]) {
+  private addNewJars(currentJarTiles: JarTileMap, updatedJars: TopicHolder[]) {
     for (const updatedJar of updatedJars) {
       const curJar = currentJarTiles.get(updatedJar.id);
       if (!curJar) {
@@ -108,7 +108,7 @@ export class JarGrid
 
   private removeDeletedJars(
     currentJarTiles: JarTileMap,
-    updatedJars: Container[],
+    updatedJars: TopicHolder[],
   ) {
     const jarIds = getIdsAsSet(updatedJars);
     const removedJars = new Set(currentJarTiles.keys()).difference(jarIds);
@@ -116,7 +116,7 @@ export class JarGrid
     removedJars.forEach((jarId) => this.removeJar(currentJarTiles.get(jarId)!));
   }
 
-  private appendJar(jar: Container): void {
+  private appendJar(jar: TopicHolder): void {
     const jarGrid = queryElt(this.shadowRoot, selectors.jarGrid);
 
     const addJar = queryElt(this.shadowRoot, selectors.addJar);
@@ -144,7 +144,7 @@ export class JarGrid
   }
 }
 
-function getIdsAsSet(jars: Container[]) {
+function getIdsAsSet(jars: TopicHolder[]) {
   return jars.reduce((ids, curJar) => ids.add(curJar.id), new Set<string>());
 }
 

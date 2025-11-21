@@ -8,7 +8,7 @@ import {
   renderComponent,
 } from "../../test/testUtils";
 import { ComplexComponent } from "../../interfaces/ComplexComponent";
-import { Container } from "../../models/Container";
+import { TopicHolder } from "../../models/TopicHolder";
 import { addJarEvents } from "../AddJar/AddJar";
 
 defineCustomElt(jarGridTag, JarGrid);
@@ -17,7 +17,7 @@ defineCustomElt(jarTileTag, JarTile);
 const renderJarGrid = () => renderComponent<JarGrid>(jarGridTag);
 
 const createExampleContainer = (label: string) => {
-  const cont = new Container();
+  const cont = new TopicHolder();
   cont.containerLabel = label;
   return cont;
 };
@@ -29,7 +29,7 @@ function setComplexPropsTest<P>(component: ComplexComponent<P>, props: P) {
   vi.advanceTimersToNextFrame();
 }
 
-const exampleJars: Container[] = [
+const exampleJars: TopicHolder[] = [
   createExampleContainer("Jar 1"),
   createExampleContainer("Jar 2"),
   createExampleContainer("Jar 3"),
@@ -193,7 +193,7 @@ describe("<jar-grid>", () => {
       const component = renderJarGrid();
       setComplexPropsTest(component, { jars: exampleJars });
 
-      const newJars: Container[] = [
+      const newJars: TopicHolder[] = [
         createExampleContainer("New Jar 1"),
         createExampleContainer("New Jar 2"),
       ];
@@ -291,7 +291,7 @@ describe("<jar-grid>", () => {
         const retrievedJar = jarsMap.get(jar.id);
         expect(retrievedJar).toBeTruthy();
         expect(retrievedJar?.containerLabel).toBe(jar.containerLabel);
-        expect(retrievedJar?.categories.length).toBe(jar.categories.length);
+        expect(retrievedJar?.emotions.length).toBe(jar.emotions.length);
       });
     });
   });
@@ -302,7 +302,9 @@ describe("<jar-grid>", () => {
       component.setProps({ jars: [] });
       const addJarElt = queryTestElement(component, selectors.addJar);
 
-      const newContainer = new Container().setId('my new wonderful id').setContainerLabel('chips')
+      const newContainer = new TopicHolder()
+        .setId("my new wonderful id")
+        .setName("chips");
       const event = new CustomEvent(addJarEvents.addJar, {
         detail: { container: newContainer },
       });

@@ -11,7 +11,7 @@ import {
   jarExporterTag,
   selectors as exportSelectors,
 } from "../../../components/JarExporter/JarExporter";
-import { Container, ApiContainerSettings } from "../../../api";
+import { Container, ExportApi } from "../../../api";
 import { defineCustomElt } from "../../../components/componentUtils";
 import { renderComponent } from "../../../test/testUtils";
 import {
@@ -87,7 +87,7 @@ describe("<jar-page-controls>", () => {
 
       await waitFor(() => {
         expect(importContainersSpy).toHaveBeenCalledWith(
-          mockImportContents.containers,
+          mockImportContents.topic,
         );
       });
     });
