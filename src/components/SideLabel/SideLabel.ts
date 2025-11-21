@@ -1,5 +1,11 @@
 import templateHtml from "./SideLabel.html?raw";
-import { defineCustomElt, mapPropertiesToAttribute, queryElt } from "../componentUtils";
+import {
+  defineCustomElt,
+  mapPropertiesToAttribute,
+  queryElt,
+} from "../componentUtils";
+import { EmotionalReaction, emotionalReactions } from "../../api";
+import { reactionToHex } from "../../models/TopicHolder";
 
 export const selectors = {
   label: ".label",
@@ -7,15 +13,15 @@ export const selectors = {
 
 export interface SideLabelProps {
   label: string;
-  color: string;
+  reaction: EmotionalReaction;
 }
 
 export class SideLabel extends HTMLElement implements SideLabelProps {
   label = "";
-  color = "";
+  reaction: EmotionalReaction = emotionalReactions.neutral;
 
-  static observedAttributes = ["label", "color"];
-  static mirroredProps = ["label", "color"];
+  static observedAttributes = ["label", "reaction"];
+  static mirroredProps = ["label", "reaction"];
 
   constructor() {
     super();
@@ -31,7 +37,7 @@ export class SideLabel extends HTMLElement implements SideLabelProps {
       case "label":
         this.setLabelEltValue(value);
         break;
-      case "color":
+      case "reaction":
         this.setLabelEltColor(value);
         break;
     }
@@ -48,11 +54,11 @@ export class SideLabel extends HTMLElement implements SideLabelProps {
     labelElt.textContent = value;
   }
 
-  private setLabelEltColor(color: string) {
+  private setLabelEltColor(reaction: string) {
     const labelElt = this.getLabelElt();
     if (!labelElt) return;
 
-    labelElt.style.color = color;
+    labelElt.style.color = reactionToHex[reaction as EmotionalReaction];
   }
 }
 

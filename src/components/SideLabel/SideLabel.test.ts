@@ -6,7 +6,8 @@ import {
   sideLabelTag,
 } from "./SideLabel";
 import { defineCustomElt } from "../componentUtils";
-import { renderComponent } from "../../test/testUtils";
+import { renderComponent, rgbColors } from "../../test/testUtils";
+import { emotionalReactions } from "../../api";
 
 defineCustomElt(sideLabelTag, SideLabel);
 
@@ -45,12 +46,12 @@ describe("<side-label>", () => {
         expect(component.label).toBe(expectedLabel);
       });
 
-      it("color", () => {
-        const expectedColor = "#FFFFFF";
-        const component = renderSideLabel({ color: "#FFFFFF" });
+      it("reaction", () => {
+        const component = renderSideLabel({
+          reaction: emotionalReactions.neutral,
+        });
         const labelElt = getLabelElt(component);
-        expect(labelElt?.style.color).toContain("255, 255, 255");
-        expect(component.color).toBe(expectedColor);
+        expect(labelElt?.style.color).toContain(rgbColors.neutral);
       });
     });
   });
@@ -68,11 +69,10 @@ describe("<side-label>", () => {
 
     it("updates label color when color attribute changes", () => {
       const component = renderSideLabel();
-      const expectedColor = "red";
-      component.color = expectedColor;
+      component.reaction = emotionalReactions.positive;
 
       const labelElt = getLabelElt(component);
-      expect(labelElt?.style.color).toBe(expectedColor);
+      expect(labelElt?.style.color).toBe(rgbColors.positive);
     });
   });
 });
