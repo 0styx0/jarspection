@@ -1,22 +1,27 @@
 import templateHtml from "./JarTile.html?raw";
-import { defineCustomElt, handleCustomEvent, queryElt } from "../componentUtils";
+import {
+  defineCustomElt,
+  handleCustomEvent,
+  queryElt,
+} from "../componentUtils";
 import { SideLabel } from "../SideLabel/SideLabel";
 import { JarIllustration } from "../JarIllustration/JarIllustration";
 import {
-  ColorChangeEvent,
-  colorControlEvents,
-} from "../ColorControls/ColorControls";
+  ReactionChangeEvent,
+  reactionPickerEvents,
+} from "../ReactionPicker/ReactionPicker";
 import {
   RangeChangeEvent,
   rangeEvents,
   VerticalRange,
 } from "../VerticalRange/VerticalRange";
-import { colors, Container, HexColorValue } from "../../api";
 import { ComplexComponent } from "../../interfaces/ComplexComponent";
+import { reactionToHex, TopicHolder } from "../../models/TopicHolder";
+import { EmotionalReaction } from "../../api";
 
 export const selectors = {
   labelInput: ".label-input",
-  colors: [".colors-left", ".colors-right"],
+  reactions: [".reactions-left", ".reactions-right"],
   ranges: [".range-left", ".range-right"],
   labels: [".label-left", ".label-right"],
   removeBtn: ".remove-btn",
@@ -24,31 +29,17 @@ export const selectors = {
 };
 
 export interface JarTileProps {
-  container: Container;
+  topic: TopicHolder;
 }
 
-export const defaultJarTileProps: Container = {
-  id: "Default JarTile",
-  containerLabel: "New Jar",
-  categories: [
-    {
-      categoryLabel: "G",
-      hexColor: colors.maybe,
-      percent: 50,
-    },
-    {
-      categoryLabel: "R",
-      hexColor: colors.maybe,
-      percent: 50,
-    },
-  ],
+export const defaultJarTileProps = {
+  topic: new TopicHolder(),
 };
-
 export class JarTile
   extends HTMLElement
   implements ComplexComponent<JarTileProps>
 {
-  private container = defaultJarTileProps;
+  private topic = defaultJarTileProps.topic;
 
   constructor() {
     super();
@@ -59,24 +50,24 @@ export class JarTile
   connectedCallback() {
     this.setupEventListeners();
 
-    this.drawJar();
+    this.updateIllustration();
   }
 
   setProps(props: JarTileProps) {
-    this.container = props.container;
+    this.topic = props.topic;
 
-    this.updateContainerLabelElt(props.container.containerLabel);
-    props.container.categories.forEach((category, i) => {
-      this.updateColor(i, category.hexColor);
-      this.updateRange(i, category.percent);
-      this.updateCategoryLabel(i, category.categoryLabel);
+    this.updateLabelElt(props.topic.name);
+    props.topic.emotions.forEach((emotion, i) => {
+      this.updateReaction(i, emotion.reaction);
+      this.updateStrength(i, emotion.strength);
+      this.updateProducer(i, emotion.producer);
     });
 
-    this.drawJar();
+    this.updateIllustration();
   }
 
-  export(): Container {
-    return this.container;
+  export(): TopicHolder {
+    return this.topic;
   }
 
   private setupEventListeners() {
@@ -86,38 +77,57 @@ export class JarTile
     this.handleLabelChanges();
   }
 
-  private updateColor(categoryIdx: number, color?: string) {
-    if (!color) {
-      console.warn("JarTile: Updating color failed. No color found", color);
+  private updateReaction(emotionIdx: number, reaction?: EmotionalReaction) {
+    if (!reaction) {
+      console.warn(
+        "JarTile: Updating reaction failed. No reaction found",
+        reaction,
+      );
       return;
     }
-    this.container.categories[categoryIdx].hexColor = color as HexColorValue;
-    this.updateCategoryElt(selectors.labels[categoryIdx], color);
-    this.drawJar();
+    this.topic.emotions[emotionIdx].reaction = reaction;
+    this.updateProducerReaction(selectors.labels[emotionIdx], reaction);
+    this.updateIllustration();
   }
 
-  private updateRange(categoryIdx: number, rangeValue?: number) {
-    if (rangeValue === undefined) {
-      console.warn("Updating range failed. No range found", rangeValue);
+  private updateStrength(emotionIdx: number, strength?: number) {
+    if (strength === undefined) {
+      console.warn("Updating strength failed. No strength found", strength);
       return;
     }
 
-    this.container.categories[categoryIdx].percent = rangeValue;
-    this.updateRangeElt(selectors.ranges[categoryIdx], rangeValue);
-    this.drawJar();
+    this.topic.emotions[emotionIdx].strength = strength;
+    this.updateStrengthElt(selectors.ranges[emotionIdx], strength);
+    this.updateIllustration();
   }
 
-  private updateCategoryLabel(categoryIdx: number, text: string) {
-    const selector = selectors.labels[categoryIdx];
+  private updateProducer(emotionIdx: number, producer: string) {
+    const selector = selectors.labels[emotionIdx];
     const sideLabel = queryElt<SideLabel>(this.shadowRoot, selector);
 
     if (!sideLabel) {
       return;
     }
-    sideLabel.label = text;
+    sideLabel.label = producer;
   }
 
-  private updateContainerLabelElt(text: string) {
+  private updateProducerReaction(
+    selector: string,
+    reaction: EmotionalReaction,
+  ) {
+    const sideLabel = queryElt<SideLabel>(this.shadowRoot, selector);
+
+    if (!sideLabel) {
+      console.warn("JarTile: No sidelabel elt found!", {
+        selector,
+        color: reaction,
+      });
+      return;
+    }
+    sideLabel.reaction = reaction;
+  }
+
+  private updateLabelElt(topicName: string) {
     const labelElt = queryElt<HTMLTextAreaElement>(
       this.shadowRoot,
       selectors.labelInput,
@@ -126,21 +136,11 @@ export class JarTile
       console.warn("JarTile: No label elt found");
       return;
     }
-    labelElt.value = text;
-    this.container.containerLabel = text;
+    labelElt.value = topicName;
+    this.topic.name = topicName;
   }
 
-  private updateCategoryElt(selector: string, color: string) {
-    const sideLabel = queryElt<SideLabel>(this.shadowRoot, selector);
-
-    if (!sideLabel) {
-      console.warn("JarTile: No sidelabel elt found!", { selector, color });
-      return;
-    }
-    sideLabel.color = color;
-  }
-
-  private updateRangeElt(selector: string, level: number) {
+  private updateStrengthElt(selector: string, level: number) {
     const rangeElt = queryElt<VerticalRange>(this.shadowRoot, selector);
 
     if (!rangeElt) {
@@ -157,7 +157,7 @@ export class JarTile
     );
     labelElt?.addEventListener("input", (e) => {
       const newLabel = (e.target as HTMLInputElement).value;
-      this.updateContainerLabelElt(newLabel);
+      this.updateLabelElt(newLabel);
     });
   };
 
@@ -176,13 +176,13 @@ export class JarTile
       handleCustomEvent<CustomEventInit<RangeChangeEvent>>(
         rangeElt,
         rangeEvents.rangechange,
-        (detail) => this.updateRange(i, detail?.value),
+        (detail) => this.updateStrength(i, detail?.value),
       );
     });
   };
 
   private handleColorChanges = () => {
-    selectors.colors.forEach((colorSelector, i) => {
+    selectors.reactions.forEach((colorSelector, i) => {
       const colorElt = queryElt(this.shadowRoot, colorSelector);
 
       if (!colorElt) {
@@ -194,17 +194,17 @@ export class JarTile
         return;
       }
 
-      handleCustomEvent<CustomEventInit<ColorChangeEvent>>(
+      handleCustomEvent<CustomEventInit<ReactionChangeEvent>>(
         colorElt,
-        colorControlEvents.colorchange,
+        reactionPickerEvents.reactionchange,
         (detail) => {
-          this.updateColor(i, detail?.color);
+          this.updateReaction(i, detail?.reaction);
         },
       );
     });
   };
 
-  private drawJar() {
+  private updateIllustration() {
     const jarIllustrationElt = queryElt<JarIllustration>(
       this.shadowRoot,
       selectors.jarIllustration,
@@ -215,10 +215,10 @@ export class JarTile
       return;
     }
 
-    jarIllustrationElt.colorleft = this.container.categories[0].hexColor;
-    jarIllustrationElt.colorright = this.container.categories[1].hexColor;
-    jarIllustrationElt.fillleft = this.container.categories[0].percent;
-    jarIllustrationElt.fillright = this.container.categories[1].percent;
+    jarIllustrationElt.reactionleft = this.topic.emotions[0].reaction;
+    jarIllustrationElt.reactionright = this.topic.emotions[1].reaction;
+    jarIllustrationElt.strengthleft = this.topic.emotions[0].strength;
+    jarIllustrationElt.strengthright = this.topic.emotions[1].strength;
   }
 
   private handleRemove() {

@@ -68,7 +68,7 @@
     flex-shrink: 0;
   }
 
-  .colors-container {
+  .reactions-container {
     width: 85%;
     display: flex;
     justify-content: space-between;
@@ -108,10 +108,14 @@
 
 <section aria-labelledby="jar-name-input" class="jar-container">
   <div class="screenreader-only">
-    <span id="left-fill-desc">Left jar fill level</span>
-    <span id="right-fill-desc">Right jar fill level</span>
-    <span id="left-color-desc">Left jar color</span>
-    <span id="right-color-desc">Right jar color</span>
+    <span id="left-fill-desc"
+      >How much of a reaction does person one have?</span
+    >
+    <span id="right-fill-desc"
+      >How much of a reaction does person two have?</span
+    >
+    <span id="left-reaction-desc">What reaction does person one have?</span>
+    <span id="right-reaction-desc">What reaction does person two have?</span>
   </div>
 
   <div class="top-controls">
@@ -134,7 +138,7 @@
   </div>
 
   <fieldset class="middle-controls">
-    <legend class="screenreader-only">Fill level controls for each jar</legend>
+    <legend class="screenreader-only">How strong your reactions are</legend>
     <vertical-range
       rangevalue="20"
       aria-labelledby="label-left-half left-fill-desc"
@@ -156,18 +160,18 @@
     ></vertical-range>
   </fieldset>
 
-  <fieldset class="colors-container">
-    <legend class="screenreader-only">Color controls for each jar</legend>
+  <fieldset class="reactions-container">
+    <legend class="screenreader-only">What reactions do you have</legend>
 
-    <color-controls
-      aria-labelledby="label-left-half left-color-desc"
-      class="colors-left"
-    ></color-controls>
+    <reaction-picker
+      aria-labelledby="label-left-half left-reaction-desc"
+      class="reactions-left"
+    ></reaction-picker>
 
-    <color-controls
-      aria-labelledby="label-right-half right-color-desc"
-      class="colors-right"
-    ></color-controls>
+    <reaction-picker
+      aria-labelledby="label-right-half right-reaction-desc"
+      class="reactions-right"
+    ></reaction-picker>
   </fieldset>
 
   <div class="label-container">

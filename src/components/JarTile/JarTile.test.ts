@@ -3,11 +3,12 @@ import { JarTile, jarTileTag, selectors } from "./JarTile";
 import { defineCustomElt } from "../componentUtils";
 import { SideLabel, sideLabelTag } from "../SideLabel/SideLabel";
 import { JarIllustration } from "../JarIllustration/JarIllustration";
-import { colorControlEvents } from "../ColorControls/ColorControls";
+import { reactionPickerEvents } from "../ReactionPicker/ReactionPicker";
 import { rangeEvents } from "../VerticalRange/VerticalRange";
 import { queryTestElement, renderComponent } from "../../test/testUtils";
 import userEvent from "@testing-library/user-event";
 import { TopicHolder } from "../../models/TopicHolder";
+import { emotionalReactions } from "../../api";
 
 defineCustomElt(sideLabelTag, SideLabel);
 defineCustomElt(jarTileTag, JarTile);
@@ -36,7 +37,7 @@ describe("<jar-tile>", () => {
       const component = renderJarTile();
       const jarIllustration = getJarIllustration(component);
 
-      component.setProps({ container: exampleContainer });
+      component.setProps({ topic: exampleContainer });
 
       const exportedProps = component.export();
 
@@ -46,47 +47,44 @@ describe("<jar-tile>", () => {
 
     it("propagates initial fill values to jar illustration", () => {
       const component = renderJarTile();
-      component.setProps({ container: exampleContainer });
+      component.setProps({ topic: exampleContainer });
 
       const jarIllustration = queryTestElement<JarIllustration>(
         component,
         selectors.jarIllustration,
       );
 
-      expect(jarIllustration.fillleft).toBe(
-        exampleContainer.emotions[0].percent,
+      expect(jarIllustration.strengthleft).toBe(
+        exampleContainer.emotions[0].strength,
       );
-      expect(jarIllustration.fillright).toBe(
-        exampleContainer.emotions[1].percent,
+      expect(jarIllustration.strengthright).toBe(
+        exampleContainer.emotions[1].strength,
       );
     });
 
-    it("propagates initial color values to jar illustration", () => {
+    it("propagates initial reaction values to jar illustration", () => {
       const component = renderJarTile();
-      component.setProps({ container: exampleContainer });
+      const topicProp = new TopicHolder();
+      topicProp.emotions[0].reaction = emotionalReactions.positive;
+      topicProp.emotions[1].reaction = emotionalReactions.negative;
+      component.setProps({ topic: topicProp });
 
       const jarIllustration = queryTestElement<JarIllustration>(
         component,
         selectors.jarIllustration,
       );
 
-      expect(jarIllustration.colorleft).toBe(
-        exampleContainer.emotions[0].hexColor,
-      );
-      expect(jarIllustration.colorright).toBe(
-        exampleContainer.emotions[1].hexColor,
-      );
+      expect(jarIllustration.reactionleft).toBe(emotionalReactions.positive);
+      expect(jarIllustration.reactionright).toBe(emotionalReactions.negative);
     });
 
     it("propagates initial label values to side labels", () => {
       const component = renderJarTile();
-      component.setProps({ container: exampleContainer });
+      component.setProps({ topic: exampleContainer });
 
       selectors.labels.forEach((selector, i) => {
         const labelElt = queryTestElement<SideLabel>(component, selector);
-        expect(labelElt.label).toBe(
-          exampleContainer.emotions[i].categoryLabel,
-        );
+        expect(labelElt.label).toBe(exampleContainer.emotions[i].producer);
       });
     });
 
@@ -109,48 +107,48 @@ describe("<jar-tile>", () => {
     });
   });
 
-  describe("colorchange event updates illustration and export", () => {
-    it("updates colorleft when left color controls emit colorchange", () => {
+  describe("reactionchange event updates illustration and export", () => {
+    it("updates reactionleft when left reaction controls emit reactionchange", () => {
       const component = renderJarTile();
-      const colorLeft = queryTestElement(component, selectors.colors[0]);
-      const newColor = "#aabbcc";
-      const event = new CustomEvent(colorControlEvents.colorchange, {
-        detail: { color: newColor },
+      const reactionLeft = queryTestElement(component, selectors.reactions[0]);
+      const newReaction = emotionalReactions.negative;
+      const event = new CustomEvent(reactionPickerEvents.reactionchange, {
+        detail: { reaction: newReaction },
       });
-      colorLeft.dispatchEvent(event);
+      reactionLeft.dispatchEvent(event);
 
       const jarIllustration = getJarIllustration(component);
       const sideLabel = getSideLabel(component, 0);
 
-      expect(jarIllustration.colorleft).toBe(newColor);
-      expect(component.export().categories[0].hexColor, newColor);
-      expect(sideLabel.color).toBe(newColor);
+      expect(jarIllustration.reactionleft).toBe(newReaction);
+      expect(component.export().emotions[0].reaction, newReaction);
+      expect(sideLabel.reaction).toBe(newReaction);
     });
 
-    it("updates colorright when right color controls emit colorchange", () => {
+    it("updates reactionright when right reaction controls emit reactionchange", () => {
       const component = renderJarTile();
-      const colorRight = queryTestElement(component, selectors.colors[1]);
-      const newColor = "#ffeecc";
-      const event = new CustomEvent(colorControlEvents.colorchange, {
-        detail: { color: newColor },
+      const reactionRight = queryTestElement(component, selectors.reactions[1]);
+      const newReaction = emotionalReactions.positive;
+      const event = new CustomEvent(reactionPickerEvents.reactionchange, {
+        detail: { reaction: newReaction },
       });
-      colorRight.dispatchEvent(event);
+      reactionRight.dispatchEvent(event);
 
       const jarIllustration = getJarIllustration(component);
       const sideLabel = getSideLabel(component, 1);
 
-      expect(jarIllustration.colorright).toBe(newColor);
-      expect(component.export().categories[1].hexColor, newColor);
-      expect(sideLabel.color).toBe(newColor);
+      expect(jarIllustration.reactionright).toBe(newReaction);
+      expect(component.export().emotions[1].reaction, newReaction);
+      expect(sideLabel.reaction).toBe(newReaction);
     });
 
-    it("empty color keeps previous color", () => {
+    it("empty reaction keeps previous reaction", () => {
       const component = renderJarTile();
-      component.setProps({ container: exampleContainer });
-      const colorLeft = queryTestElement(component, selectors.colors[0]);
+      component.setProps({ topic: exampleContainer });
+      const reactionLeft = queryTestElement(component, selectors.reactions[0]);
 
-      const event = new CustomEvent(colorControlEvents.colorchange, {});
-      colorLeft.dispatchEvent(event);
+      const event = new CustomEvent(reactionPickerEvents.reactionchange, {});
+      reactionLeft.dispatchEvent(event);
 
       expect(component.export()).toEqual(exampleContainer);
     });
@@ -166,12 +164,12 @@ describe("<jar-tile>", () => {
       });
       rangeLeft.dispatchEvent(event);
 
-      expect(component.export().categories[0].percent).toBe("45");
+      expect(component.export().emotions[0].strength).toBe("45");
     });
 
     it("handles rangechange with zero value", () => {
       const component = renderJarTile();
-      component.setProps({ container: exampleContainer });
+      component.setProps({ topic: exampleContainer });
       const rangeLeft = queryTestElement(component, selectors.ranges[1]);
 
       const event = new CustomEvent(rangeEvents.rangechange, {});
@@ -190,7 +188,7 @@ describe("<jar-tile>", () => {
 
       await user.type(labelInput, updatedLabel);
 
-      expect(component.export().containerLabel).toBe(updatedLabel);
+      expect(component.export().name).toBe(updatedLabel);
     });
   });
 
