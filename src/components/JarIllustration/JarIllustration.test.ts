@@ -6,8 +6,9 @@ import {
   jarIllustrationTag,
   selectors,
 } from "./JarIllustration";
-import { renderComponent } from "../../test/testUtils";
+import { renderComponent, rgbColors } from "../../test/testUtils";
 import { defaultJarTileProps } from "../JarTile/JarTile";
+import { emotionalReactions } from "../../api";
 
 defineCustomElt(jarIllustrationTag, JarIllustration);
 
@@ -44,10 +45,10 @@ describe("<jar-illustration>", () => {
 
     it("applies initial attributes to liquidLeft and liquidRight", () => {
       const attrs = {
-        fillleft: 40,
-        fillright: 60,
-        colorleft: "#111111",
-        colorright: "#222222",
+        strengthleft: 40,
+        strengthright: 60,
+        reactionleft: emotionalReactions.neutral,
+        reactionright: emotionalReactions.negative,
       };
 
       const component = renderJarIllustration(attrs);
@@ -55,56 +56,56 @@ describe("<jar-illustration>", () => {
       const liquidRight = getJarSide(component, selectors.jarRight);
 
       expect(liquidLeft.style.height).toBe("40%");
-      expect(liquidLeft.style.backgroundColor).toBe("rgb(17, 17, 17)");
+      expect(liquidLeft.style.backgroundColor).toBe(rgbColors.neutral);
 
       expect(liquidRight.style.height).toBe("60%");
-      expect(liquidRight.style.backgroundColor).toBe("rgb(34, 34, 34)");
+      expect(liquidRight.style.backgroundColor).toBe(rgbColors.negative);
     });
   });
 
   describe("attribute changes", () => {
-    it("updates fillleft", () => {
+    it("updates strengthleft", () => {
       const component = renderJarIllustration();
       const liquidLeft = getJarSide(component, selectors.jarLeft);
 
-      const newFillLeft = "75";
-      component.setAttribute("fillleft", newFillLeft);
+      const newstrengthleft = "75";
+      component.setAttribute("strengthleft", newstrengthleft);
 
       expect(liquidLeft.style.height).toBe("75%");
-      expect(component.fillleft).toBe(newFillLeft);
+      expect(component.strengthleft).toBe(newstrengthleft);
     });
 
-    it("updates fillright", () => {
+    it("updates strengthright", () => {
       const component = renderJarIllustration();
       const liquidRight = getJarSide(component, selectors.jarRight);
 
-      const newFillRight = "25";
-      component.setAttribute("fillright", newFillRight);
+      const newstrengthright = "25";
+      component.setAttribute("strengthright", newstrengthright);
 
       expect(liquidRight.style.height).toBe("25%");
-      expect(component.fillright).toBe(newFillRight);
+      expect(component.strengthright).toBe(newstrengthright);
     });
 
-    it("updates colorleft", () => {
+    it("updates reactionleft", () => {
       const component = renderJarIllustration();
       const liquidLeft = getJarSide(component, selectors.jarLeft);
 
-      const newColorLeft = "#ff0000";
-      component.setAttribute("colorleft", newColorLeft);
+      const newreactionleft = emotionalReactions.positive
+      component.setAttribute("reactionleft", newreactionleft);
 
-      expect(liquidLeft.style.backgroundColor).toBe("rgb(255, 0, 0)");
-      expect(component.colorleft).toBe(newColorLeft);
+      expect(liquidLeft.style.backgroundColor).toBe(rgbColors.positive);
+      expect(component.reactionleft).toBe(newreactionleft);
     });
 
-    it("updates colorright", () => {
+    it("updates reactionright", () => {
       const component = renderJarIllustration();
       const liquidRight = getJarSide(component, selectors.jarRight);
 
-      const newColorRight = "#00ff00";
-      component.setAttribute("colorright", newColorRight);
+      const newreactionright = emotionalReactions.negative
+      component.setAttribute("reactionright", newreactionright);
 
-      expect(liquidRight.style.backgroundColor).toBe("rgb(0, 255, 0)");
-      expect(component.colorright).toBe(newColorRight);
+      expect(liquidRight.style.backgroundColor).toBe(rgbColors.negative);
+      expect(component.reactionright).toBe(newreactionright);
     });
   });
 });

@@ -1,7 +1,11 @@
 import templateHtml from "./JarIllustration.html?raw";
-import { defineCustomElt, mapPropertiesToAttribute, queryElt } from "../componentUtils";
-import { paintJar, paintLeftJar, paintRightJar } from "./jarCanvasUtils";
+import {
+  defineCustomElt,
+  mapPropertiesToAttribute,
+  queryElt,
+} from "../componentUtils";
 import { defaultJarTileProps } from "../JarTile/JarTile";
+import { reactionToHex } from "../../models/TopicHolder";
 
 export const selectors = {
   jarLeft: ".left-side .liquid",
@@ -12,30 +16,35 @@ export const selectors = {
 };
 
 export type JarIllustrationProps = {
-  colorleft: string;
-  colorright: string;
-  fillleft: number;
-  fillright: number;
+  reactionleft: string;
+  reactionright: string;
+  strengthleft: number;
+  strengthright: number;
 };
 
 export class JarIllustration
   extends HTMLElement
   implements JarIllustrationProps
 {
-  fillleft = defaultJarTileProps.categories[0].percent;
-  fillright = defaultJarTileProps.categories[1].percent;
+  strengthleft = defaultJarTileProps.topic.emotions[0].strength;
+  strengthright = defaultJarTileProps.topic.emotions[1].strength;
 
-  colorleft = defaultJarTileProps.categories[0].hexColor;
-  colorright = defaultJarTileProps.categories[1].hexColor;
+  reactionleft = defaultJarTileProps.topic.emotions[0].reaction;
+  reactionright = defaultJarTileProps.topic.emotions[1].reaction;
 
   static observedAttributes = [
-    "fillleft",
-    "fillright",
-    "colorleft",
-    "colorright",
+    "reactionleft",
+    "reactionright",
+    "strengthleft",
+    "strengthright",
   ];
 
-  static mirroredProps = ["fillleft", "fillright", "colorleft", "colorright"];
+  static mirroredProps = [
+    "reactionleft",
+    "reactionright",
+    "strengthleft",
+    "strengthright",
+  ];
 
   constructor() {
     super();
@@ -77,11 +86,11 @@ export class JarIllustration
   }
 
   private updateJars(leftJar: HTMLDivElement, rightJar: HTMLDivElement) {
-    leftJar.style.backgroundColor = this.colorleft;
-    leftJar.style.height = this.fillleft + "%";
+    leftJar.style.backgroundColor = reactionToHex[this.reactionleft];
+    leftJar.style.height = this.strengthleft + "%";
 
-    rightJar.style.backgroundColor = this.colorright;
-    rightJar.style.height = this.fillright + "%";
+    rightJar.style.backgroundColor = reactionToHex[this.reactionright];
+    rightJar.style.height = this.strengthright + "%";
   }
 
   private updateAccessibleText() {
@@ -97,7 +106,7 @@ export class JarIllustration
       );
       return;
     }
-    fullStateElt.textContent = `Left jar: ${this.colorleft}, ${this.fillleft}% filled. Right jar: ${this.colorright}, ${this.fillright}% filled.`;
+    fullStateElt.textContent = `person 1': ${this.reactionleft}, ${this.strengthleft}% filled. person 2: ${this.reactionright}, ${this.strengthright}% filled.`;
   }
 }
 
