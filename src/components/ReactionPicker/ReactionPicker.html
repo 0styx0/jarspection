@@ -1,0 +1,27 @@
+<link rel="stylesheet" href="./src/styles/utils.css" />
+
+<style>
+  .reaction-controls {
+    all: unset;
+    display: flex;
+  }
+
+  .color-splotch {
+    appearance: none;
+    height: 8cqw;
+    aspect-ratio: 1;
+    margin-left: 3%;
+    border-radius: 50%;
+    box-shadow: 0 0.3cqw 1cqw rgba(0, 0, 0, 0.2);
+  }
+</style>
+
+<fieldset class="reaction-controls">
+  <legend class="screenreader-only">Reactions</legend>
+
+  <input type="radio" name="reaction" class="color-splotch" value="positive" />
+
+  <input type="radio" name="reaction" value="neutral" class="color-splotch" />
+
+  <input type="radio" name="reaction" class="color-splotch" value="negative" />
+</fieldset>
