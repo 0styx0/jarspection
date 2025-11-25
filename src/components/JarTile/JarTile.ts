@@ -8,6 +8,7 @@ import { SideLabel } from "../SideLabel/SideLabel";
 import { JarIllustration } from "../JarIllustration/JarIllustration";
 import {
   ReactionChangeEvent,
+  ReactionPicker,
   reactionPickerEvents,
 } from "../ReactionPicker/ReactionPicker";
 import {
@@ -87,6 +88,7 @@ export class JarTile
     }
     this.topic.emotions[emotionIdx].reaction = reaction;
     this.updateProducerReaction(selectors.labels[emotionIdx], reaction);
+    this.updateReactionElt(selectors.reactions[emotionIdx], reaction)
     this.updateIllustration();
   }
 
@@ -99,6 +101,16 @@ export class JarTile
     this.topic.emotions[emotionIdx].strength = strength;
     this.updateStrengthElt(selectors.ranges[emotionIdx], strength);
     this.updateIllustration();
+  }
+
+  private updateReactionElt(selector: string, reaction: EmotionalReaction) {
+    
+    const picker = queryElt<ReactionPicker>(this.shadowRoot, selector)
+    if (!picker) {
+      return
+    }
+
+    picker.setAttribute('initialreaction', reaction)
   }
 
   private updateProducer(emotionIdx: number, producer: string) {

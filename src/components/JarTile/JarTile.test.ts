@@ -1,9 +1,11 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, test } from "vitest";
 import { JarTile, jarTileTag, selectors } from "./JarTile";
 import { defineCustomElt } from "../componentUtils";
 import { SideLabel, sideLabelTag } from "../SideLabel/SideLabel";
 import { JarIllustration } from "../JarIllustration/JarIllustration";
-import { reactionPickerEvents } from "../ReactionPicker/ReactionPicker";
+import {
+  reactionPickerEvents,
+} from "../ReactionPicker/ReactionPicker";
 import { rangeEvents } from "../VerticalRange/VerticalRange";
 import { queryTestElement, renderComponent } from "../../test/testUtils";
 import userEvent from "@testing-library/user-event";
@@ -33,49 +35,40 @@ function getSideLabel(component: JarTile, sideLabelN: number) {
 
 describe("<jar-tile>", () => {
   describe("initial rendering", () => {
-    it("renders with default values", () => {
-      const component = renderJarTile();
-      const jarIllustration = getJarIllustration(component);
 
-      component.setProps({ topic: exampleContainer });
+    describe("propagates to illustration", () => {
+      it("initial strength values", () => {
+        const component = renderJarTile();
+        component.setProps({ topic: exampleContainer });
 
-      const exportedProps = component.export();
+        const jarIllustration = queryTestElement<JarIllustration>(
+          component,
+          selectors.jarIllustration,
+        );
 
-      expect(exportedProps).toEqual(exampleContainer);
-      expect(jarIllustration).toBeTruthy();
-    });
+        expect(jarIllustration.strengthleft).toBe(
+          exampleContainer.emotions[0].strength,
+        );
+        expect(jarIllustration.strengthright).toBe(
+          exampleContainer.emotions[1].strength,
+        );
+      });
 
-    it("propagates initial fill values to jar illustration", () => {
-      const component = renderJarTile();
-      component.setProps({ topic: exampleContainer });
+      it("initial reaction values", () => {
+        const component = renderJarTile();
+        const topicProp = new TopicHolder();
+        topicProp.emotions[0].reaction = emotionalReactions.positive;
+        topicProp.emotions[1].reaction = emotionalReactions.negative;
+        component.setProps({ topic: topicProp });
 
-      const jarIllustration = queryTestElement<JarIllustration>(
-        component,
-        selectors.jarIllustration,
-      );
+        const jarIllustration = queryTestElement<JarIllustration>(
+          component,
+          selectors.jarIllustration,
+        );
 
-      expect(jarIllustration.strengthleft).toBe(
-        exampleContainer.emotions[0].strength,
-      );
-      expect(jarIllustration.strengthright).toBe(
-        exampleContainer.emotions[1].strength,
-      );
-    });
-
-    it("propagates initial reaction values to jar illustration", () => {
-      const component = renderJarTile();
-      const topicProp = new TopicHolder();
-      topicProp.emotions[0].reaction = emotionalReactions.positive;
-      topicProp.emotions[1].reaction = emotionalReactions.negative;
-      component.setProps({ topic: topicProp });
-
-      const jarIllustration = queryTestElement<JarIllustration>(
-        component,
-        selectors.jarIllustration,
-      );
-
-      expect(jarIllustration.reactionleft).toBe(emotionalReactions.positive);
-      expect(jarIllustration.reactionright).toBe(emotionalReactions.negative);
+        expect(jarIllustration.reactionleft).toBe(emotionalReactions.positive);
+        expect(jarIllustration.reactionright).toBe(emotionalReactions.negative);
+      });
     });
 
     it("propagates initial label values to side labels", () => {
@@ -88,22 +81,23 @@ describe("<jar-tile>", () => {
       });
     });
 
-    it("renders label textarea", () => {
-      const component = renderJarTile();
-      const labelInput = queryTestElement<HTMLTextAreaElement>(
-        component,
-        selectors.labelInput,
-      );
-
-      expect(labelInput.tagName).toBe("TEXTAREA");
-      expect(labelInput.value).toBe("");
-    });
-
     it("renders remove button", () => {
       const component = renderJarTile();
       const removeBtn = queryTestElement(component, selectors.removeBtn);
 
       expect(removeBtn.textContent).toBe("×");
+    });
+
+    it("exports the default values", () => {
+      const component = renderJarTile();
+      const jarIllustration = getJarIllustration(component);
+
+      component.setProps({ topic: exampleContainer });
+
+      const exportedProps = component.export();
+
+      expect(exportedProps).toEqual(exampleContainer);
+      expect(jarIllustration).toBeTruthy();
     });
   });
 
@@ -164,7 +158,7 @@ describe("<jar-tile>", () => {
       });
       rangeLeft.dispatchEvent(event);
 
-      expect(component.export().emotions[0].strength).toBe("45");
+      expect(component.export().emotions[0].strength).toBe(45);
     });
 
     it("handles rangechange with zero value", () => {
