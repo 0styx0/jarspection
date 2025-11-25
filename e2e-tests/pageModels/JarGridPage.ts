@@ -1,7 +1,7 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 
 type Side = 0 | 1;
-type ReactionIdx = 0 | 1 | 2;
+export type Reaction = "positive" | "neutral" | "negative";
 
 // indexed by JarSide
 const labels = ["G", "R"];
@@ -25,7 +25,6 @@ export class JarGridPage {
   }
 
   async addTile() {
-
     const originalTiles = await this.page.locator("jar-tile").count();
     await this.page.getByRole("button", { name: "+" }).click();
     const afterTiles = this.page.locator("jar-tile");
@@ -35,6 +34,30 @@ export class JarGridPage {
     await expect(afterTiles).toHaveCount(originalTiles + 1);
 
     return this.constructHelperClasses(newTile);
+  }
+
+  async exportSettings() {
+    console.log("exporting");
+    this.page.on("download", (download) => {
+      download.path().then(console.log).catch(console.error);
+    });
+    // Start waiting for download before clicking. Note no await.
+    const downloadPromise = this.page.waitForEvent("download");
+    await this.page.getByRole("button", { name: "Export Preferences" }).click();
+
+    const download = await downloadPromise;
+
+    const downloadFileName = download.suggestedFilename();
+
+    await download.saveAs(downloadFileName);
+
+    return downloadFileName;
+  }
+
+  async importSettings(importFileName: string) {
+    await this.page
+      .getByRole("button", { name: "Import Preferences:" })
+      .setInputFiles(importFileName);
   }
 
   private constructHelperClasses(tileElt: Locator) {
@@ -62,8 +85,12 @@ class Tile {
     };
   }
 
+  getLabel() {
+    return this.tile.getByLabel("Jar name");
+  }
+
   async setLabel(label: string) {
-    const labelElt = this.tile.getByLabel("Jar name");
+    const labelElt = this.getLabel();
     await labelElt.fill(label);
 
     this.tile = this.page.getByRole("region", { name: label });
@@ -71,7 +98,6 @@ class Tile {
   }
 
   async remove() {
-
     const originalTiles = await this.page.locator("jar-tile").count();
 
     this.tile.getByLabel("Delete jar").click();
@@ -90,46 +116,63 @@ class JarSide {
     this.jarSide = side;
   }
 
-  /** requires setTile to have been called **/
-  async setFillLevel(amount: number) {
-    this.fillJarSide(amount);
-    const liquid = this.getLiquid();
-
-    const actualAmount = await liquid.evaluate((el) => el.style.height);
-    expect(actualAmount).toBe(`${amount}%`);
+  getStrengthElt() {
+    return this.tile
+      .getByRole("slider", { name: "Jar fill level" })
+      .nth(this.jarSide);
   }
 
-  async setReaction(reactionIdx: ReactionIdx) {
-    const newReaction = await this.selectReaction(reactionIdx);
+  getReactionControl(reaction: Reaction) {
+    return this.getReactionControlPanel().locator(
+      `input[type="radio"][value="${reaction}"]`,
+    );
+  }
 
-    const liquid = this.getLiquid();
-    const categoryLabelElt = this.getCategoryLabel();
+  async setStrength(strength: number) {
+    this.setStrengthElt(strength);
 
-    await expect(liquid).toHaveCSS("background-color", newReaction);
+    const actualStrength = await this.getIllustrationLevel();
+    expect(actualStrength).toBe(`${strength}%`);
+  }
+
+  private getIllustrationLevel() {
+    const illustration = this.getIllustration();
+
+    return illustration.evaluate((el) => el.style.height);
+  }
+
+  async setReaction(reaction: Reaction) {
+    const newReaction = await this.selectReaction(reaction);
+
+    const illustration = this.getIllustration();
+    const categoryLabelElt = this.getTopicName();
+
+    await expect(illustration).toHaveCSS("background-color", newReaction);
     await expect(categoryLabelElt).toHaveCSS("color", newReaction);
   }
 
-  private getCategoryLabel() {
+  private getTopicName() {
     const label = labels.at(this.jarSide);
     expect(label).toBeDefined();
 
     return this.tile.getByText(label!, { exact: true });
   }
 
-  private selectReaction(reactionIdx: ReactionIdx) {
-    const reactionControl = this.tile
-      .locator("reaction-picker")
-      .nth(this.jarSide);
-    const reactionInputElt = reactionControl.locator("input").nth(reactionIdx);
-    reactionInputElt.check();
-    return reactionInputElt.evaluate((el) => el.style.backgroundColor);
+  private async selectReaction(reaction: Reaction) {
+    const reactionControl = this.getReactionControl(reaction);
+    await reactionControl.check();
+    return reactionControl.evaluate((el) => el.style.backgroundColor);
   }
 
-  private getLiquid() {
+  private getIllustration() {
     return this.tile.locator(".liquid").nth(this.jarSide);
   }
 
-  private fillJarSide(amount: number) {
-    this.tile.getByRole("slider").nth(this.jarSide).fill(amount.toString());
+  private getReactionControlPanel() {
+    return this.tile.locator("reaction-picker").nth(this.jarSide);
+  }
+
+  private setStrengthElt(amount: number) {
+    this.getStrengthElt().fill(amount.toString());
   }
 }

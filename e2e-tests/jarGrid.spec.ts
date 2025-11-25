@@ -1,5 +1,5 @@
 import { test, expect, Locator, Page } from "@playwright/test";
-import { JarGridPage } from "./pageModels/JarGridPage";
+import { JarGridPage, Reaction } from "./pageModels/JarGridPage";
 
 test("basic topic-level interactions", async ({ page }) => {
   const jarGridPage = new JarGridPage(page);
@@ -7,14 +7,14 @@ test("basic topic-level interactions", async ({ page }) => {
 
   const { leftJar, rightJar } = await jarGridPage.getTile("Acts of Service");
 
-  await leftJar.setFillLevel(100);
-  await rightJar.setFillLevel(29);
+  await leftJar.setStrength(100);
+  await rightJar.setStrength(29);
 
-  await leftJar.setReaction(0);
-  await rightJar.setReaction(2);
-  await leftJar.setReaction(1);
+  await leftJar.setReaction("positive");
+  await rightJar.setReaction("negative");
+  await leftJar.setReaction("neutral");
 
-  await leftJar.setFillLevel(39);
+  await leftJar.setStrength(39);
 });
 
 test("basic tile-level controls", async ({ page }) => {
@@ -32,8 +32,47 @@ test("Adding topic", async ({ page }) => {
   await jarGridPage.visit();
 
   const firstNewTile = await jarGridPage.addTile();
-  await firstNewTile.leftJar.setReaction(2);
+  await firstNewTile.leftJar.setReaction("positive");
 
   await jarGridPage.addTile();
   await firstNewTile.tile.remove();
+});
+
+test("exporting/importing results in original page", async ({ page }) => {
+  const jarGridPage = new JarGridPage(page);
+  await jarGridPage.visit();
+
+  const newTileData = {
+    label: "unicorns r us",
+    left: {
+      reaction: "negative" as Reaction,
+      strength: 25,
+    },
+    right: {
+      reaction: "positive" as Reaction,
+      strength: 75,
+    },
+  };
+
+  const newTile = await jarGridPage.addTile();
+  await newTile.rightJar.setReaction(newTileData.right.reaction);
+  await newTile.leftJar.setReaction(newTileData.left.reaction);
+  await newTile.leftJar.setStrength(newTileData.left.strength);
+  await newTile.rightJar.setStrength(newTileData.right.strength);
+  await newTile.tile.setLabel(newTileData.label);
+
+  const exportFileName = await jarGridPage.exportSettings();
+  await jarGridPage.page.reload();
+
+  await jarGridPage.importSettings(exportFileName);
+
+  const importedTile = await jarGridPage.getTile(newTileData.label);
+
+  await Promise.all([
+    expect(importedTile.tile.getLabel()).toHaveValue(newTileData.label),
+    expect(importedTile.rightJar.getReactionControl(newTileData.right.reaction)).toBeChecked(),
+    expect(importedTile.leftJar.getReactionControl(newTileData.left.reaction)).toBeChecked(),
+    expect(importedTile.rightJar.getStrengthElt()).toHaveValue(newTileData.right.strength.toString()),
+    expect(importedTile.leftJar.getStrengthElt()).toHaveValue(newTileData.left.strength.toString()),
+  ]);
 });
