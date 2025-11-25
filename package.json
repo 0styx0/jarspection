@@ -3,15 +3,14 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "e2e": "npx playwright test --ui"
   },
   "devDependencies": {
-    "@badeball/cypress-cucumber-preprocessor": "^23.2.1",
     "@playwright/test": "^1.56.1",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/user-event": "^14.6.1",
     "@types/node": "^24.10.1",
-    "cypress": "^15.6.0",
     "jsdom": "^27.0.1",
     "typescript": ">=3.0.0",
     "vite": "^7.1.12",
