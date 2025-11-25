@@ -29,6 +29,14 @@ const getExportButton = (component: JarExporter): HTMLButtonElement => {
 
 const createMockTopics = (): Topic[] => createMockImportContents().topics;
 
+function createDateMock() {
+  const mockDate = new Date("2023-11-21T12:00:00Z");
+  vi.spyOn(Date.prototype, "toISOString").mockImplementation(
+    () => "2023-11-21T12:00:00Z",
+  );
+  return mockDate;
+}
+
 describe("<jar-exporter>", () => {
   it("renders download button", () => {
     const { component } = renderJarExporter();
@@ -38,11 +46,7 @@ describe("<jar-exporter>", () => {
 
   describe("onClick", () => {
     it("exports containers with correct structure", async () => {
-      const mockDate = new Date("2023-11-21T12:00:00Z");
-      vi.spyOn(Date.prototype, "toISOString").mockImplementation(
-        () => "2023-11-21T12:00:00Z",
-      );
-
+      const mockDate = createDateMock();
       const { component, exportContainersSpy, user } = renderJarExporter();
       const topics = createMockTopics();
       exportContainersSpy.mockReturnValue(topics);
@@ -69,6 +73,32 @@ describe("<jar-exporter>", () => {
           isoExportedAt: mockDate.toISOString(),
         },
         topics: topics,
+      });
+    });
+
+    it.only("errors if export breaks validation rules", async () => {
+      const mockDate = createDateMock();
+
+      const { component, exportContainersSpy, user } = renderJarExporter();
+      const topics = createMockTopics();
+      topics[0].metadata.tags = [
+        {
+          name:
+            // over the max length
+            "----------------------------------------------------------------",
+        },
+      ];
+      exportContainersSpy.mockReturnValue(topics);
+
+      const createObjectURLSpy = vi
+        .spyOn(URL, "createObjectURL")
+        .mockImplementation(vi.fn());
+
+      const button = getExportButton(component);
+      await user.click(button);
+
+      await waitFor(() => {
+        expect(createObjectURLSpy).not.toHaveBeenCalled();
       });
     });
   });

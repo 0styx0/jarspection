@@ -373,7 +373,7 @@ function validateExportMetadata(
 }
 
 function validateExportApi(
-  value: unknown,
+  value: object,
   path: string = "root",
 ): ValidationError[] {
   const errors = validateObject(value, path);
@@ -416,8 +416,8 @@ export function parseAndValidate(
   }
 }
 
-export function exportFileValidator(
-  data: unknown,
+export function exportValidator(
+  data: object,
 ): ValidationResult<ExportApi> {
   const errors = validateExportApi(data);
 

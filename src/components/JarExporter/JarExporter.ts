@@ -8,6 +8,7 @@ import templateHtml from "./JarExporter.html?raw";
 import { ExportApi, Topic } from "../../api";
 import { defineCustomElt, queryElt } from "../componentUtils";
 import { ComplexComponent } from "../../interfaces/ComplexComponent";
+import { exportValidator } from "../../utils/validators";
 
 export interface JarExporterProps {
   exportContainers: () => Topic[];
@@ -52,7 +53,15 @@ export class JarExporter
 
   private exportSettings = () => {
     const settings = this.getExportData();
+
+    const validationStatus = exportValidator(settings);
+    if (!validationStatus.success) {
+      console.warn("Export error", validationStatus);
+      return;
+    }
+
     const exportFile = this.createFile(settings);
+
     this.triggerDownload(exportFile);
   };
 

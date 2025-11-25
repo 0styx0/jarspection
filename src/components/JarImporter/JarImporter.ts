@@ -18,7 +18,7 @@ import { Emotion, ExportApi, Topic } from "../../api";
 import { defaultTopics } from "../../defaultJars";
 import { defineCustomElt, queryElt } from "../componentUtils";
 import { ComplexComponent } from "../../interfaces/ComplexComponent";
-import { exportFileValidator, parseJson } from "../../utils/validators";
+import { exportValidator, parseJson } from "../../utils/validators";
 
 export interface JarImporterProps {
   importContainers: (topics: Topic[]) => void;
@@ -103,7 +103,7 @@ export class JarImporter
       return [];
     }
 
-    const validatedImport = exportFileValidator(json.data);
+    const validatedImport = exportValidator(json.data);
     if (!validatedImport.success) {
       console.warn("Importer: Invalid file", validatedImport);
       return [];
