@@ -1,5 +1,6 @@
 import {
   Emotion,
+  EmotionalReaction,
   Emotions,
   Tag,
   Tags,
@@ -48,3 +49,9 @@ class EmotionHolder implements Emotion {
 class TagHolder implements Tag {
   name = "default";
 }
+
+export const reactionToHex: Record<EmotionalReaction, string> = {
+  positive: "#44ff44",
+  neutral: "#ffdd44",
+  negative: "#ff4444",
+};

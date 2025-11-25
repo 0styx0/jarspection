@@ -18,7 +18,7 @@ const renderJarGrid = () => renderComponent<JarGrid>(jarGridTag);
 
 const createExampleContainer = (label: string) => {
   const cont = new TopicHolder();
-  cont.containerLabel = label;
+  cont.name = label;
   return cont;
 };
 
@@ -50,8 +50,7 @@ describe("<jar-grid>", () => {
 
       jarTiles.forEach((tile, index) => {
         const exported = tile.export();
-        expect(exported.id).toBe(exampleJars[index].id);
-        expect(exported.containerLabel).toBe(exampleJars[index].containerLabel);
+        expect(exported).toEqual(exampleJars[index]);
       });
     });
 
@@ -84,7 +83,8 @@ describe("<jar-grid>", () => {
         component,
         selectors.jarTiles,
       );
-      expect(initialTiles.length).toBe(3);
+
+      expect(initialTiles).toHaveLength(3);
 
       const newJar = createExampleContainer("Jar 4");
       component.setProps({ jars: [...exampleJars, newJar] });
@@ -93,7 +93,7 @@ describe("<jar-grid>", () => {
         component,
         selectors.jarTiles,
       );
-      expect(updatedTiles.length).toBe(4);
+      expect(updatedTiles).toHaveLength(4);
     });
 
     test("allows getJars to return the new jar", () => {
@@ -106,8 +106,8 @@ describe("<jar-grid>", () => {
       const jarsMap = component.getJars();
 
       expect(jarsMap.size).toBe(4);
-      expect(jarsMap.has(newJar.id)).toBe(true);
-      expect(jarsMap.get(newJar.id)?.containerLabel).toBe("Jar 4");
+      expect(jarsMap.has(newJar.metadata.id)).toBe(true);
+      expect(jarsMap.get(newJar.metadata.id)?.name).toBe("Jar 4");
     });
 
     test("preserves order with add-jar button at the end", () => {
@@ -148,7 +148,7 @@ describe("<jar-grid>", () => {
       const component = renderJarGrid();
       setComplexPropsTest(component, { jars: exampleJars });
 
-      const removedJarId = exampleJars[0].id;
+      const removedJarId = exampleJars[0].metadata.id;
       const remainingJars = exampleJars.slice(1);
       setComplexPropsTest(component, { jars: remainingJars });
 
@@ -168,7 +168,7 @@ describe("<jar-grid>", () => {
       const jarsMap = component.getJars();
 
       expect(jarsMap.size).toBe(1);
-      expect(jarsMap.has(exampleJars[1].id)).toBe(true);
+      expect(jarsMap.has(exampleJars[1].metadata.id)).toBe(true);
     });
 
     test("removes all jars", () => {
@@ -211,12 +211,12 @@ describe("<jar-grid>", () => {
 
       // Verify old jars are gone
       exampleJars.forEach((oldJar) => {
-        expect(jarsMap.has(oldJar.id)).toBe(false);
+        expect(jarsMap.has(oldJar.metadata.id)).toBe(false);
       });
 
       // Verify new jars are present
       newJars.forEach((newJar) => {
-        expect(jarsMap.has(newJar.id)).toBe(true);
+        expect(jarsMap.has(newJar.metadata.id)).toBe(true);
       });
     });
 
@@ -237,9 +237,9 @@ describe("<jar-grid>", () => {
       );
 
       expect(jarTiles.length).toBe(2);
-      expect(jarsMap.has(preservedJar.id)).toBe(true);
-      expect(jarsMap.has(newJar.id)).toBe(true);
-      expect(jarsMap.has(exampleJars[0].id)).toBe(false);
+      expect(jarsMap.has(preservedJar.metadata.id)).toBe(true);
+      expect(jarsMap.has(newJar.metadata.id)).toBe(true);
+      expect(jarsMap.has(exampleJars[0].metadata.id)).toBe(false);
     });
 
     test("handles complex add/remove operations", () => {
@@ -263,10 +263,10 @@ describe("<jar-grid>", () => {
       const finalJarsMap = component.getJars();
 
       expect(finalJarsMap.size).toBe(3);
-      expect(finalJarsMap.has(exampleJars[0].id)).toBe(true);
-      expect(finalJarsMap.has(newJar1.id)).toBe(true);
-      expect(finalJarsMap.has(newJar2.id)).toBe(true);
-      expect(finalJarsMap.has(exampleJars[2].id)).toBe(false);
+      expect(finalJarsMap.has(exampleJars[0].metadata.id)).toBe(true);
+      expect(finalJarsMap.has(newJar1.metadata.id)).toBe(true);
+      expect(finalJarsMap.has(newJar2.metadata.id)).toBe(true);
+      expect(finalJarsMap.has(exampleJars[2].metadata.id)).toBe(false);
     });
   });
 
@@ -288,9 +288,9 @@ describe("<jar-grid>", () => {
       const jarsMap = component.getJars();
 
       exampleJars.forEach((jar) => {
-        const retrievedJar = jarsMap.get(jar.id);
+        const retrievedJar = jarsMap.get(jar.metadata.id);
         expect(retrievedJar).toBeTruthy();
-        expect(retrievedJar?.containerLabel).toBe(jar.containerLabel);
+        expect(retrievedJar?.name).toBe(jar.name);
         expect(retrievedJar?.emotions.length).toBe(jar.emotions.length);
       });
     });
@@ -311,7 +311,9 @@ describe("<jar-grid>", () => {
       addJarElt.dispatchEvent(event);
 
       vi.advanceTimersToNextFrame();
-      expect(component.getJars().get(newContainer.id)).toEqual(newContainer);
+      expect(component.getJars().get(newContainer.metadata.id)).toEqual(
+        newContainer,
+      );
     });
   });
 });

@@ -14,19 +14,14 @@ If the user provides an invalid file, we fallback to a blank screen
 
 */
 import templateHtml from "./JarImporter.html?raw";
-import {
-  Emotion,
-  colors,
-  Container,
-  ExportApi,
-  HexColorValue,
-} from "../../api";
-import { defaultContainers } from "../../defaultJars";
+import { Emotion, ExportApi, Topic } from "../../api";
+import { defaultTopics } from "../../defaultJars";
 import { defineCustomElt, queryElt } from "../componentUtils";
 import { ComplexComponent } from "../../interfaces/ComplexComponent";
+import { exportFileValidator, parseJson } from "../../utils/validators";
 
 export interface JarImporterProps {
-  importContainers: (containers: Container[]) => void;
+  importContainers: (topics: Topic[]) => void;
 }
 
 export const selectors = {
@@ -37,11 +32,6 @@ const defaultProps: JarImporterProps = {
   importContainers: () => {
     console.error("JarImporter: Please set importContainers prop");
   },
-};
-
-const fallbackImportContents = {
-  version: "0",
-  containers: [],
 };
 
 export class JarImporter
@@ -72,7 +62,7 @@ export class JarImporter
       return;
     }
 
-    this.props.importContainers(defaultContainers);
+    this.props.importContainers(defaultTopics);
   }
 
   private addImportClickHandler() {
@@ -104,25 +94,22 @@ export class JarImporter
     return importInput?.files?.item(0) ?? null;
   }
 
-  private async parseImportFile(file: File): Promise<Container[]> {
+  private async parseImportFile(file: File): Promise<Topic[]> {
     const contents = await this.readFileContents(file);
-    const json = this.parseContainerJson(contents);
-    const isValidImportFile = this.validateImportFile(json);
+    const json = parseJson(contents);
 
-    if (!isValidImportFile) {
-      return fallbackImportContents.containers;
+    if (!json.success) {
+      console.warn("Importer: Invalid json", json);
+      return [];
     }
 
-    return json.topic;
-  }
-
-  private parseContainerJson(containerText: string): ExportApi {
-    try {
-      return JSON.parse(containerText);
-    } catch (e) {
-      console.error("Import error parsing json", containerText);
-      return fallbackImportContents;
+    const validatedImport = exportFileValidator(json.data);
+    if (!validatedImport.success) {
+      console.warn("Importer: Invalid file", validatedImport);
+      return [];
     }
+
+    return validatedImport.data.topics;
   }
 
   private readFileContents(file: File): Promise<string> {
@@ -142,108 +129,6 @@ export class JarImporter
       };
       reader.readAsText(file);
     });
-  }
-
-  private validateImportFile(containerSettings: ExportApi): boolean {
-    // Check top-level structure
-    if (
-      !containerSettings ||
-      typeof containerSettings !== "object" ||
-      typeof containerSettings.version !== "string" ||
-      !Array.isArray(containerSettings.topic)
-    ) {
-      console.error("Invalid import file structure");
-      return false;
-    }
-
-    // Validate each container
-    for (const container of containerSettings.topic) {
-      if (!this.isValidContainer(container)) {
-        console.error("Invalid container found:", container);
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  private isValidContainer(container: unknown): container is Container {
-    if (!container || typeof container !== "object") {
-      return false;
-    }
-
-    const c = container as Record<string, unknown>;
-
-    // Check containerLabel
-    if (
-      typeof c.containerLabel !== "string" ||
-      c.containerLabel.trim() === ""
-    ) {
-      return false;
-    }
-
-    // Check categories array
-    if (!Array.isArray(c.categories)) {
-      return false;
-    }
-
-    // Validate each category
-    for (const category of c.categories) {
-      if (!this.isValidCategory(category)) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  private isValidCategory(category: unknown): category is Emotion {
-    if (!category || typeof category !== "object") {
-      return false;
-    }
-
-    const cat = category as Record<string, unknown>;
-
-    // Check categoryLabel
-    if (
-      typeof cat.categoryLabel !== "string" ||
-      cat.categoryLabel.trim() === ""
-    ) {
-      return false;
-    }
-
-    // Check hexColor
-    if (!this.isValidHexColor(cat.hexColor)) {
-      return false;
-    }
-
-    // Check percent
-    if (
-      typeof cat.percent !== "number" ||
-      cat.percent < 0 ||
-      cat.percent > 100 ||
-      !Number.isFinite(cat.percent)
-    ) {
-      return false;
-    }
-
-    return true;
-  }
-
-  private isValidHexColor(color: unknown): color is HexColorValue {
-    if (typeof color !== "string") {
-      return false;
-    }
-
-    // Check if it's a valid hex color format
-    const hexColorRegex = /^#[0-9a-fA-F]{6}$/;
-    if (!hexColorRegex.test(color)) {
-      return false;
-    }
-
-    // Check if it's one of the allowed colors
-    const validColors = Object.values(colors) as string[];
-    return validColors.includes(color);
   }
 }
 

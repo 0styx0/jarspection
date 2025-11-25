@@ -1,5 +1,4 @@
 import templateHtml from "./JarsPageControls.html?raw";
-import { Container } from "../../../api";
 import {
   createComplexComponent,
   defineCustomElt,
@@ -15,10 +14,11 @@ import {
   JarExporterProps,
   jarExporterTag,
 } from "../../../components/JarExporter/JarExporter";
+import { Topic } from "../../../api";
 
 export interface JarsPageControlsProps {
-  exportContainers: () => Container[];
-  importContainers: (containers: Container[]) => void;
+  exportContainers: () => Topic[];
+  importContainers: (containers: Topic[]) => void;
 }
 
 const selectors = {
@@ -31,7 +31,7 @@ const defaultProps: JarsPageControlsProps = {
     console.error("JarsPageControls: Please set exportContainers prop");
     return [];
   },
-  importContainers: (containers) => {
+  importContainers: (topics) => {
     console.error("JarsPageControls: Please set importContainers prop");
   },
 };
@@ -83,7 +83,7 @@ export class JarsPageControls extends HTMLElement {
   };
 
   // proxy for props in case props change
-  private handleImport = (containers: Container[]) => {
+  private handleImport = (containers: Topic[]) => {
     this.props.importContainers(containers);
   };
 }

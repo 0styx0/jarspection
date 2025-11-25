@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { waitFor } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
 import { JarImporter, jarImporterTag } from "./JarImporter";
-import { defaultContainers } from "../../defaultJars";
+import { defaultTopics } from "../../defaultJars";
 import { defineCustomElt } from "../componentUtils";
 import { renderComponent } from "../../test/testUtils";
 import {
@@ -29,7 +29,7 @@ describe("<jar-importer>", () => {
     it("calls importContainers with default containers when no file is present", () => {
       const { component, importContainersSpy } = renderJarImporter();
 
-      expect(importContainersSpy).toHaveBeenCalledWith(defaultContainers);
+      expect(importContainersSpy).toHaveBeenCalledWith(defaultTopics);
       expect(importContainersSpy).toHaveBeenCalledTimes(1);
     });
 
@@ -67,13 +67,14 @@ describe("<jar-importer>", () => {
       const input = getImportInput(component);
 
       const mockImportContents = createMockImportContents();
+
       const mockFile = createMockFile(JSON.stringify(mockImportContents));
 
       await user.upload(input, mockFile);
 
       await waitFor(() => {
         expect(importContainersSpy).toBeCalledWith(
-          mockImportContents.topic,
+          mockImportContents.topics,
         );
       });
     });

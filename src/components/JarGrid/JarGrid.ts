@@ -27,7 +27,7 @@ export interface JarGridProps {
   jars: TopicHolder[];
 }
 
-type JarTileMap = Map<TopicHolder["id"], JarTile>;
+type JarTileMap = Map<TopicHolder["metadata"]["id"], JarTile>;
 
 // addJar:
 // addAddJar event
@@ -55,7 +55,7 @@ export class JarGrid
     const jarTiles = queryElts<JarTile>(this.shadowRoot, selectors.jarTiles);
     return jarTiles.reduce((jars, curTile) => {
       const curJar = curTile.export();
-      jars.set(curJar.id, curJar);
+      jars.set(curJar.metadata.id, curJar);
       return jars;
     }, new Map<string, TopicHolder>());
   }
@@ -79,7 +79,7 @@ export class JarGrid
   private getJarTiles(): JarTileMap {
     const jarTiles = queryElts<JarTile>(this.shadowRoot, selectors.jarTiles);
     return jarTiles.reduce((jarTileMap, curTile) => {
-      const jarId = curTile.export().id;
+      const jarId = curTile.export().metadata.id;
       jarTileMap.set(jarId, curTile);
       return jarTileMap;
     }, new Map() as JarTileMap);
@@ -99,7 +99,7 @@ export class JarGrid
 
   private addNewJars(currentJarTiles: JarTileMap, updatedJars: TopicHolder[]) {
     for (const updatedJar of updatedJars) {
-      const curJar = currentJarTiles.get(updatedJar.id);
+      const curJar = currentJarTiles.get(updatedJar.metadata.id);
       if (!curJar) {
         this.appendJar(updatedJar);
       }
@@ -132,7 +132,7 @@ export class JarGrid
     const jarTileElt = createComplexComponent<JarTile, JarTileProps>(
       jarTileTag,
       {
-        container: jar,
+        topic: jar,
       },
     );
 
@@ -145,7 +145,10 @@ export class JarGrid
 }
 
 function getIdsAsSet(jars: TopicHolder[]) {
-  return jars.reduce((ids, curJar) => ids.add(curJar.id), new Set<string>());
+  return jars.reduce(
+    (ids, curJar) => ids.add(curJar.metadata.id),
+    new Set<string>(),
+  );
 }
 
 export const jarGridTag = "jar-grid";

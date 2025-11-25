@@ -1,28 +1,10 @@
-import { colors, Container, ExportApi } from "./api";
+import { Topic } from "./api";
+import { TopicHolder } from "./models/TopicHolder";
 
-export const xxx: ExportApi = {
-  version: "1.0.0",
-  topic: [],
-};
-
-export const defaultContainers: Container[] = [
-  { label: "Words of Affirmation" },
-  { label: "Acts of Service" },
-  { label: "Receiving Gifts" },
-  { label: "Quality Time" },
-  { label: "Physical Touch" },
-].map((jar) => ({
-  containerLabel: jar.label,
-  categories: [
-    {
-      categoryLabel: "G",
-      hexColor: colors.maybe,
-      percent: 50,
-    },
-    {
-      categoryLabel: "R",
-      hexColor: colors.maybe,
-      percent: 50,
-    },
-  ],
-}));
+export const defaultTopics: Topic[] = [
+  { name: "Words of Affirmation" },
+  { name: "Acts of Service" },
+  { name: "Receiving Gifts" },
+  { name: "Quality Time" },
+  { name: "Physical Touch" },
+].map((topic) => new TopicHolder().setName(topic.name));

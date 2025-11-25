@@ -1,18 +1,10 @@
-export const colors = {
-  yes: "#44ff44",
-  maybe: "#ffdd44",
-  no: "#ff4444",
-} as const;
-
-// export type HexColorValue = (typeof colors)[keyof typeof colors];
-
 export interface ExportApi {
   metadata: {
     semVer: `${number}.${number}.${number}`;
     schemaVersion: number;
     isoExportedAt: string;
   };
-  topic: Topic[];
+  topics: Topic[];
 }
 
 export interface Topic {
@@ -31,6 +23,7 @@ export interface Emotion {
     isoUpdatedAt: string;
   };
   /** what produces the emotion? eg "Giving", "Bob" */
+  /** maxlength = 20 chars */
   producer: string;
   reaction: EmotionalReaction;
   /** 0-100 */
@@ -38,6 +31,7 @@ export interface Emotion {
 }
 
 export interface Tag {
+  /** 1-20 chars long **/
   name: string;
 }
 
@@ -49,4 +43,4 @@ export const emotionalReactions = {
   negative: "negative",
 } as const;
 
-type EmotionalReaction = keyof typeof emotionalReactions;
+export type EmotionalReaction = keyof typeof emotionalReactions;

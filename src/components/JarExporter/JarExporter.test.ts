@@ -1,22 +1,22 @@
 import { describe, it, expect, vi } from "vitest";
 import { JarExporter, jarExporterTag, selectors } from "./JarExporter";
-import { Container } from "../../api";
 import { defineCustomElt } from "../componentUtils";
 import { renderComponent } from "../../test/testUtils";
 import { createMockImportContents } from "../../../test/importHelpers";
 import { waitFor } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
+import { ExportApi, Topic } from "../../api";
 
 defineCustomElt(jarExporterTag, JarExporter);
 
 const renderJarExporter = () => {
   const component = renderComponent<JarExporter>(jarExporterTag);
-  const exportContainersSpy = vi.fn<[], Container[]>();
-  component.setProps({ exportContainers: exportContainersSpy });
+  const exportTopicsSpy = vi.fn<[], Topic[]>();
+  component.setProps({ exportContainers: exportTopicsSpy });
 
   const user = userEvent.setup();
 
-  return { component, exportContainersSpy, user };
+  return { component, exportContainersSpy: exportTopicsSpy, user };
 };
 
 const getExportButton = (component: JarExporter): HTMLButtonElement => {
@@ -27,8 +27,7 @@ const getExportButton = (component: JarExporter): HTMLButtonElement => {
   return button!;
 };
 
-const createMockContainers = (): Container[] =>
-  createMockImportContents().topic;
+const createMockTopics = (): Topic[] => createMockImportContents().topics;
 
 describe("<jar-exporter>", () => {
   it("renders download button", () => {
@@ -39,9 +38,14 @@ describe("<jar-exporter>", () => {
 
   describe("onClick", () => {
     it("exports containers with correct structure", async () => {
+      const mockDate = new Date("2023-11-21T12:00:00Z");
+      vi.spyOn(Date.prototype, "toISOString").mockImplementation(
+        () => "2023-11-21T12:00:00Z",
+      );
+
       const { component, exportContainersSpy, user } = renderJarExporter();
-      const mockContainers = createMockContainers();
-      exportContainersSpy.mockReturnValue(mockContainers);
+      const topics = createMockTopics();
+      exportContainersSpy.mockReturnValue(topics);
 
       const createObjectURLSpy = vi
         .spyOn(URL, "createObjectURL")
@@ -56,11 +60,15 @@ describe("<jar-exporter>", () => {
       });
 
       const blobText = await (actualExportContents as Blob).text();
-      const parsedData = JSON.parse(blobText);
+      const parsedData: ExportApi = JSON.parse(blobText);
 
       expect(parsedData).toEqual({
-        version: "1.0.0",
-        containers: mockContainers,
+        metadata: {
+          semVer: "1.0.0",
+          schemaVersion: 1,
+          isoExportedAt: mockDate.toISOString(),
+        },
+        topics: topics,
       });
     });
   });

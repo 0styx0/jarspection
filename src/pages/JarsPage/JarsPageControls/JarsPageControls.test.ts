@@ -11,7 +11,7 @@ import {
   jarExporterTag,
   selectors as exportSelectors,
 } from "../../../components/JarExporter/JarExporter";
-import { Container, ExportApi } from "../../../api";
+import { ExportApi } from "../../../api";
 import { defineCustomElt } from "../../../components/componentUtils";
 import { renderComponent } from "../../../test/testUtils";
 import {
@@ -23,8 +23,8 @@ defineCustomElt(jarPageControlsTag, JarsPageControls);
 
 const renderJarsPageControls = () => {
   const component = renderComponent<JarsPageControls>(jarPageControlsTag);
-  const exportContainersSpy = vi.fn<[], Container[]>().mockReturnValue([]);
-  const importContainersSpy = vi.fn<[Container[]], void>();
+  const exportContainersSpy = vi.fn<[], Topic[]>().mockReturnValue([]);
+  const importContainersSpy = vi.fn<[Topic[]], void>();
 
   component.setProps({
     exportContainers: exportContainersSpy,
@@ -87,7 +87,7 @@ describe("<jar-page-controls>", () => {
 
       await waitFor(() => {
         expect(importContainersSpy).toHaveBeenCalledWith(
-          mockImportContents.topic,
+          mockImportContents.topics,
         );
       });
     });

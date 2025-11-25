@@ -5,12 +5,12 @@ Creates and prompts user to download a json file consisting of all containers re
 */
 
 import templateHtml from "./JarExporter.html?raw";
-import { Container, ExportApi } from "../../api";
+import { ExportApi, Topic } from "../../api";
 import { defineCustomElt, queryElt } from "../componentUtils";
 import { ComplexComponent } from "../../interfaces/ComplexComponent";
 
 export interface JarExporterProps {
-  exportContainers: () => Container[];
+  exportContainers: () => Topic[];
 }
 
 export const selectors = {
@@ -57,10 +57,14 @@ export class JarExporter
   };
 
   private getExportData(): ExportApi {
-    const containers = this.props.exportContainers();
+    const topics = this.props.exportContainers();
     return {
-      version: "1.0.0",
-      topic: containers,
+      metadata: {
+        semVer: "1.0.0",
+        schemaVersion: 1,
+        isoExportedAt: new Date().toISOString(),
+      },
+      topics,
     };
   }
 
