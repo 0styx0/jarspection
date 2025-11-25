@@ -1,13 +1,7 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 
 type Side = 0 | 1;
-type ColorIdx = 0 | 1 | 2;
-
-const rgbColors = [
-  "rgb(68, 255, 68)", // for "yes"
-  "rgb(255, 221, 68)", // for "maybe"
-  "rgb(255, 68, 68)", // for "no"
-];
+type ReactionIdx = 0 | 1 | 2;
 
 // indexed by JarSide
 const labels = ["G", "R"];
@@ -36,7 +30,7 @@ export class JarGridPage {
     await this.page.getByRole("button", { name: "+" }).click();
     const afterTiles = this.page.locator("jar-tile");
 
-    const newTile = this.page.getByRole("region", { name: "New Jar" }).last();
+    const newTile = this.page.getByRole("region", { name: "New Topic" }).last();
     await expect(newTile).toBeVisible();
     await expect(afterTiles).toHaveCount(originalTiles + 1);
 
@@ -105,14 +99,14 @@ class JarSide {
     expect(actualAmount).toBe(`${amount}%`);
   }
 
-  async setColor(colorIdx: ColorIdx) {
-    const newColor = await this.selectColor(colorIdx);
+  async setReaction(reactionIdx: ReactionIdx) {
+    const newReaction = await this.selectReaction(reactionIdx);
 
     const liquid = this.getLiquid();
     const categoryLabelElt = this.getCategoryLabel();
 
-    await expect(liquid).toHaveCSS("background-color", newColor);
-    await expect(categoryLabelElt).toHaveCSS("color", newColor);
+    await expect(liquid).toHaveCSS("background-color", newReaction);
+    await expect(categoryLabelElt).toHaveCSS("color", newReaction);
   }
 
   private getCategoryLabel() {
@@ -122,13 +116,13 @@ class JarSide {
     return this.tile.getByText(label!, { exact: true });
   }
 
-  private selectColor(colorIdx: ColorIdx) {
-    const colorControls = this.tile
-      .locator("fieldset.color-controls")
+  private selectReaction(reactionIdx: ReactionIdx) {
+    const reactionControl = this.tile
+      .locator("reaction-picker")
       .nth(this.jarSide);
-    const colorOptElt = colorControls.getByRole("radio").nth(colorIdx);
-    colorOptElt.check();
-    return colorOptElt.evaluate((el) => el.style.backgroundColor);
+    const reactionInputElt = reactionControl.locator("input").nth(reactionIdx);
+    reactionInputElt.check();
+    return reactionInputElt.evaluate((el) => el.style.backgroundColor);
   }
 
   private getLiquid() {

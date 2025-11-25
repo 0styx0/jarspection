@@ -7,4 +7,6 @@ export const defaultTopics: Topic[] = [
   { name: "Receiving Gifts" },
   { name: "Quality Time" },
   { name: "Physical Touch" },
-].map((topic) => new TopicHolder().setName(topic.name));
+].map((topic) => {
+  return new TopicHolder().setName(topic.name);
+});

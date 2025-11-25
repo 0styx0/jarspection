@@ -16,7 +16,7 @@ export class TopicHolder implements Topic {
     tags: [new TagHolder()] as Tags,
   };
   name = "New Topic";
-  emotions: Emotions = [new EmotionHolder(), new EmotionHolder()];
+  emotions: Emotions = [new EmotionHolder("G"), new EmotionHolder("R")];
 
   constructor() {
     return this;
@@ -44,6 +44,10 @@ class EmotionHolder implements Emotion {
   producer = "G";
   reaction = emotionalReactions.neutral;
   strength = 50;
+
+  constructor(producer: string) {
+    this.producer = producer;
+  }
 }
 
 class TagHolder implements Tag {
