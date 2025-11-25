@@ -77,7 +77,7 @@ export class JarsPage extends HTMLElement {
 
   private export = (): Container[] => {
     const jarGrid = queryElt<JarGrid>(this.shadowRoot, selectors.jarGrid)!;
-    return [...jarGrid.getJars().values()];
+    return [...jarGrid.exportTopics().values()];
   };
 
   private import = (containers: Container[]) => {

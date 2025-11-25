@@ -89,7 +89,7 @@ describe("<jar-exporter>", () => {
 
     it("errors if export breaks validation rules", async () => {
       const { component, exportContainersSpy, user } = renderJarExporter();
-      const topics = createMockTopics();
+      const topics = getDefaultTopics()
       topics[0].metadata.tags = [
         {
           name:

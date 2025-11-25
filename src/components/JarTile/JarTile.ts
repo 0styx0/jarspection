@@ -72,7 +72,7 @@ export class JarTile
 
   private setupEventListeners() {
     this.handleRemove();
-    this.handleColorChanges();
+    this.handleReactionChanges();
     this.handleFillChanges();
     this.handleLabelChanges();
   }
@@ -176,26 +176,26 @@ export class JarTile
       handleCustomEvent<CustomEventInit<RangeChangeEvent>>(
         rangeElt,
         rangeEvents.rangechange,
-        (detail) => this.updateStrength(i, detail?.value),
+        (detail) => this.updateStrength(i,  Number(detail?.value)),
       );
     });
   };
 
-  private handleColorChanges = () => {
-    selectors.reactions.forEach((colorSelector, i) => {
-      const colorElt = queryElt(this.shadowRoot, colorSelector);
+  private handleReactionChanges = () => {
+    selectors.reactions.forEach((reactionSelector, i) => {
+      const reactionElt = queryElt(this.shadowRoot, reactionSelector);
 
-      if (!colorElt) {
+      if (!reactionElt) {
         console.warn("Error setting color events. Element(s) not found", {
-          colorElt,
+          colorElt: reactionElt,
           i,
-          colorSelector,
+          colorSelector: reactionSelector,
         });
         return;
       }
 
       handleCustomEvent<CustomEventInit<ReactionChangeEvent>>(
-        colorElt,
+        reactionElt,
         reactionPickerEvents.reactionchange,
         (detail) => {
           this.updateReaction(i, detail?.reaction);

@@ -103,7 +103,7 @@ describe("<jar-grid>", () => {
       const newJar = createExampleContainer("Jar 4");
       setComplexPropsTest(component, { jars: [...exampleJars, newJar] });
 
-      const jarsMap = component.getJars();
+      const jarsMap = component.exportTopics();
 
       expect(jarsMap.size).toBe(4);
       expect(jarsMap.has(newJar.metadata.id)).toBe(true);
@@ -152,7 +152,7 @@ describe("<jar-grid>", () => {
       const remainingJars = exampleJars.slice(1);
       setComplexPropsTest(component, { jars: remainingJars });
 
-      const jarsMap = component.getJars();
+      const jarsMap = component.exportTopics();
 
       expect(jarsMap.size).toBe(2);
       expect(jarsMap.has(removedJarId)).toBe(false);
@@ -165,7 +165,7 @@ describe("<jar-grid>", () => {
       const remainingJars = [exampleJars[1]];
       setComplexPropsTest(component, { jars: remainingJars });
 
-      const jarsMap = component.getJars();
+      const jarsMap = component.exportTopics();
 
       expect(jarsMap.size).toBe(1);
       expect(jarsMap.has(exampleJars[1].metadata.id)).toBe(true);
@@ -177,7 +177,7 @@ describe("<jar-grid>", () => {
 
       setComplexPropsTest(component, { jars: [] });
 
-      const jarsMap = component.getJars();
+      const jarsMap = component.exportTopics();
       const jarTiles = queryTestElements<JarTile>(
         component,
         selectors.jarTiles,
@@ -200,7 +200,7 @@ describe("<jar-grid>", () => {
 
       setComplexPropsTest(component, { jars: newJars });
 
-      const jarsMap = component.getJars();
+      const jarsMap = component.exportTopics();
       const jarTiles = queryTestElements<JarTile>(
         component,
         selectors.jarTiles,
@@ -230,7 +230,7 @@ describe("<jar-grid>", () => {
 
       setComplexPropsTest(component, { jars: updatedJars });
 
-      const jarsMap = component.getJars();
+      const jarsMap = component.exportTopics();
       const jarTiles = queryTestElements<JarTile>(
         component,
         selectors.jarTiles,
@@ -247,12 +247,12 @@ describe("<jar-grid>", () => {
 
       // First render
       setComplexPropsTest(component, { jars: exampleJars });
-      expect(component.getJars().size).toBe(3);
+      expect(component.exportTopics().size).toBe(3);
 
       // Second render: remove one, keep two
       const secondRender = [exampleJars[0], exampleJars[2]];
       setComplexPropsTest(component, { jars: secondRender });
-      expect(component.getJars().size).toBe(2);
+      expect(component.exportTopics().size).toBe(2);
 
       // Third render: add new ones, keep one old one
       const newJar1 = createExampleContainer("Brand New 1");
@@ -260,7 +260,7 @@ describe("<jar-grid>", () => {
       const thirdRender = [exampleJars[0], newJar1, newJar2];
       setComplexPropsTest(component, { jars: thirdRender });
 
-      const finalJarsMap = component.getJars();
+      const finalJarsMap = component.exportTopics();
 
       expect(finalJarsMap.size).toBe(3);
       expect(finalJarsMap.has(exampleJars[0].metadata.id)).toBe(true);
@@ -275,7 +275,7 @@ describe("<jar-grid>", () => {
       const component = renderJarGrid();
       component.setProps({ jars: [] });
 
-      const jarsMap = component.getJars();
+      const jarsMap = component.exportTopics();
 
       expect(jarsMap.size).toBe(0);
       expect(jarsMap instanceof Map).toBe(true);
@@ -285,7 +285,7 @@ describe("<jar-grid>", () => {
       const component = renderJarGrid();
       setComplexPropsTest(component, { jars: exampleJars });
 
-      const jarsMap = component.getJars();
+      const jarsMap = component.exportTopics();
 
       exampleJars.forEach((jar) => {
         const retrievedJar = jarsMap.get(jar.metadata.id);
@@ -311,7 +311,7 @@ describe("<jar-grid>", () => {
       addJarElt.dispatchEvent(event);
 
       vi.advanceTimersToNextFrame();
-      expect(component.getJars().get(newContainer.metadata.id)).toEqual(
+      expect(component.exportTopics().get(newContainer.metadata.id)).toEqual(
         newContainer,
       );
     });

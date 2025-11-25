@@ -27,11 +27,7 @@ export interface JarGridProps {
   jars: TopicHolder[];
 }
 
-type JarTileMap = Map<TopicHolder["metadata"]["id"], JarTile>;
-
-// addJar:
-// addAddJar event
-// appendJars
+type TopicTileMap = Map<TopicHolder["metadata"]["id"], JarTile>;
 
 export class JarGrid
   extends HTMLElement
@@ -51,7 +47,7 @@ export class JarGrid
     this.renderJars(props.jars);
   }
 
-  getJars(): Map<string, TopicHolder> {
+  exportTopics(): Map<string, TopicHolder> {
     const jarTiles = queryElts<JarTile>(this.shadowRoot, selectors.jarTiles);
     return jarTiles.reduce((jars, curTile) => {
       const curJar = curTile.export();
@@ -76,13 +72,13 @@ export class JarGrid
     );
   }
 
-  private getJarTiles(): JarTileMap {
+  private getTopicTiles(): TopicTileMap {
     const jarTiles = queryElts<JarTile>(this.shadowRoot, selectors.jarTiles);
     return jarTiles.reduce((jarTileMap, curTile) => {
       const jarId = curTile.export().metadata.id;
       jarTileMap.set(jarId, curTile);
       return jarTileMap;
-    }, new Map() as JarTileMap);
+    }, new Map() as TopicTileMap);
   }
 
   /**
@@ -91,13 +87,13 @@ export class JarGrid
    * Removes jars in the dom but absent from `jars` from the dom
    */
   private renderJars(jars: TopicHolder[]): void {
-    const currentJarTiles = this.getJarTiles();
+    const currentJarTiles = this.getTopicTiles();
 
     this.addNewJars(currentJarTiles, jars);
     this.removeDeletedJars(currentJarTiles, jars);
   }
 
-  private addNewJars(currentJarTiles: JarTileMap, updatedJars: TopicHolder[]) {
+  private addNewJars(currentJarTiles: TopicTileMap, updatedJars: TopicHolder[]) {
     for (const updatedJar of updatedJars) {
       const curJar = currentJarTiles.get(updatedJar.metadata.id);
       if (!curJar) {
@@ -107,7 +103,7 @@ export class JarGrid
   }
 
   private removeDeletedJars(
-    currentJarTiles: JarTileMap,
+    currentJarTiles: TopicTileMap,
     updatedJars: TopicHolder[],
   ) {
     const jarIds = getIdsAsSet(updatedJars);
