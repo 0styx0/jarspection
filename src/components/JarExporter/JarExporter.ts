@@ -54,6 +54,7 @@ export class JarExporter
   private exportSettings = () => {
     const settings = this.getExportData();
 
+    console.log({settings})
     const validationStatus = exportValidator(settings);
     if (!validationStatus.success) {
       console.warn("Export error", validationStatus);

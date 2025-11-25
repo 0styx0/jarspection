@@ -2,9 +2,9 @@ import { describe, it, expect, vi } from "vitest";
 import { waitFor } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
 import { JarImporter, jarImporterTag } from "./JarImporter";
-import { defaultTopics } from "../../defaultJars";
+import { getDefaultTopics } from "../../defaultJars";
 import { defineCustomElt } from "../componentUtils";
-import { renderComponent } from "../../test/testUtils";
+import { createDateMock, renderComponent } from "../../test/testUtils";
 import {
   createMockFile,
   createMockImportContents,
@@ -27,10 +27,15 @@ const renderJarImporter = () => {
 describe("<jar-importer>", () => {
   describe("initial rendering", () => {
     it("calls importContainers with default containers when no file is present", () => {
+      createDateMock();
       const { component, importContainersSpy } = renderJarImporter();
 
-      expect(importContainersSpy).toHaveBeenCalledWith(defaultTopics);
-      expect(importContainersSpy).toHaveBeenCalledTimes(1);
+      const defaultTopicNames = getDefaultTopics().map((topic) => topic.name);
+
+      const actualNames = importContainersSpy.mock.lastCall
+        ?.flat()
+        .map((obj) => obj.name);
+      expect(actualNames).toEqual(defaultTopicNames);
     });
 
     it("calls importContainers with file contents when valid file is present on load", async () => {
@@ -73,9 +78,7 @@ describe("<jar-importer>", () => {
       await user.upload(input, mockFile);
 
       await waitFor(() => {
-        expect(importContainersSpy).toBeCalledWith(
-          mockImportContents.topics,
-        );
+        expect(importContainersSpy).toBeCalledWith(mockImportContents.topics);
       });
     });
 

@@ -15,10 +15,11 @@ If the user provides an invalid file, we fallback to a blank screen
 */
 import templateHtml from "./JarImporter.html?raw";
 import { Emotion, ExportApi, Topic } from "../../api";
-import { defaultTopics } from "../../defaultJars";
+import { getDefaultTopics } from "../../defaultJars";
 import { defineCustomElt, queryElt } from "../componentUtils";
 import { ComplexComponent } from "../../interfaces/ComplexComponent";
 import { exportValidator, parseJson } from "../../utils/validators";
+import { TopicHolder } from "../../models/TopicHolder";
 
 export interface JarImporterProps {
   importContainers: (topics: Topic[]) => void;
@@ -61,8 +62,7 @@ export class JarImporter
       this.importFromFile(importFile);
       return;
     }
-
-    this.props.importContainers(defaultTopics);
+    this.props.importContainers(getDefaultTopics());
   }
 
   private addImportClickHandler() {

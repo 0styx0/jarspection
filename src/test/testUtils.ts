@@ -1,4 +1,4 @@
-import { expect } from "vitest";
+import { expect, vi } from "vitest";
 import { queryElt } from "../components/componentUtils";
 
 export function renderComponent<T extends HTMLElement>(
@@ -42,3 +42,11 @@ export const rgbColors = {
   negative: "rgb(255, 68, 68)",
   positive: "rgb(68, 255, 68)",
 };
+
+export function createDateMock() {
+  const mockDate = new Date("2023-11-21T12:00:00Z");
+  vi.spyOn(Date.prototype, "toISOString").mockImplementation(
+    () => "2023-11-21T12:00:00Z",
+  );
+  return mockDate;
+}

@@ -1,11 +1,12 @@
 import { describe, it, expect, vi, vitest } from "vitest";
 import { JarExporter, jarExporterTag, selectors } from "./JarExporter";
 import { defineCustomElt } from "../componentUtils";
-import { renderComponent } from "../../test/testUtils";
+import { createDateMock, renderComponent } from "../../test/testUtils";
 import { createMockImportContents } from "../../../test/importHelpers";
 import { waitFor } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
 import { ExportApi, Topic } from "../../api";
+import { getDefaultTopics } from "../../defaultJars";
 
 defineCustomElt(jarExporterTag, JarExporter);
 
@@ -28,14 +29,6 @@ const getExportButton = (component: JarExporter): HTMLButtonElement => {
 };
 
 const createMockTopics = (): Topic[] => createMockImportContents().topics;
-
-function createDateMock() {
-  const mockDate = new Date("2023-11-21T12:00:00Z");
-  vi.spyOn(Date.prototype, "toISOString").mockImplementation(
-    () => "2023-11-21T12:00:00Z",
-  );
-  return mockDate;
-}
 
 describe("<jar-exporter>", () => {
   it("renders download button", () => {
@@ -76,8 +69,25 @@ describe("<jar-exporter>", () => {
       });
     });
 
-    it("errors if export breaks validation rules", async () => {
+    it("exports default settings", async () => {
+      const { component, exportContainersSpy, user } = renderJarExporter();
+      exportContainersSpy.mockReturnValue(getDefaultTopics());
 
+
+      const createObjectURLSpy = vi
+        .spyOn(URL, "createObjectURL")
+        .mockImplementation(vi.fn());
+
+      const button = getExportButton(component);
+      await user.click(button);
+
+      const actualExportContents = createObjectURLSpy.mock.lastCall?.[0];
+      await waitFor(() => {
+        expect(actualExportContents).toBeInstanceOf(Blob);
+      });
+    });
+
+    it("errors if export breaks validation rules", async () => {
       const { component, exportContainersSpy, user } = renderJarExporter();
       const topics = createMockTopics();
       topics[0].metadata.tags = [
