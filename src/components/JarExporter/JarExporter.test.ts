@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, vitest } from "vitest";
 import { JarExporter, jarExporterTag, selectors } from "./JarExporter";
 import { defineCustomElt } from "../componentUtils";
 import { renderComponent } from "../../test/testUtils";
@@ -76,8 +76,7 @@ describe("<jar-exporter>", () => {
       });
     });
 
-    it.only("errors if export breaks validation rules", async () => {
-      const mockDate = createDateMock();
+    it("errors if export breaks validation rules", async () => {
 
       const { component, exportContainersSpy, user } = renderJarExporter();
       const topics = createMockTopics();

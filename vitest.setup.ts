@@ -1,6 +1,7 @@
-import { beforeAll, beforeEach, vi } from "vitest";
+import { beforeAll, beforeEach, vi , vitest } from "vitest";
 
 beforeEach(() => {
+      vitest.clearAllMocks()
   document.body.innerHTML = "";
 });
 
