@@ -1,5 +1,8 @@
 
 ### Unstable
+- Sanitize save file
+- Delete: Removes tag for current page. If brings tags to zero, adds to recycle bin
+  - Deleting from recycle bin permanently deletes the topic
 - Add e2e tests with playwright
 - Display errors in UI (not only in console)
 - Make colors an implementation detail of API rather than exposing colors directly

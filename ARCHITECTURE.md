@@ -24,6 +24,14 @@
   - Parent programatically creates child via JS's `createElement`
   - Parent calls child's `setProps` with all props (even if only some props are complex data)
 
+### Styling
+- Component-specific styles: Inside the component HTML
+- Generic utils: In `utils.css`, which get added to the component via JS
+
+### Testing
+- Unit tests: Vite
+- E2E tests: Playwright
+
 ### Behavior
 1. User loads the page: Default jars load
 1. User creates a new jar

@@ -56,6 +56,6 @@ class TagHolder implements Tag {
 
 export const reactionToHex: Record<EmotionalReaction, string> = {
   positive: "#44ff44",
-  neutral: "#ffdd44",
+  neutral: "#FFD102",
   negative: "#ff4444",
 };
