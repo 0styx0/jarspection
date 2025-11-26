@@ -19,6 +19,7 @@ import {
 import { ComplexComponent } from "../../interfaces/ComplexComponent";
 import { reactionToHex, TopicHolder } from "../../models/TopicHolder";
 import { EmotionalReaction } from "../../api";
+import { cssUtilsSheet } from "../../styles/cssUtils";
 
 export const selectors = {
   labelInput: ".label-input",
@@ -46,6 +47,7 @@ export class JarTile
     super();
 
     this.attachShadow({ mode: "open" }).innerHTML = templateHtml;
+     this.shadowRoot!.adoptedStyleSheets = [cssUtilsSheet];
   }
 
   connectedCallback() {

@@ -6,6 +6,7 @@ import {
 } from "../componentUtils";
 import { defaultJarTileProps } from "../JarTile/JarTile";
 import { reactionToHex } from "../../models/TopicHolder";
+import { cssUtilsSheet } from "../../styles/cssUtils";
 
 export const selectors = {
   jarLeft: ".left-side .liquid",
@@ -49,6 +50,7 @@ export class JarIllustration
   constructor() {
     super();
     this.attachShadow({ mode: "open" }).innerHTML = templateHtml;
+     this.shadowRoot!.adoptedStyleSheets = [cssUtilsSheet];
   }
 
   connectedCallback() {

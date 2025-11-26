@@ -6,6 +6,7 @@ import {
 } from "../componentUtils";
 import { reactionToHex } from "../../models/TopicHolder";
 import { EmotionalReaction, emotionalReactions } from "../../api";
+import { cssUtilsSheet } from "../../styles/cssUtils";
 
 export const reactionPickerEvents = {
   reactionchange: "reactionchange",
@@ -31,6 +32,7 @@ export class ReactionPicker extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: "open" }).innerHTML = templateHtml;
+     this.shadowRoot!.adoptedStyleSheets = [cssUtilsSheet];
   }
 
   connectedCallback() {
