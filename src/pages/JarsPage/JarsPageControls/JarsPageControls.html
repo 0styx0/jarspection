@@ -1,14 +1,47 @@
 <style>
-
   .page-controls {
     background-color: #1d60ff;
     height: 100%;
     padding: 0.5rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .control-column h2 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+  }
+
+  .control-column ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .control-column li {
+    margin-bottom: 0.25rem;
+    color: #ffc1c1;
   }
 </style>
 
 <nav class="page-controls">
-  <!-- using placeholders because adding props which are functions requires rendering via JS -->
-  <div class="jar-importer-placeholder"></div>
-  <div class="jar-exporter-placeholder"></div>
+  <div class="control-column">
+    <h2>Save settings</h2>
+    <ul>
+      <li><div class="jar-exporter-placeholder"></div></li>
+      <li><div class="jar-importer-placeholder"></div></li>
+    </ul>
+  </div>
+  
+  <div class="control-column">
+    <h2>Controls</h2>
+    <ul>
+      <li>Add tag</li>
+      <li>Remove jars</li>
+      <li>Reset jars</li>
+    </ul>
+  </div>
 </nav>
