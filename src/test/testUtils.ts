@@ -38,7 +38,7 @@ export const queryTestElements = <T extends Element>(
 };
 
 export const rgbColors = {
-  neutral: "rgb(255, 221, 68)",
+  neutral: "rgb(255, 209, 2)",
   negative: "rgb(255, 68, 68)",
   positive: "rgb(68, 255, 68)",
 };

@@ -38,8 +38,8 @@ describe("<jar-illustration>", () => {
         const liquidLeft = getJarSide(component, selectors.jarLeft);
         const liquidRight = getJarSide(component, selectors.jarRight);
 
-        expect(liquidLeft.style.backgroundColor).toBe("rgb(255, 221, 68)");
-        expect(liquidRight.style.backgroundColor).toBe("rgb(255, 221, 68)");
+        expect(liquidLeft.style.backgroundColor).toBe(rgbColors.neutral);
+        expect(liquidRight.style.backgroundColor).toBe(rgbColors.neutral);
       });
     });
 
