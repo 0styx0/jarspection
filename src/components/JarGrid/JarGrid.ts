@@ -67,7 +67,7 @@ export class JarGrid
       addJarElt,
       addJarEvents.addJar,
       (detail) => {
-        this.appendJar(detail!.container)?.selectTopic();
+        this.insertJar(detail!.container)?.selectTopic();
       },
     );
   }
@@ -100,7 +100,7 @@ export class JarGrid
     for (const updatedJar of updatedJars) {
       const curJar = currentJarTiles.get(updatedJar.metadata.id);
       if (!curJar) {
-        this.appendJar(updatedJar);
+        this.insertJar(updatedJar);
       }
     }
   }
@@ -115,7 +115,10 @@ export class JarGrid
     removedJars.forEach((jarId) => this.removeJar(currentJarTiles.get(jarId)!));
   }
 
-  private appendJar(jar: TopicHolder) {
+  /**
+   * Inserts after current focused elt, or at grid end
+   */
+  private insertJar(jar: TopicHolder) {
     const jarGrid = queryElt(this.shadowRoot, selectors.jarGrid);
 
     const addJar = queryElt(this.shadowRoot, selectors.addJar);
@@ -132,17 +135,31 @@ export class JarGrid
       jarTileTag,
       {
         topic: jar,
+        removeTile: () => this.removeJar(jarTileElt),
       },
     );
 
-    jarGrid.insertBefore(jarTileElt, addJar);
+    if (isJarTile(this.shadowRoot?.activeElement)) {
+      this.shadowRoot.activeElement.after(jarTileElt);
+    } else {
+      jarGrid.insertBefore(jarTileElt, addJar);
+    }
 
     return jarTileElt;
   }
 
   private removeJar(jarTile: JarTile): void {
+    const fallbackTile = getNextTile(jarTile);
+
+    fallbackTile?.selectTopic();
+
     jarTile.remove();
   }
+}
+
+function getNextTile(curTile: JarTile) {
+  const nextTile = curTile.previousSibling || curTile.nextSibling;
+  return isJarTile(nextTile) ? nextTile : null;
 }
 
 function getIdsAsSet(jars: TopicHolder[]) {
@@ -150,6 +167,10 @@ function getIdsAsSet(jars: TopicHolder[]) {
     (ids, curJar) => ids.add(curJar.metadata.id),
     new Set<string>(),
   );
+}
+
+function isJarTile(elt?: ChildNode | Element | null): elt is JarTile {
+  return elt?.nodeName === jarTileTag.toUpperCase();
 }
 
 export const jarGridTag = "jar-grid";

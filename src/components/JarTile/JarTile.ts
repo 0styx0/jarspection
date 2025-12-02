@@ -33,16 +33,22 @@ export const selectors = {
 
 export interface JarTileProps {
   topic: TopicHolder;
+  removeTile: () => void;
 }
 
 export const defaultJarTileProps = {
   topic: new TopicHolder(),
+  removeTile: () => {
+    console.warn("Tile: Define a remove fn");
+  },
 };
+
 export class JarTile
   extends HTMLElement
   implements ComplexComponent<JarTileProps>
 {
   private topic = defaultJarTileProps.topic;
+  private removeTile = defaultJarTileProps.removeTile;
 
   constructor() {
     super();
@@ -59,6 +65,7 @@ export class JarTile
 
   setProps(props: JarTileProps) {
     this.topic = props.topic;
+    this.removeTile = props.removeTile;
 
     this.updateLabelElt(props.topic.name);
     props.topic.emotions.forEach((emotion, i) => {
@@ -68,6 +75,12 @@ export class JarTile
     });
 
     this.updateIllustration();
+  }
+
+  selectTopic() {
+    setTimeout(() => {
+      this.getLabelElt()?.select();
+    }, 0);
   }
 
   export(): TopicHolder {
@@ -237,12 +250,12 @@ export class JarTile
 
   private handleRemove = () => {
     const removeBtn = queryElt(this.shadowRoot, selectors.removeBtn)!;
-    removeBtn.addEventListener("click", () => this.remove());
+    removeBtn.addEventListener("click", () => this.removeTile());
 
     addShortcut({
       shortcut: shortcuts.tile.remove,
       action: () => {
-        this.remove();
+        this.removeTile();
       },
       guard: () => !!this.shadowRoot?.contains(this.shadowRoot.activeElement),
     });
