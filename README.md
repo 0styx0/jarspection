@@ -2,7 +2,7 @@ Status: WIP. All functionality and appearance subject to change.
 
 Connect with yourself and others by filling a jar with a color and amount that shows your feelings about a given topic.
 
-![Default jars](https://github.com/user-attachments/assets/2525c1f0-f83e-4466-aca8-dd3244bacc3d)
+![Default jars](https://github.com/user-attachments/assets/f035dd84-2fa1-4988-bb60-201370853554)
 
 ### About
 
