@@ -1,4 +1,4 @@
-import { describe, it, expect, test } from "vitest";
+import { describe, it, expect, test, vi } from "vitest";
 import { JarTile, jarTileTag, selectors } from "./JarTile";
 import { defineCustomElt } from "../componentUtils";
 import { SideLabel, sideLabelTag } from "../SideLabel/SideLabel";
@@ -39,7 +39,7 @@ describe("<jar-tile>", () => {
     describe("propagates to illustration", () => {
       it("initial strength values", () => {
         const component = renderJarTile();
-        component.setProps({ topic: exampleContainer });
+        component.setProps({ topic: exampleContainer, removeTile: vi.fn() });
 
         const jarIllustration = queryTestElement<JarIllustration>(
           component,
@@ -59,7 +59,7 @@ describe("<jar-tile>", () => {
         const topicProp = new TopicHolder();
         topicProp.emotions[0].reaction = emotionalReactions.positive;
         topicProp.emotions[1].reaction = emotionalReactions.negative;
-        component.setProps({ topic: topicProp });
+        component.setProps({ topic: topicProp, removeTile: vi.fn() });
 
         const jarIllustration = queryTestElement<JarIllustration>(
           component,
@@ -73,7 +73,7 @@ describe("<jar-tile>", () => {
 
     it("propagates initial label values to side labels", () => {
       const component = renderJarTile();
-      component.setProps({ topic: exampleContainer });
+      component.setProps({ topic: exampleContainer, removeTile: vi.fn() });
 
       selectors.labels.forEach((selector, i) => {
         const labelElt = queryTestElement<SideLabel>(component, selector);
@@ -92,7 +92,7 @@ describe("<jar-tile>", () => {
       const component = renderJarTile();
       const jarIllustration = getJarIllustration(component);
 
-      component.setProps({ topic: exampleContainer });
+      component.setProps({ topic: exampleContainer, removeTile: vi.fn() });
 
       const exportedProps = component.export();
 
@@ -138,7 +138,7 @@ describe("<jar-tile>", () => {
 
     it("empty reaction keeps previous reaction", () => {
       const component = renderJarTile();
-      component.setProps({ topic: exampleContainer });
+      component.setProps({ topic: exampleContainer, removeTile: vi.fn() });
       const reactionLeft = queryTestElement(component, selectors.reactions[0]);
 
       const event = new CustomEvent(reactionPickerEvents.reactionchange, {});
@@ -163,7 +163,7 @@ describe("<jar-tile>", () => {
 
     it("handles rangechange with zero value", () => {
       const component = renderJarTile();
-      component.setProps({ topic: exampleContainer });
+      component.setProps({ topic: exampleContainer, removeTile: vi.fn() });
       const rangeLeft = queryTestElement(component, selectors.ranges[1]);
 
       const event = new CustomEvent(rangeEvents.rangechange, {});
@@ -188,7 +188,9 @@ describe("<jar-tile>", () => {
 
   describe("remove functionality", () => {
     it("removes component when remove button is clicked", () => {
+      const removeTileFn = vi.fn()
       const component = renderJarTile();
+      component.setProps({removeTile:removeTileFn, topic: exampleContainer})
       const removeBtn = queryTestElement<HTMLButtonElement>(
         component,
         selectors.removeBtn,
@@ -198,7 +200,7 @@ describe("<jar-tile>", () => {
 
       removeBtn.click();
 
-      expect(document.body.contains(component)).toBe(false);
+      expect(removeTileFn).toHaveBeenCalledOnce()
     });
   });
 });

@@ -123,7 +123,7 @@ describe("<jar-grid>", () => {
     });
   });
 
-  describe("removing jars", () => {
+  describe("removing jars when resetting props", () => {
     test("removes jar from the dom", () => {
       const component = renderJarGrid();
       setComplexPropsTest(component, { jars: exampleJars });
