@@ -67,7 +67,7 @@ export class JarGrid
       addJarElt,
       addJarEvents.addJar,
       (detail) => {
-        this.appendJar(detail!.container);
+        this.appendJar(detail!.container)?.selectTopic();
       },
     );
   }
@@ -93,7 +93,10 @@ export class JarGrid
     this.removeDeletedJars(currentJarTiles, jars);
   }
 
-  private addNewJars(currentJarTiles: TopicTileMap, updatedJars: TopicHolder[]) {
+  private addNewJars(
+    currentJarTiles: TopicTileMap,
+    updatedJars: TopicHolder[],
+  ) {
     for (const updatedJar of updatedJars) {
       const curJar = currentJarTiles.get(updatedJar.metadata.id);
       if (!curJar) {
@@ -112,7 +115,7 @@ export class JarGrid
     removedJars.forEach((jarId) => this.removeJar(currentJarTiles.get(jarId)!));
   }
 
-  private appendJar(jar: TopicHolder): void {
+  private appendJar(jar: TopicHolder) {
     const jarGrid = queryElt(this.shadowRoot, selectors.jarGrid);
 
     const addJar = queryElt(this.shadowRoot, selectors.addJar);
@@ -133,6 +136,8 @@ export class JarGrid
     );
 
     jarGrid.insertBefore(jarTileElt, addJar);
+
+    return jarTileElt;
   }
 
   private removeJar(jarTile: JarTile): void {

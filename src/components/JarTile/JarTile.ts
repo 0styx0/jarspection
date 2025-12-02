@@ -20,6 +20,7 @@ import { ComplexComponent } from "../../interfaces/ComplexComponent";
 import { reactionToHex, TopicHolder } from "../../models/TopicHolder";
 import { EmotionalReaction } from "../../api";
 import { cssUtilsSheet } from "../../styles/cssUtils";
+import { addShortcut, shortcuts } from "../../utils/keyboardShortcuts";
 
 export const selectors = {
   labelInput: ".label-input",
@@ -47,7 +48,7 @@ export class JarTile
     super();
 
     this.attachShadow({ mode: "open" }).innerHTML = templateHtml;
-     this.shadowRoot!.adoptedStyleSheets = [cssUtilsSheet];
+    this.shadowRoot!.adoptedStyleSheets = [cssUtilsSheet];
   }
 
   connectedCallback() {
@@ -90,7 +91,7 @@ export class JarTile
     }
     this.topic.emotions[emotionIdx].reaction = reaction;
     this.updateProducerReaction(selectors.labels[emotionIdx], reaction);
-    this.updateReactionElt(selectors.reactions[emotionIdx], reaction)
+    this.updateReactionElt(selectors.reactions[emotionIdx], reaction);
     this.updateIllustration();
   }
 
@@ -106,13 +107,12 @@ export class JarTile
   }
 
   private updateReactionElt(selector: string, reaction: EmotionalReaction) {
-    
-    const picker = queryElt<ReactionPicker>(this.shadowRoot, selector)
+    const picker = queryElt<ReactionPicker>(this.shadowRoot, selector);
     if (!picker) {
-      return
+      return;
     }
 
-    picker.setAttribute('initialreaction', reaction)
+    picker.setAttribute("initialreaction", reaction);
   }
 
   private updateProducer(emotionIdx: number, producer: string) {
@@ -164,12 +164,12 @@ export class JarTile
     rangeElt.rangevalue = level;
   }
 
+  private getLabelElt() {
+    return queryElt<HTMLTextAreaElement>(this.shadowRoot, selectors.labelInput);
+  }
+
   private handleLabelChanges = () => {
-    const labelElt = queryElt<HTMLTextAreaElement>(
-      this.shadowRoot,
-      selectors.labelInput,
-    );
-    labelElt?.addEventListener("input", (e) => {
+    this.getLabelElt()?.addEventListener("input", (e) => {
       const newLabel = (e.target as HTMLInputElement).value;
       this.updateLabelElt(newLabel);
     });
@@ -190,7 +190,7 @@ export class JarTile
       handleCustomEvent<CustomEventInit<RangeChangeEvent>>(
         rangeElt,
         rangeEvents.rangechange,
-        (detail) => this.updateStrength(i,  Number(detail?.value)),
+        (detail) => this.updateStrength(i, Number(detail?.value)),
       );
     });
   };
@@ -235,10 +235,18 @@ export class JarTile
     jarIllustrationElt.strengthright = this.topic.emotions[1].strength;
   }
 
-  private handleRemove() {
+  private handleRemove = () => {
     const removeBtn = queryElt(this.shadowRoot, selectors.removeBtn)!;
     removeBtn.addEventListener("click", () => this.remove());
-  }
+
+    addShortcut({
+      shortcut: shortcuts.tile.remove,
+      action: () => {
+        this.remove();
+      },
+      guard: () => !!this.shadowRoot?.contains(this.shadowRoot.activeElement),
+    });
+  };
 }
 
 export const jarTileTag = "jar-tile";

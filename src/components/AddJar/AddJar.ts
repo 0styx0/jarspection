@@ -5,6 +5,7 @@ import {
   triggerCustomEvent,
 } from "../componentUtils";
 import { TopicHolder } from "../../models/TopicHolder";
+import { addShortcut, shortcuts } from "../../utils/keyboardShortcuts";
 
 export const addJarEvents = {
   addJar: "addJar",
@@ -35,9 +36,20 @@ export class AddJar extends HTMLElement {
     if (!addJarButton) return;
 
     addJarButton.addEventListener("click", () => {
-      triggerCustomEvent(this, addJarEvents.addJar, {
-        container: new TopicHolder(),
-      });
+      this.triggerAddJar();
+    });
+
+    addShortcut({
+      shortcut: shortcuts.tile.add,
+      action: () => {
+        this.triggerAddJar();
+      },
+    });
+  };
+
+  private triggerAddJar = () => {
+    triggerCustomEvent(this, addJarEvents.addJar, {
+      container: new TopicHolder(),
     });
   };
 }
