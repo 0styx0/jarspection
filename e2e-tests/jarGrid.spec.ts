@@ -92,4 +92,5 @@ test("keyboard shortcuts", async ({ page }) => {
   const { tile } = await jarGridPage.getTile("Acts of Service");
 
   await tile.addAdjacentTileKb()
+  await tile.removeKb()
 });

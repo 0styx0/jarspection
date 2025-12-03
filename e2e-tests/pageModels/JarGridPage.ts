@@ -89,10 +89,9 @@ class Tile {
   }
 
   /**
-    * adds tile via keyboard shortcut
-    */
+   * adds tile via keyboard shortcut
+   */
   async addAdjacentTileKb() {
-
     await this.getLabel().focus();
 
     const originalTiles = await this.page.locator("jar-tile").count();
@@ -108,9 +107,35 @@ class Tile {
       .locator("+ jar-tile");
 
     await expect(nextTileLocator).toBeFocused();
-    const nextTile = new Tile(this.page, nextTileLocator)
-    await nextTile.typeLabel('hello me')
-    await expect(nextTile.getLabel()).toHaveValue('hello me')
+    const nextTile = new Tile(this.page, nextTileLocator);
+    await nextTile.typeLabel("hello me");
+    await expect(nextTile.getLabel()).toHaveValue("hello me");
+  }
+
+  async removeKb() {
+    await this.getLabel().focus();
+
+    const originalTiles = await this.page.locator("jar-tile").count();
+
+    // setup to get prev input after current is deleted
+    const prevTileLocator = this.page
+      .locator("jar-tile")
+      .filter({
+        has: this.tileElt,
+      })
+      .locator("//preceding-sibling::jar-tile[1]");
+    const prevLabelVal = await new Tile(this.page, prevTileLocator)
+      .getLabel()
+      .inputValue();
+
+    await this.tileElt.press("Meta+W");
+
+    const afterTiles = this.page.locator("jar-tile");
+    await expect(afterTiles).toHaveCount(originalTiles - 1);
+    expect(this.tileElt).not.toBeVisible();
+
+    const { tile: actualPrevTile } = await new JarGridPage(this.page).getTile(prevLabelVal)
+    await expect(actualPrevTile.getLabel()).toBeFocused();
   }
 
   async typeLabel(label: string) {
