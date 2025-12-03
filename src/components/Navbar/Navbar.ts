@@ -1,3 +1,4 @@
+import { cssUtilsSheet } from "../../styles/cssUtils";
 import { defineCustomElt } from "../componentUtils";
 import templateHtml from "./Navbar.html?raw";
 
@@ -7,6 +8,7 @@ export class Navbar extends HTMLElement {
     super();
 
     this.attachShadow({ mode: "open" }).innerHTML = templateHtml;
+    this.shadowRoot!.adoptedStyleSheets = [cssUtilsSheet];
   }
 }
 

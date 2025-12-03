@@ -15,6 +15,7 @@ import {
   jarExporterTag,
 } from "../../../components/JarExporter/JarExporter";
 import { Topic } from "../../../api";
+import { cssUtilsSheet } from "../../../styles/cssUtils";
 
 export interface JarsPageControlsProps {
   exportContainers: () => Topic[];
@@ -43,6 +44,7 @@ export class JarsPageControls extends HTMLElement {
     super();
 
     this.attachShadow({ mode: "open" }).innerHTML = templateHtml;
+    this.shadowRoot!.adoptedStyleSheets = [cssUtilsSheet];
   }
 
   connectedCallback() {

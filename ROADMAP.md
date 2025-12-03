@@ -11,6 +11,7 @@
 - Make tab order start at jar label and then go through each element
 - Save jars across page reloads
 - Make the page prettier
+   - Add padding to bottom when full of tiles
 - Ensure adding jars work by communicating with grid, which controls the jars as a central controller
 - Auto-focus new jar when it's created
 

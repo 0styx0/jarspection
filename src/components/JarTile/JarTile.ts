@@ -17,7 +17,7 @@ import {
   VerticalRange,
 } from "../VerticalRange/VerticalRange";
 import { ComplexComponent } from "../../interfaces/ComplexComponent";
-import { reactionToHex, TopicHolder } from "../../models/TopicHolder";
+import { TopicHolder } from "../../models/TopicHolder";
 import { EmotionalReaction } from "../../api";
 import { cssUtilsSheet } from "../../styles/cssUtils";
 import {
