@@ -24,7 +24,7 @@ test("basic tile-level controls", async ({ page }) => {
   const { tile } = await jarGridPage.getTile("Quality Time");
 
   await tile.typeLabel("My very own unicorn");
-  await tile.remove();
+  await tile.removeMouse();
 });
 
 test("Adding topic", async ({ page }) => {
@@ -35,7 +35,7 @@ test("Adding topic", async ({ page }) => {
   await firstNewTile.leftJar.setReaction("positive");
 
   await jarGridPage.appendTile();
-  await firstNewTile.tile.remove();
+  await firstNewTile.tile.removeMouse();
 });
 
 test("exporting/importing results in original page", async ({ page }) => {
@@ -91,6 +91,6 @@ test("keyboard shortcuts", async ({ page }) => {
 
   const { tile } = await jarGridPage.getTile("Acts of Service");
 
-  await tile.addAdjacentTileKb()
-  await tile.removeKb()
+  await tile.addAdjacentTileKb();
+  await tile.removeKb();
 });

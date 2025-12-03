@@ -6,6 +6,12 @@ type ShortcutAction = {
   triggers: Trigger[]; // Array of Trigger objects
 };
 
+export const actionTriggers = {
+  keyboard: 'keyboard',
+  mouse: 'mouse'
+} as const
+export type ActionTrigger = typeof actionTriggers[keyof typeof actionTriggers];
+
 export const shortcuts = {
   tile: {
     add: { triggers: [{ trigger: ["Meta", "N"] }] },

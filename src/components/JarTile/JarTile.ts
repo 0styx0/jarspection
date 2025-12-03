@@ -20,7 +20,12 @@ import { ComplexComponent } from "../../interfaces/ComplexComponent";
 import { reactionToHex, TopicHolder } from "../../models/TopicHolder";
 import { EmotionalReaction } from "../../api";
 import { cssUtilsSheet } from "../../styles/cssUtils";
-import { addShortcut, shortcuts } from "../../utils/keyboardShortcuts";
+import {
+  ActionTrigger,
+  actionTriggers,
+  addShortcut,
+  shortcuts,
+} from "../../utils/keyboardShortcuts";
 
 export const selectors = {
   labelInput: ".label-input",
@@ -33,7 +38,7 @@ export const selectors = {
 
 export interface JarTileProps {
   topic: TopicHolder;
-  removeTile: () => void;
+  removeTile: (params: { trigger: ActionTrigger }) => void;
 }
 
 export const defaultJarTileProps = {
@@ -48,7 +53,7 @@ export class JarTile
   implements ComplexComponent<JarTileProps>
 {
   private topic = defaultJarTileProps.topic;
-  private removeTile = defaultJarTileProps.removeTile;
+  private props = {} as JarTileProps;
 
   constructor() {
     super();
@@ -64,8 +69,8 @@ export class JarTile
   }
 
   setProps(props: JarTileProps) {
-    this.topic = props.topic;
-    this.removeTile = props.removeTile;
+    this.topic = props.topic; // shorter access
+    this.props = props;
 
     this.updateLabelElt(props.topic.name);
     props.topic.emotions.forEach((emotion, i) => {
@@ -250,12 +255,14 @@ export class JarTile
 
   private handleRemove = () => {
     const removeBtn = queryElt(this.shadowRoot, selectors.removeBtn)!;
-    removeBtn.addEventListener("click", () => this.removeTile());
+    removeBtn.addEventListener("click", () =>
+      this.props.removeTile({ trigger: actionTriggers.mouse }),
+    );
 
     addShortcut({
       shortcut: shortcuts.tile.remove,
       action: () => {
-        this.removeTile();
+        this.props.removeTile({ trigger: actionTriggers.keyboard });
       },
       guard: () => !!this.shadowRoot?.contains(this.shadowRoot.activeElement),
     });

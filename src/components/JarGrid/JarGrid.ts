@@ -16,6 +16,7 @@ import {
 } from "../componentUtils";
 import { TopicHolder } from "../../models/TopicHolder";
 import { AddJarEvent, addJarEvents } from "../AddJar/AddJar";
+import { ActionTrigger, actionTriggers } from "../../utils/keyboardShortcuts";
 
 export const selectors = {
   jarGrid: ".jarGrid",
@@ -82,6 +83,8 @@ export class JarGrid
   }
 
   /**
+   * Used when uploading a save file
+   *
    * Adds any jars not in dom, to the dom
    * Updates jars in the dom to match `jars`
    * Removes jars in the dom but absent from `jars` from the dom
@@ -89,11 +92,11 @@ export class JarGrid
   private renderJars(jars: TopicHolder[]): void {
     const currentJarTiles = this.getTopicTiles();
 
-    this.addNewJars(currentJarTiles, jars);
-    this.removeDeletedJars(currentJarTiles, jars);
+    this.renderNewJars(currentJarTiles, jars);
+    this.renderRemoveDeletedJars(currentJarTiles, jars);
   }
 
-  private addNewJars(
+  private renderNewJars(
     currentJarTiles: TopicTileMap,
     updatedJars: TopicHolder[],
   ) {
@@ -105,7 +108,7 @@ export class JarGrid
     }
   }
 
-  private removeDeletedJars(
+  private renderRemoveDeletedJars(
     currentJarTiles: TopicTileMap,
     updatedJars: TopicHolder[],
   ) {
@@ -135,7 +138,7 @@ export class JarGrid
       jarTileTag,
       {
         topic: jar,
-        removeTile: () => this.removeJar(jarTileElt),
+        removeTile: ({ trigger }) => this.onTileRemove(jarTileElt, trigger),
       },
     );
 
@@ -148,11 +151,15 @@ export class JarGrid
     return jarTileElt;
   }
 
+  private onTileRemove(tile: JarTile, trigger: ActionTrigger) {
+    if (trigger === actionTriggers.keyboard) {
+      selectNextTopic(tile);
+    }
+
+    this.removeJar(tile);
+  }
+
   private removeJar(jarTile: JarTile): void {
-    const fallbackTile = getNextTile(jarTile);
-
-    fallbackTile?.selectTopic();
-
     jarTile.remove();
   }
 }
@@ -160,6 +167,11 @@ export class JarGrid
 function getNextTile(curTile: JarTile) {
   const nextTile = curTile.previousSibling || curTile.nextSibling;
   return isJarTile(nextTile) ? nextTile : null;
+}
+
+function selectNextTopic(curTile: JarTile) {
+  const fallbackTile = getNextTile(curTile);
+  fallbackTile?.selectTopic();
 }
 
 function getIdsAsSet(jars: TopicHolder[]) {

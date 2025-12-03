@@ -88,6 +88,14 @@ class Tile {
     return this.tileElt.getByLabel("Jar name");
   }
 
+  async typeLabel(label: string) {
+    const labelElt = this.getLabel();
+    await labelElt.fill(label);
+
+    this.tileElt = this.page.getByRole("region", { name: label });
+    await expect(this.tileElt).toBeVisible();
+  }
+
   /**
    * adds tile via keyboard shortcut
    */
@@ -117,16 +125,7 @@ class Tile {
 
     const originalTiles = await this.page.locator("jar-tile").count();
 
-    // setup to get prev input after current is deleted
-    const prevTileLocator = this.page
-      .locator("jar-tile")
-      .filter({
-        has: this.tileElt,
-      })
-      .locator("//preceding-sibling::jar-tile[1]");
-    const prevLabelVal = await new Tile(this.page, prevTileLocator)
-      .getLabel()
-      .inputValue();
+    const prevLabelVal = await this.getPrevTileLabel();
 
     await this.tileElt.press("Meta+W");
 
@@ -134,25 +133,42 @@ class Tile {
     await expect(afterTiles).toHaveCount(originalTiles - 1);
     expect(this.tileElt).not.toBeVisible();
 
-    const { tile: actualPrevTile } = await new JarGridPage(this.page).getTile(prevLabelVal)
-    await expect(actualPrevTile.getLabel()).toBeFocused();
+    const prevTile = await this.getTile(prevLabelVal);
+    await expect(prevTile.getLabel()).toBeFocused();
   }
 
-  async typeLabel(label: string) {
-    const labelElt = this.getLabel();
-    await labelElt.fill(label);
-
-    this.tileElt = this.page.getByRole("region", { name: label });
-    await expect(this.tileElt).toBeVisible();
-  }
-
-  async remove() {
+  async removeMouse() {
     const originalTiles = await this.page.locator("jar-tile").count();
+    const prevLabelVal = await this.getPrevTileLabel();
 
     this.tileElt.getByLabel("Delete jar").click();
     const afterTiles = this.page.locator("jar-tile");
 
     await expect(afterTiles).toHaveCount(originalTiles - 1);
+
+    const prevTile = await this.getTile(prevLabelVal);
+    await expect(prevTile.getLabel()).not.toBeFocused();
+  }
+
+  /**
+   * Allows getting prev label after current selector fails due to removal
+   */
+  private getPrevTileLabel() {
+    // setup to get prev input after current is deleted
+    const prevTileLocator = this.page
+      .locator("jar-tile")
+      .filter({
+        has: this.tileElt,
+      })
+      .locator("//preceding-sibling::jar-tile[1]")
+      .last();
+    return new Tile(this.page, prevTileLocator).getLabel().inputValue();
+  }
+
+  private async getTile(label: string) {
+    const { tile } = await new JarGridPage(this.page).getTile(label);
+
+    return tile;
   }
 }
 
