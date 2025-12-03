@@ -10,6 +10,7 @@
 
 :host {
   --action-color: #ffc1c1;
+  --main-content-margin: 3rem;
 }
 
 .action-item {
