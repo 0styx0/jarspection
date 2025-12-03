@@ -30,3 +30,31 @@
 - Autodeploy via github pages
 - Add CI hook to run tests
 
+### Shortcuts
+
+#### Actions
+##### Tile level
+- Add tile
+- Delete tile
+- Tag tile
+- Tag remove tile
+- Edit label
+- Edit side n
+  - Edit reaction
+  - Edit intensity
+  - Edit producer
+- Select tile
+  - Meta-click
+  - Click the checkbox
+
+##### Page level
+- Switch to tag
+
+#### Flow
+When focused in a tile
+Focused on the page
+
+### Focus
+After deleting an element, focus on the previous element
+When adding an element, place after currently selected element (or at grid end)
+

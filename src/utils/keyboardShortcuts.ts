@@ -1,24 +1,45 @@
-type Trigger = {
+export type Trigger = {
   trigger: string[];
 };
 
 type ShortcutAction = {
-  triggers: Trigger[]; // Array of Trigger objects
+  triggers: Trigger[];
+  description: string;
 };
 
 export const actionTriggers = {
-  keyboard: 'keyboard',
-  mouse: 'mouse'
-} as const
-export type ActionTrigger = typeof actionTriggers[keyof typeof actionTriggers];
+  keyboard: "keyboard",
+  mouse: "mouse",
+} as const;
+export type ActionTrigger =
+  (typeof actionTriggers)[keyof typeof actionTriggers];
 
 export const shortcuts = {
-  tile: {
-    add: { triggers: [{ trigger: ["Meta", "N"] }] },
-    remove: { triggers: [{ trigger: ["Meta", "W"] }] },
-    // label: { triggers: [{ trigger: ["F2"] }] },
+  help: {
+    viewShortcuts: {
+      triggers: [{ trigger: ["?"] }],
+      description: "View shortcuts",
+    },
   },
-};
+  tile: {
+    add: {
+      triggers: [{ trigger: ["Meta", "N"] }],
+      description: "Add new tile",
+    },
+    remove: {
+      triggers: [{ trigger: ["Meta", "W"] }],
+      description: "Remove current tile",
+    },
+    focusNext: {
+      triggers: [{ trigger: ["Meta", "ArrowLeft"] }],
+      description: "Select next tile",
+    },
+    focusPrevious: {
+      triggers: [{ trigger: ["Meta", "ArrowRight"] }],
+      description: "Select previous tile",
+    },
+  },
+} as Record<string, Record<string, ShortcutAction>>;
 
 function isShortcutPressed(
   event: KeyboardEvent,
