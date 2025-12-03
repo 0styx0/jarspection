@@ -24,7 +24,7 @@ export class JarGridPage {
     return this.constructHelperClasses(tileElt);
   }
 
-  async addTile() {
+  async appendTile() {
     const originalTiles = await this.page.locator("jar-tile").count();
     await this.page.getByRole("button", { name: "+" }).click();
     const afterTiles = this.page.locator("jar-tile");
@@ -37,13 +37,12 @@ export class JarGridPage {
   }
 
   async exportSettings() {
-    console.log("exporting");
     this.page.on("download", (download) => {
       download.path().then(console.log).catch(console.error);
     });
     // Start waiting for download before clicking. Note no await.
     const downloadPromise = this.page.waitForEvent("download");
-    await this.page.getByRole("button", { name: "Export Preferences" }).click();
+    await this.page.getByRole("button", { name: "Download save file" }).click();
 
     const download = await downloadPromise;
 
@@ -56,7 +55,7 @@ export class JarGridPage {
 
   async importSettings(importFileName: string) {
     await this.page
-      .getByRole("button", { name: "Import Preferences:" })
+      .getByRole("button", { name: "Load save file", exact: true })
       .setInputFiles(importFileName);
   }
 
@@ -71,36 +70,61 @@ export class JarGridPage {
 
 class Tile {
   readonly page: Page;
-  private tile: Locator;
+  tileElt: Locator;
 
   constructor(page: Page, tile: Locator) {
     this.page = page;
-    this.tile = tile;
+    this.tileElt = tile;
   }
 
   getJarSides() {
     return {
-      leftJar: new JarSide(this.tile, 0),
-      rightJar: new JarSide(this.tile, 1),
+      leftJar: new JarSide(this.tileElt, 0),
+      rightJar: new JarSide(this.tileElt, 1),
     };
   }
 
   getLabel() {
-    return this.tile.getByLabel("Jar name");
+    return this.tileElt.getByLabel("Jar name");
   }
 
-  async setLabel(label: string) {
+  /**
+    * adds tile via keyboard shortcut
+    */
+  async addAdjacentTileKb() {
+
+    await this.getLabel().focus();
+
+    const originalTiles = await this.page.locator("jar-tile").count();
+    await this.tileElt.press("Meta+N");
+    const afterTiles = this.page.locator("jar-tile");
+    await expect(afterTiles).toHaveCount(originalTiles + 1);
+
+    const nextTileLocator = this.page
+      .locator("jar-tile")
+      .filter({
+        has: this.tileElt,
+      })
+      .locator("+ jar-tile");
+
+    await expect(nextTileLocator).toBeFocused();
+    const nextTile = new Tile(this.page, nextTileLocator)
+    await nextTile.typeLabel('hello me')
+    await expect(nextTile.getLabel()).toHaveValue('hello me')
+  }
+
+  async typeLabel(label: string) {
     const labelElt = this.getLabel();
     await labelElt.fill(label);
 
-    this.tile = this.page.getByRole("region", { name: label });
-    await expect(this.tile).toBeVisible();
+    this.tileElt = this.page.getByRole("region", { name: label });
+    await expect(this.tileElt).toBeVisible();
   }
 
   async remove() {
     const originalTiles = await this.page.locator("jar-tile").count();
 
-    this.tile.getByLabel("Delete jar").click();
+    this.tileElt.getByLabel("Delete jar").click();
     const afterTiles = this.page.locator("jar-tile");
 
     await expect(afterTiles).toHaveCount(originalTiles - 1);
