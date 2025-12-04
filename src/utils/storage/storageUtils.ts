@@ -2,7 +2,7 @@ import { ExportApi, Topic } from "../../api";
 import { OpResult } from "../../types";
 import { exportValidator } from "../validators";
 
-function formatExport(topics: Topic[]): ExportApi {
+function addExportMetadata(topics: Topic[]): ExportApi {
   return {
     metadata: {
       semVer: "1.0.0",
@@ -17,7 +17,7 @@ function formatExport(topics: Topic[]): ExportApi {
  * @return stringified ExportApi
  */
 export function createExportJson(topics: Topic[]): OpResult<ExportApi> {
-  const settings = formatExport(topics);
+  const settings = addExportMetadata(topics);
   const validationStatus = exportValidator(settings);
   if (!validationStatus.success) {
     console.warn("Export error", validationStatus);
@@ -29,6 +29,11 @@ export function createExportJson(topics: Topic[]): OpResult<ExportApi> {
 
 // separated validating and stringifying for better typing of both functions
 export function stringifyExportJson(exportJson: ExportApi): OpResult<string> {
+  const validationStatus = exportValidator(exportJson);
+  if (!validationStatus.success) {
+    return validationStatus
+  }
+
   try {
     return { success: true, data: JSON.stringify(exportJson, null, 2) };
   } catch (e) {
