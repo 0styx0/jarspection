@@ -3,15 +3,7 @@
 // ============================================================================
 
 import { emotionalReactions, ExportApi, Topic, Emotion, Tag } from "../api";
-
-export type ValidationResult<T> =
-  | { success: true; data: T }
-  | { success: false; errors: ValidationError[] };
-
-export interface ValidationError {
-  path: string;
-  message: string;
-}
+import { OpError, OpResult } from "../types";
 
 // ============================================================================
 // Constraint Definitions
@@ -106,7 +98,7 @@ function validateString(
   value: unknown,
   path: string,
   constraint: { type: "string"; minLength?: number; maxLength?: number },
-): ValidationError[] {
+): OpError[] {
   if (typeof value !== "string") {
     return [{ path, message: "Must be a string" }];
   }
@@ -133,7 +125,7 @@ function validateNumber(
   value: unknown,
   path: string,
   constraint: { type: "number"; min?: number; max?: number; integer?: boolean },
-): ValidationError[] {
+): OpError[] {
   if (typeof value !== "number") {
     return [{ path, message: "Must be a number" }];
   }
@@ -156,7 +148,7 @@ function validateEnum<T extends string>(
   value: unknown,
   path: string,
   constraint: { type: "enum"; allowedValues: readonly T[] },
-): ValidationError[] {
+): OpError[] {
   if (typeof value !== "string") {
     return [{ path, message: "Must be a string" }];
   }
@@ -180,7 +172,7 @@ function validatePattern(
     patternDescription: string;
     customValidation?: (value: string) => boolean;
   },
-): ValidationError[] {
+): OpError[] {
   if (typeof value !== "string") {
     return [{ path, message: "Must be a string" }];
   }
@@ -198,9 +190,9 @@ function validatePattern(
 function validateArray<T>(
   value: unknown,
   path: string,
-  itemValidator: (item: unknown, itemPath: string) => ValidationError[],
+  itemValidator: (item: unknown, itemPath: string) => OpError[],
   constraint: { type: "array"; nonempty?: boolean },
-): ValidationError[] {
+): OpError[] {
   if (!Array.isArray(value)) {
     return [{ path, message: "Must be an array" }];
   }
@@ -208,14 +200,14 @@ function validateArray<T>(
     return [{ path, message: "Must contain at least one item" }];
   }
 
-  const errors: ValidationError[] = [];
+  const errors: OpError[] = [];
   value.forEach((item, index) => {
     errors.push(...itemValidator(item, `${path}[${index}]`));
   });
   return errors;
 }
 
-function validateObject(value: unknown, path: string): ValidationError[] {
+function validateObject(value: unknown, path: string): OpError[] {
   if (typeof value !== "object" || value === null || Array.isArray(value)) {
     return [{ path, message: "Must be an object" }];
   }
@@ -238,17 +230,17 @@ function resolveConstraint(constraint: any): any {
 // Composite Validators (Using Constraints)
 // ============================================================================
 
-function validateSemVer(value: unknown, path: string): ValidationError[] {
+function validateSemVer(value: unknown, path: string): OpError[] {
   const constraint = exportConstraints.semVer;
   return validatePattern(value, path, constraint);
 }
 
-function validateISODate(value: unknown, path: string): ValidationError[] {
+function validateISODate(value: unknown, path: string): OpError[] {
   const constraint = exportConstraints.isoDate;
   return validatePattern(value, path, constraint);
 }
 
-function validateTag(value: unknown, path: string): ValidationError[] {
+function validateTag(value: unknown, path: string): OpError[] {
   const errors = validateObject(value, path);
   if (errors.length > 0) return errors;
 
@@ -260,15 +252,12 @@ function validateTag(value: unknown, path: string): ValidationError[] {
   return errors;
 }
 
-function validateTags(value: unknown, path: string): ValidationError[] {
+function validateTags(value: unknown, path: string): OpError[] {
   const constraint = exportConstraints.topic.metadata.tags;
   return validateArray(value, path, validateTag, constraint);
 }
 
-function validateEmotionMetadata(
-  value: unknown,
-  path: string,
-): ValidationError[] {
+function validateEmotionMetadata(value: unknown, path: string): OpError[] {
   const errors = validateObject(value, path);
   if (errors.length > 0) return errors;
 
@@ -288,7 +277,7 @@ function validateEmotionMetadata(
   return errors;
 }
 
-function validateEmotion(value: unknown, path: string): ValidationError[] {
+function validateEmotion(value: unknown, path: string): OpError[] {
   const errors = validateObject(value, path);
   if (errors.length > 0) return errors;
 
@@ -309,15 +298,12 @@ function validateEmotion(value: unknown, path: string): ValidationError[] {
   return errors;
 }
 
-function validateEmotions(value: unknown, path: string): ValidationError[] {
+function validateEmotions(value: unknown, path: string): OpError[] {
   const constraint = exportConstraints.topic.emotions;
   return validateArray(value, path, validateEmotion, constraint);
 }
 
-function validateTopicMetadata(
-  value: unknown,
-  path: string,
-): ValidationError[] {
+function validateTopicMetadata(value: unknown, path: string): OpError[] {
   const errors = validateObject(value, path);
   if (errors.length > 0) return errors;
 
@@ -330,7 +316,7 @@ function validateTopicMetadata(
   return errors;
 }
 
-function validateTopic(value: unknown, path: string): ValidationError[] {
+function validateTopic(value: unknown, path: string): OpError[] {
   const errors = validateObject(value, path);
   if (errors.length > 0) return errors;
 
@@ -344,15 +330,12 @@ function validateTopic(value: unknown, path: string): ValidationError[] {
   return errors;
 }
 
-function validateTopics(value: unknown, path: string): ValidationError[] {
+function validateTopics(value: unknown, path: string): OpError[] {
   const constraint = exportConstraints.exportApi.topics;
   return validateArray(value, path, validateTopic, constraint);
 }
 
-function validateExportMetadata(
-  value: unknown,
-  path: string,
-): ValidationError[] {
+function validateExportMetadata(value: unknown, path: string): OpError[] {
   const errors = validateObject(value, path);
   if (errors.length > 0) return errors;
 
@@ -372,10 +355,7 @@ function validateExportMetadata(
   return errors;
 }
 
-function validateExportApi(
-  value: object,
-  path: string = "root",
-): ValidationError[] {
+function validateExportApi(value: object, path: string = "root"): OpError[] {
   const errors = validateObject(value, path);
   if (errors.length > 0) return errors;
 
@@ -391,34 +371,7 @@ function validateExportApi(
 // Public API
 // ============================================================================
 
-export function parseAndValidate(
-  jsonString: string,
-): ValidationResult<ExportApi> {
-  try {
-    const parsed = JSON.parse(jsonString);
-    const errors = validateExportApi(parsed);
-
-    if (errors.length > 0) {
-      return { success: false, errors };
-    }
-
-    return { success: true, data: parsed as ExportApi };
-  } catch (error) {
-    return {
-      success: false,
-      errors: [
-        {
-          path: "root",
-          message: `JSON parse error: ${error instanceof Error ? error.message : "Unknown error"}`,
-        },
-      ],
-    };
-  }
-}
-
-export function exportValidator(
-  data: object,
-): ValidationResult<ExportApi> {
+export function exportValidator(data: object): OpResult<ExportApi> {
   const errors = validateExportApi(data);
 
   if (errors.length > 0) {
@@ -428,7 +381,7 @@ export function exportValidator(
   return { success: true, data: data as ExportApi };
 }
 
-export function parseJson(containerText: string): ValidationResult<object> {
+export function parseJson(containerText: string): OpResult<object> {
   try {
     return { success: true, data: JSON.parse(containerText) };
   } catch (e) {
@@ -447,19 +400,19 @@ export function parseJson(containerText: string): ValidationResult<object> {
 
 // Individual component validators for granular validation
 export const validators = {
-  tag: (data: unknown): ValidationResult<Tag> => {
+  tag: (data: unknown): OpResult<Tag> => {
     const errors = validateTag(data, "tag");
     return errors.length === 0
       ? { success: true, data: data as Tag }
       : { success: false, errors };
   },
-  emotion: (data: unknown): ValidationResult<Emotion> => {
+  emotion: (data: unknown): OpResult<Emotion> => {
     const errors = validateEmotion(data, "emotion");
     return errors.length === 0
       ? { success: true, data: data as Emotion }
       : { success: false, errors };
   },
-  topic: (data: unknown): ValidationResult<Topic> => {
+  topic: (data: unknown): OpResult<Topic> => {
     const errors = validateTopic(data, "topic");
     return errors.length === 0
       ? { success: true, data: data as Topic }
@@ -477,14 +430,6 @@ console.log(exportConstraints.emotion.strength); // { type: 'number', min: 0, ma
 
 // Modify constraints (if needed)
 // exportConstraints.emotion.strength.max = 200;
-
-// Parse and validate
-const result = parseAndValidate('{"metadata": {...}, "topics": [...]}');
-if (result.success) {
-  console.log('Valid:', result.data); // data is now typed as ExportApi
-} else {
-  console.error('Errors:', result.errors);
-}
 
 // Validate individual components
 const topicResult = validators.topic({...});

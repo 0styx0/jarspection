@@ -9,6 +9,11 @@ import { ExportApi, Topic } from "../../api";
 import { defineCustomElt, queryElt } from "../componentUtils";
 import { ComplexComponent } from "../../interfaces/ComplexComponent";
 import { exportValidator } from "../../utils/validators";
+import {
+  createExportJson,
+  stringifyExportJson,
+} from "../../utils/storage/storageUtils";
+import { OpResult } from "../../types";
 
 export interface JarExporterProps {
   exportContainers: () => Topic[];
@@ -52,35 +57,36 @@ export class JarExporter
   }
 
   private exportSettings = () => {
-    const settings = this.getExportData();
+    const settings = this.props.exportContainers();
 
-    const validationStatus = exportValidator(settings);
-    if (!validationStatus.success) {
-      console.warn("Export error", validationStatus);
+    const exportJson = createExportJson(settings);
+    if (!exportJson.success) {
+      console.warn("Export error", exportJson);
       return;
     }
 
-    const exportFile = this.createFile(settings);
+    const exportFile = this.createFile(exportJson.data);
+    if (!exportFile.success) {
+      console.warn("Export error", exportFile);
+      return;
+    }
 
-    this.triggerDownload(exportFile);
+    this.triggerDownload(exportFile.data);
   };
 
-  private getExportData(): ExportApi {
-    const topics = this.props.exportContainers();
-    return {
-      metadata: {
-        semVer: "1.0.0",
-        schemaVersion: 1,
-        isoExportedAt: new Date().toISOString(),
-      },
-      topics,
-    };
-  }
+  private createFile(containerSettings: ExportApi): OpResult<Blob> {
+    const exportStr = stringifyExportJson(containerSettings);
 
-  private createFile(containerSettings: ExportApi): Blob {
-    return new Blob([JSON.stringify(containerSettings, null, 2)], {
-      type: "application/json",
-    });
+    if (!exportStr.success) {
+      return exportStr;
+    }
+
+    return {
+      success: true,
+      data: new Blob([exportStr.data], {
+        type: "application/json",
+      }),
+    };
   }
 
   private async triggerDownload(downloadFile: Blob) {

@@ -14,12 +14,12 @@ If the user provides an invalid file, we fallback to a blank screen
 
 */
 import templateHtml from "./JarImporter.html?raw";
-import { Emotion, ExportApi, Topic } from "../../api";
+import { Topic } from "../../api";
 import { getDefaultTopics } from "../../defaultJars";
 import { defineCustomElt, queryElt } from "../componentUtils";
 import { ComplexComponent } from "../../interfaces/ComplexComponent";
 import { exportValidator, parseJson } from "../../utils/validators";
-import { TopicHolder } from "../../models/TopicHolder";
+import { parseExportJson } from "../../utils/storage/storageUtils";
 
 export interface JarImporterProps {
   importContainers: (topics: Topic[]) => void;
@@ -70,7 +70,7 @@ export class JarImporter
       const importFile = this.getImportFile();
 
       if (!importFile) {
-        console.info("JarImporter: Unable to import settings - No import file");
+        console.warn("JarImporter: Unable to import settings - No import file");
         return;
       }
 
@@ -96,20 +96,14 @@ export class JarImporter
 
   private async parseImportFile(file: File): Promise<Topic[]> {
     const contents = await this.readFileContents(file);
-    const json = parseJson(contents);
+    const json = parseExportJson(contents);
 
     if (!json.success) {
       console.warn("Importer: Invalid json", json);
       return [];
     }
 
-    const validatedImport = exportValidator(json.data);
-    if (!validatedImport.success) {
-      console.warn("Importer: Invalid file", validatedImport);
-      return [];
-    }
-
-    return validatedImport.data.topics;
+    return json.data.topics;
   }
 
   private readFileContents(file: File): Promise<string> {
