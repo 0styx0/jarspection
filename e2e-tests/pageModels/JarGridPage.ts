@@ -46,7 +46,7 @@ export class JarGridPage {
 
     const download = await downloadPromise;
 
-    const downloadFileName = download.suggestedFilename();
+    const downloadFileName = "test-generated/" + download.suggestedFilename();
 
     await download.saveAs(downloadFileName);
 
