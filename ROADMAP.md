@@ -1,26 +1,21 @@
 
 ### Unstable
 - Sanitize save file
+- Save jars across page reloads
+- Display errors in UI (not only in console)
+- Tiles inherit metadata/some data from previous tile
+- Add alt-z to undo deletion
 - Delete: Removes tag for current page. If brings tags to zero, adds to recycle bin
   - Deleting from recycle bin permanently deletes the topic
-- Add e2e tests with playwright
-- Display errors in UI (not only in console)
-- Make colors an implementation detail of API rather than exposing colors directly
 - Truncate producer on display, with option to view full on hover
 - Ensure accessibility
-- Make tab order start at jar label and then go through each element
-- Save jars across page reloads
-- Make the page prettier
-   - Add padding to bottom when full of tiles
-- Ensure adding jars work by communicating with grid, which controls the jars as a central controller
-- Auto-focus new jar when it's created
 
 ### V1
 - Add a help page
 - Autosave option
 
 ### V2
-- Allow for populating jars via a textbox
+- Allow for populating jars via a textbox - Do I want this?
 
 ### V3
 - Add multiple tabs, separate jar grid for each page
