@@ -3,7 +3,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "vitest",
+    "test": "NODE_OPTIONS='--no-webstorage' vitest",
     "e2e": "npx playwright test --ui"
   },
   "devDependencies": {
